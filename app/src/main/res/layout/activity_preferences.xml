@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#313131"
-    tools:context="com.example.galzeevi.google_workshop_preferences.PreferencesActivity">
+    tools:context="package com.googleworkshop.taxipool.PreferencesActivity">
 
     <Button
         android:id="@+id/origin"
