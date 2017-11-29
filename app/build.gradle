@@ -29,6 +29,6 @@ dependencies {
     compile 'com.google.firebase:firebase-database:11.6.2'
     compile 'com.google.firebase:firebase-core:11.6.2'
     compile 'com.google.firebase:firebase-auth:11.6.2'
-    implementation 'com.google.android.gms:play-services-places:11.6.0'
+    implementation 'com.google.android.gms:play-services-places:11.6.2'
 }
 apply plugin: 'com.google.gms.google-services'
