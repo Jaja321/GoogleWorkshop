@@ -1,4 +1,4 @@
-package com.example.galzeevi.google_workshop_preferences;
+package com.googleworkshop.taxipool;
 
 import android.content.Intent;
 import android.os.Bundle;
