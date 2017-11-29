@@ -2,4 +2,13 @@
     <string name="app_name">TaxiPool</string>
     <string name="sign_out">Sign Out</string>
     <string name="send_button_label">Send</string>
+    <string-array name="hours">
+       <item>Hour</item><item>0:00</item> <item>1:00</item> <item>2:00</item> <item>3:00</item>
+       <item>4:00</item> <item>5:00</item> <item>6:00</item> <item>7:00</item>
+       <item>8:00</item> <item>9:00</item> <item>10:00</item> <item>12:00</item>
+       <item>13:00</item> <item>14:00</item> <item>15:00</item> <item>16:00</item>
+       <item>17:00</item> <item>18:00</item> <item>19:00</item> <item>20:00</item>
+       <item>21:00</item> <item>22:00</item> <item>23:00</item>
+    </string-array>
+    <string-array name="gender"><item>Gender</item><item>N/A</item><item>M</item><item>F</item></string-array>
 </resources>
