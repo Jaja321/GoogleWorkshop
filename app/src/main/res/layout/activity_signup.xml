@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="com.googleworkshop.taxipool.SignUpActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingTop="56dp">
+
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/signin_style"
+            android:layout_margin="20dp"
+            android:drawableLeft="@drawable/smallgooglelogonew"
+            android:text="Sign up with Google"
+            android:textColor="#000000"
+
+            />
+
+        <TextView
+            android:id="@+id/or"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="1dp"
+            android:gravity="center"
+            android:text="or create new account now:"
+            android:textColor="#fdfdfe" />
+
+        <EditText
+            android:id="@+id/input_name"
+            style="@style/editText_style"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:hint="Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/input_email"
+            style="@style/editText_style"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/input_password"
+            style="@style/editText_style"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+
+        <Button
+            android:id="@+id/button"
+            style="@style/button_style"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Sign up" />
+
+        <TextView
+            android:id="@+id/goto_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Already a member? Log in"
+            android:textColor="#fdfdfe"
+            android:onClick="onClick"
+            android:clickable="true"/>
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

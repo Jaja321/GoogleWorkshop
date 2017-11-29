@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1016706385126",
+    "firebase_url": "https://taxipool-38df6.firebaseio.com",
+    "project_id": "taxipool-38df6",
+    "storage_bucket": "taxipool-38df6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016706385126:android:9efe34ec2604002b",
+        "android_client_info": {
+          "package_name": "com.googleworkshop.taxipool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016706385126-ujf1u2o3uf6sabcbpj8s5f9kttduq93v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.googleworkshop.taxipool",
+            "certificate_hash": "513f5463bc13d91fb267fdca56d947f64eae2a86"
+          }
+        },
+        {
+          "client_id": "1016706385126-8v5m1dki77f1g0v525sreuckm41k8s8t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAonq2ONUhFj7yMcDpJs2TUtYtanfyuLd4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016706385126-8v5m1dki77f1g0v525sreuckm41k8s8t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
