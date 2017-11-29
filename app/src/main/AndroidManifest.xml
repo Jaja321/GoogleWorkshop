@@ -20,7 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity android:name="com.googleworkshop.taxipool.ChatActivity" />
+        <activity android:name=".PreferencesActivity"></activity>
+        <activity android:name=".AutocompleteActivity"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E"/>
     </application>
 
 </manifest>
