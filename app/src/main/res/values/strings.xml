@@ -34,5 +34,5 @@
         <item>M</item>
         <item>F</item>
     </string-array>
-    <string name="title_activity_routeoverview">Map</string>
+    <string name="title_activity_showuseractivity">Map</string>
 </resources>
