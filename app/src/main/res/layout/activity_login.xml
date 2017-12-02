@@ -57,9 +57,10 @@
         <Button
             android:id="@+id/login_button"
             style="@style/button_style"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:onClick="next"
             android:text="Log in" />
 
         <TextView
