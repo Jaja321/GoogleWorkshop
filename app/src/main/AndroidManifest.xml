@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.googleworkshop.taxipool">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,10 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUpActivity" >
-
-        </activity>
-
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,13 +26,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity android:name="com.googleworkshop.taxipool.ChatActivity" />
-        <activity android:name=".PreferencesActivity"></activity>
-        <activity android:name=".AutocompleteActivity"></activity>
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E"/>
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".PreferencesActivity" />
+        <activity android:name=".AutocompleteActivity" />
+
+         <meta-data
+         android:name="com.google.android.geo.API_KEY"
+         android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.geo.API_KEY"-->
+            <!--android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" />-->
+
+        <activity
+            android:name=".RouteOverviewActivity"
+            android:label="@string/title_activity_showuseractivity" />
     </application>
 
 </manifest>
