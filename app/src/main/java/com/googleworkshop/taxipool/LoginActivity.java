@@ -111,4 +111,7 @@ public class LoginActivity extends AppCompatActivity{
                     }
                 });
     }
+    public void next(View view){
+        startActivity(new Intent(this,PreferencesActivity.class));
+    }
 }
