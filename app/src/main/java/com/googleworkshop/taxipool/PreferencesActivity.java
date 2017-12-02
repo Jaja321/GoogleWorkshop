@@ -1,6 +1,10 @@
 package com.googleworkshop.taxipool;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static int buttonSearch = 0;
@@ -16,11 +23,15 @@ public class PreferencesActivity extends AppCompatActivity {
     public static Place destPlace = null;
     public static String origin = "Your current location";
     public static Place originPlace = null;
+    protected FusedLocationProviderClient mFusedLocationClient;
+    protected static Location currLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
+        //XXX JERAFI ADDED ME FOR LOCATION
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         Spinner timeSpinner = (Spinner) findViewById(R.id.time);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -79,6 +90,33 @@ public class PreferencesActivity extends AppCompatActivity {
     public void searchOriginLocation(View view){
         Intent intent = new Intent(this, AutocompleteActivity.class);
         buttonSearch = 0;
+        startActivity(intent);
+    }
+    //XXX JERAFI ADDED TO GO TO THE MAP
+
+    public void goToRoute(View view){
+        Intent intent = new Intent(this, RouteOverviewActivity.class);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    currLocation = location;
+                }
+            }
+        });
         startActivity(intent);
     }
 
