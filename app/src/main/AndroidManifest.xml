@@ -30,16 +30,17 @@
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".AutocompleteActivity" />
 
-         <meta-data
-         android:name="com.google.android.geo.API_KEY"
-         android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E" />
-        <!--<meta-data-->
-            <!--android:name="com.google.android.geo.API_KEY"-->
-            <!--android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" />-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E" />
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" /> -->
 
         <activity
             android:name=".RouteOverviewActivity"
             android:label="@string/title_activity_showuseractivity" />
+        <activity android:name=".MatchScreenActivity"></activity>
     </application>
 
 </manifest>
