@@ -18,6 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
@@ -32,7 +35,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDTjX-AwPWuyIxkfURfqq0g_ei-XhnP5_E" />
+            android:value="AIzaSyDx-kOrD9qc4yhbw1oFqPK4wycIXdGM5Xs" />
         <!-- <meta-data -->
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" /> -->
