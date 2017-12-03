@@ -95,7 +95,7 @@ public class PreferencesActivity extends AppCompatActivity {
     //XXX JERAFI ADDED TO GO TO THE MAP
 
     public void goToRoute(View view){
-        Intent intent = new Intent(this, RouteOverviewActivity.class);
+        Intent intent = new Intent(this, MatchScreenActivity.class);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
