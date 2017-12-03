@@ -7,14 +7,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class RouteOverviewActivity extends FragmentActivity implements OnMapReadyCallback {
-
     private GoogleMap mMap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +41,8 @@ public class RouteOverviewActivity extends FragmentActivity implements OnMapRead
         mMap = googleMap;
         LatLng rabinSq = new LatLng(32.0795, 34.7802);
         LatLng user = getUserLocation();
-        mMap.addMarker(new MarkerOptions().position(user).title("Marker in user location"));
-        mMap.addMarker(new MarkerOptions().position(rabinSq).title("Marker in Rabin Square"));
+        mMap.addMarker(new MarkerOptions().position(user).title("Meeting point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        mMap.addMarker(new MarkerOptions().position(rabinSq).title("Destination point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
 
         ROUTE = new LatLngBounds(rabinSq,user);
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(ROUTE,100));
