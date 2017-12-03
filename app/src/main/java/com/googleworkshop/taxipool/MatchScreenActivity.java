@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MatchScreenActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MatchScreenActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

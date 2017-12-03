@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void loggedIn(FirebaseUser user){
-        Toast.makeText(getApplicationContext(), "Welcome, "+user.getDisplayName(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Welcome, "+user.getDisplayName(),Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, PreferencesActivity.class));
         finish();
     }
