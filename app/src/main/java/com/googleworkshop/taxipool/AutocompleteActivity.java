@@ -1,8 +1,10 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
@@ -36,7 +38,21 @@ public class AutocompleteActivity extends AppCompatActivity {
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
                 .build();
         autocompleteFragment.setFilter(typeFilter);
+   
+   //use current location?
+   //country code filter
+        String countryISOCode = "IL";//default
+        TelephonyManager teleMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        if (teleMgr != null){
+            countryISOCode = teleMgr.getSimCountryIso();
+        }
 
+        AutocompleteFilter countryFilter = new AutocompleteFilter.Builder()
+                .setCountry(countryISOCode)
+                .build();
+
+        autocompleteFragment.setFilter(countryFilter);
+ 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
