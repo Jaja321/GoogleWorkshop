@@ -36,7 +36,7 @@ public class PreferencesActivity extends AppCompatActivity {
         Spinner timeSpinner = (Spinner) findViewById(R.id.time);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> tAdapter = ArrayAdapter.createFromResource(this,
-                R.array.hours, R.layout.spinner_item);
+                R.array.relative_time, R.layout.spinner_item);
         // Specify the layout to use when the list of choices appears
         tAdapter.setDropDownViewResource(R.layout.spinner_item);
         // Apply the adapter to the spinner
