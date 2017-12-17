@@ -28,18 +28,22 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     public void onMapReady(GoogleMap googleMap) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         mMap = googleMap;
-        LatLng rabinSq = new LatLng(32.0795, 34.7802);
-        LatLng mock1 = new LatLng(32.082,34.7944);
-        LatLng mock2 = new LatLng(32.086,34.7911);
-        LatLng user = getUserLocation();
-        mMap.addMarker(new MarkerOptions().position(rabinSq).title("Meeting point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        mMap.addMarker(new MarkerOptions().position(mock1).title("Alice's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.addMarker(new MarkerOptions().position(mock2).title("Sarah's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-        mMap.addMarker(new MarkerOptions().position(user).title("User destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-        builder.include(rabinSq);
-        builder.include(mock1);
-        builder.include(mock2);
-        builder.include(user);
+
+        LatLng userOrigin = getUserLocation();
+        LatLng userDest = PreferencesActivity.destPlace.getLatLng();
+        mMap.addMarker(new MarkerOptions().position(userOrigin).title("User Origin").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+        mMap.addMarker(new MarkerOptions().position(userDest).title("User Destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+//        LatLng rabinSq = new LatLng(32.0795, 34.7802);
+//        LatLng mock1 = new LatLng(32.082,34.7944);
+//        LatLng mock2 = new LatLng(32.086,34.7911);
+//        mMap.addMarker(new MarkerOptions().position(rabinSq).title("Meeting point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+//        mMap.addMarker(new MarkerOptions().position(mock1).title("Alice's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+//        mMap.addMarker(new MarkerOptions().position(mock2).title("Sarah's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+//        builder.include(rabinSq);
+//        builder.include(mock1);
+//        builder.include(mock2);
+        builder.include(userOrigin);
+        builder.include(userDest);
         LatLngBounds bounds = builder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
 
