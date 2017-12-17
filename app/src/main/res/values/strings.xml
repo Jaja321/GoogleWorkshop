@@ -44,4 +44,6 @@
         <item>F</item>
     </string-array>
     <string name="title_activity_showuseractivity">Map</string>
+    <string name="facebook_app_id">1996581547291394</string>
+    <string name="fb_login_protocol_scheme">fb1996581547291394</string>
 </resources>
