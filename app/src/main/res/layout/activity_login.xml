@@ -22,9 +22,9 @@
             android:id="@+id/sign_in_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="10dp"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_marginTop="80dp" />
 
         <TextView
             android:id="@+id/or"
@@ -46,6 +46,13 @@
             android:layout_marginTop="30dp"
             android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="30dp" />
+
+        <Button
+            android:id="@+id/short_cut_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="next"
+            android:text="UGLY SHORTCUT" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

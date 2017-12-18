@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,6 +61,15 @@ public class LoginActivity extends AppCompatActivity {
         LoginButton fbloginButton = (LoginButton) findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 
+        // Add listener to google sign in button
+        SignInButton googleSignIn = findViewById(R.id.sign_in_button);
+        googleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signInWithGoogle(view);
+            }
+        });
+
         // Callback registration
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -84,18 +94,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loggedIn(FirebaseUser user) {
+        Log.d("LoggedIn","I am here now");
         Toast.makeText(getApplicationContext(), "Welcome, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, PreferencesActivity.class));
         finish();
-    }
-
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.goto_signup:
-                startActivity(new Intent(this, SignUpActivity.class));
-                finish();
-                break;
-        }
     }
 
     public void signInWithGoogle(View view) {
@@ -117,10 +119,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        Log.d("handleSignIn","I am here now");
+
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             firebaseAuthWithGoogle(account);
         } catch (ApiException e) {
+            Log.d("Exception: handleSignIn",e.getLocalizedMessage());
+
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             //updateUI(null);
@@ -129,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
+        Log.d("firebaseAuth","I am here now");
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -142,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                             loggedIn(user);
                         } else {
                             // If sign in fails, display a message to the user.
+                            Log.d("handleSignInResult","Authentication failed");
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(null);
