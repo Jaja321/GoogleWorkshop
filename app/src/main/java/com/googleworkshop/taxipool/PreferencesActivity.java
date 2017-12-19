@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -126,20 +127,23 @@ public class PreferencesActivity extends AppCompatActivity {
     private void initializeHome(){
         //JERAFI Using default home location if saved
         if ((destPlace == null) && (homeSettings.getBoolean(HOME_SAVED,false))){
-            Task<PlaceBufferResponse> response = mGeoDataClient.getPlaceById(homeSettings.getString(HOME_ID,null));
-            response.addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
-                    if (task.isSuccessful()){
-                        PlaceBufferResponse homeBuffer = task.getResult();
-                        destPlace = homeBuffer.get(0);
-                        homeCBox.setChecked(true);
-                        homeCBox.setClickable(true);
-                        destButton.setText(destPlace.getName());
+            String placeId=homeSettings.getString(HOME_ID,null);
+            if(placeId!=null) {
+                Task<PlaceBufferResponse> response = mGeoDataClient.getPlaceById(placeId);
+                response.addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                        if (task.isSuccessful()) {
+                            PlaceBufferResponse homeBuffer = task.getResult();
+                            destPlace = homeBuffer.get(0);
+                            homeCBox.setChecked(true);
+                            homeCBox.setClickable(true);
+                            destButton.setText(destPlace.getName());
 
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -187,6 +191,7 @@ public class PreferencesActivity extends AppCompatActivity {
             homePrefEditor.putBoolean(HOME_SAVED,false);
         }
         homePrefEditor.apply();
+        Log.d("bla","bla");
         startActivity(intent);
     }
 }

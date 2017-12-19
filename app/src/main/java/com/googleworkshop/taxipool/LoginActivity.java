@@ -87,6 +87,8 @@ public class LoginActivity extends AppCompatActivity {
                 // App code
             }
         });
+
+
         if (currentUser != null)
             loggedIn(currentUser);
 
