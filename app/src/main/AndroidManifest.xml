@@ -34,7 +34,7 @@
         <activity android:name=".ChatActivity" />
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".AutocompleteActivity" />
-
+        <activity android:name=".ProfileActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDx-kOrD9qc4yhbw1oFqPK4wycIXdGM5Xs" />
