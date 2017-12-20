@@ -41,11 +41,13 @@ public class AutocompleteActivity extends AppCompatActivity {
    
    //use current location?
    //country code filter
-        String countryISOCode = "IL";//default
+        String countryISOCode = "IL";//default, for now
+        /*
         TelephonyManager teleMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         if (teleMgr != null){
             countryISOCode = teleMgr.getSimCountryIso();
         }
+        */
 
         AutocompleteFilter countryFilter = new AutocompleteFilter.Builder()
                 .setCountry(countryISOCode)

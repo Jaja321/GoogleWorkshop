@@ -44,8 +44,7 @@ public class PreferencesActivity extends AppCompatActivity {
     public final String HOME_ID = "HOME_ID";
     public final String HOME_SAVED = "HOME_SAVED";
     public final String homePrefs = "UserHomePreferences";
-
-
+    protected static  Spinner timeSpinner;
 
 
     @Override
@@ -71,7 +70,8 @@ public class PreferencesActivity extends AppCompatActivity {
         });
         initializeHome();
 
-        Spinner timeSpinner = (Spinner) findViewById(R.id.time);
+        //Spinner timeSpinner = (Spinner) findViewById(R.id.time);
+        timeSpinner = (Spinner) findViewById(R.id.time);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> tAdapter = ArrayAdapter.createFromResource(this,
                 R.array.relative_time, R.layout.spinner_item);
@@ -159,10 +159,12 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
+
         Intent intent = new Intent(this, MatchScreenActivity.class);
         if (destPlace == null){
             return;
         }
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -192,6 +194,13 @@ public class PreferencesActivity extends AppCompatActivity {
         }
         homePrefEditor.apply();
         Log.d("bla","bla");
+
         startActivity(intent);
     }
+
+    /*
+    public void goToSearchingScreen(View view){
+        Intent intent = new Intent(this, SearchingActivity.class);
+        startActivity(intent);
+    }*/
 }

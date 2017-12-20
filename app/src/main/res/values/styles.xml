@@ -43,5 +43,9 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="progressBar_style">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 
 </resources>
