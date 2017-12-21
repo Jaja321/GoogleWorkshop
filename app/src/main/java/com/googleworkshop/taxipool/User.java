@@ -1,20 +1,23 @@
 package com.googleworkshop.taxipool;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Jerafi on 12/20/2017.
  */
 
-public class User {
+public class User implements Parcelable{
     private String homeId;
     private String profilePicture;
     private String name;
     private String userId;
-    private char gender;
+    private byte gender;
     private int age;
-    private float rating = 5.0f;
     private int numOfRaters = 0;
+    private float rating = 5.0f;
 
-    public User(String userId,String name,char gender,int age,String profilePicture){
+    public User(String userId,String name,byte gender,int age,String profilePicture){
         this.userId = userId;
         this.name = name;
         this.gender = gender;
@@ -22,7 +25,48 @@ public class User {
         this.profilePicture = profilePicture;
     }
 
-    public String getHome_id() {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(homeId);
+        parcel.writeString(profilePicture);
+        parcel.writeString(name);
+        parcel.writeString(userId);
+        parcel.writeByte(gender);
+        parcel.writeInt(age);
+        parcel.writeInt(numOfRaters);
+        parcel.writeFloat(rating);
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>(){
+
+        @Override
+        public User createFromParcel(Parcel parcel) {
+            return new User(parcel);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    private User(Parcel in){
+        this.homeId = in.readString();
+        this.profilePicture = in.readString();
+        this.name = in.readString();
+        this.userId = in.readString();
+        this.gender = in.readByte();
+        this.age = in.readInt();
+        this.numOfRaters = in.readInt();
+        this.rating = in.readFloat();
+    }
+
+    public String getHomeId() {
         return homeId;
     }
 
@@ -38,11 +82,9 @@ public class User {
         return name;
     }
 
-    public String getUserId() {
-        return userId;
-    }
+    public String getUserId() {return name; }
 
-    public char getGender() {
+    public byte getGender() {
         return gender;
     }
 
@@ -65,4 +107,5 @@ public class User {
     public void setNumOfRaters(int numOfRaters) {
         this.numOfRaters = numOfRaters;
     }
+
 }

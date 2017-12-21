@@ -1,6 +1,9 @@
 package com.googleworkshop.taxipool;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.List;
  * Created by Jerafi on 12/20/2017.
  */
 
-public class Group {
+public class Group implements Parcelable {
     private List<Request> requests;
     private List<LatLng> destinations;
     private LatLng meetingPoint;
@@ -29,6 +32,25 @@ public class Group {
         meetingPoint = new LatLng(avgLat/requests.size(),avgLng/requests.size());
     }
 
+    protected Group(Parcel in) {
+        requests = in.createTypedArrayList(Request.CREATOR);
+        destinations = in.createTypedArrayList(LatLng.CREATOR);
+        meetingPoint = in.readParcelable(LatLng.class.getClassLoader());
+        groupId = in.readString();
+    }
+
+    public static final Creator<Group> CREATOR = new Creator<Group>() {
+        @Override
+        public Group createFromParcel(Parcel in) {
+            return new Group(in);
+        }
+
+        @Override
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
+
     public List<Request> getRequests() {
         return requests;
     }
@@ -43,5 +65,18 @@ public class Group {
 
     public String getGroupId() {
         return groupId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeTypedList(requests);
+        parcel.writeTypedList(destinations);
+        parcel.writeParcelable(meetingPoint, i);
+        parcel.writeString(groupId);
     }
 }
