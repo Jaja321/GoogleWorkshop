@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -23,6 +24,7 @@ import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,11 +43,11 @@ public class PreferencesActivity extends AppCompatActivity {
     protected GeoDataClient mGeoDataClient;
     protected Button destButton;
     protected Button originButton;
+    protected EditText passengersEditText;
     public final String HOME_ID = "HOME_ID";
     public final String HOME_SAVED = "HOME_SAVED";
     public final String homePrefs = "UserHomePreferences";
-    protected static  Spinner timeSpinner;
-
+    protected Spinner timeSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class PreferencesActivity extends AppCompatActivity {
         destButton = findViewById(R.id.destination);
         originButton = findViewById(R.id.origin);
 
+        originButton.setText(origin);
+        destButton.setText(dest);
 
         homeCBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -71,7 +75,8 @@ public class PreferencesActivity extends AppCompatActivity {
         initializeHome();
 
         //Spinner timeSpinner = (Spinner) findViewById(R.id.time);
-        timeSpinner = (Spinner) findViewById(R.id.time);
+        //timeSpinner = (Spinner) findViewById(R.id.time);
+        timeSpinner = findViewById(R.id.time);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> tAdapter = ArrayAdapter.createFromResource(this,
                 R.array.relative_time, R.layout.spinner_item);
@@ -80,7 +85,8 @@ public class PreferencesActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         timeSpinner.setAdapter(tAdapter);
 
-        Spinner genderSpinner = (Spinner) findViewById(R.id.gender);
+        //Spinner genderSpinner = (Spinner) findViewById(R.id.gender);
+        Spinner genderSpinner = findViewById(R.id.gender);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> gAdapter = ArrayAdapter.createFromResource(this,
                 R.array.gender, R.layout.spinner_item);
@@ -89,25 +95,28 @@ public class PreferencesActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         genderSpinner.setAdapter(gAdapter);
 
-        if(AutocompleteActivity.place1 != null) {
-            // Get the Intent that started this activity and extract the string
-            Intent intent = getIntent();
-            String message = intent.getStringExtra(AutocompleteActivity.EXTRA_MESSAGE);
+        //passengersEditText = (EditText)findViewById(R.id.number_of_people);
+        passengersEditText = findViewById(R.id.number_of_people);
+
+
+        if(AutocompleteActivity.selectedPlace != null) {//a place has been selected in autocomplete
+            //Intent intent = getIntent();
+            //String selectedPlaceName = intent.getStringExtra(AutocompleteActivity.EXTRA_MESSAGE);
+            String selectedPlaceName = AutocompleteActivity.selectedPlace.getName().toString();
             Button button;
-            // Capture the layout's TextView and set the string as its text
-            if(buttonSearch == 1){
+            if(buttonSearch == 1){//the user clicked on destination before going to autocomplete screen
                 button = destButton;
-                destPlace = AutocompleteActivity.place1;
-                dest = message;
-                originButton.setText(origin);
+                destPlace = AutocompleteActivity.selectedPlace;//update destination
+                dest = selectedPlaceName;//update destination button message
+                //originButton.setText(origin);//so that origin will not go back to showing "your current location"
             }
-            else{
+            else{//the user clicked on origin before going to autocomplete screen
                 button = originButton;
-                originPlace = AutocompleteActivity.place1;
-                origin = message;
+                originPlace = AutocompleteActivity.selectedPlace;
+                origin = selectedPlaceName;
 //                destButton.setText(dest);
             }
-            button.setText(message);
+            button.setText(selectedPlaceName);
         }
         else{//delete?
             destButton.setText(dest);
@@ -147,12 +156,12 @@ public class PreferencesActivity extends AppCompatActivity {
         }
     }
 
-    public void searchDestLocation(View view){
+    public void searchDestLocation(View view){//the user clicks on destination before moving to autocomplete screen
         Intent intent = new Intent(this, AutocompleteActivity.class);
         buttonSearch = 1;
         startActivity(intent);
     }
-    public void searchOriginLocation(View view){
+    public void searchOriginLocation(View view){//the user clicks on origin before moving to autocomplete screen
         Intent intent = new Intent(this, AutocompleteActivity.class);
         buttonSearch = 0;
         startActivity(intent);
@@ -161,7 +170,7 @@ public class PreferencesActivity extends AppCompatActivity {
     public void goToRoute(View view){
 
         Intent intent = new Intent(this, MatchScreenActivity.class);
-        if (destPlace == null){
+        if (destPlace == null){//user has not specified a destination
             return;
         }
 
@@ -198,9 +207,67 @@ public class PreferencesActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*
+
     public void goToSearchingScreen(View view){
         Intent intent = new Intent(this, SearchingActivity.class);
+        intent.putExtra("numOfSeconds",timeSpinner.getSelectedItemPosition());
         startActivity(intent);
-    }*/
+    }
+
+    public static int getNumOfSeconds(int pos){// move to auxiliary class?
+        if(pos == 0) {//"Leave in" selected
+            return 0;
+        }
+        if(pos <= 3 && pos >= 1){//"15 min", "30 min" or "45 min" selected
+            return pos * 15 * 60;
+        }
+        return (pos - 3) * 60 * 60;//"1 hour", "2 hours" or "3 hours" selected
+    }
+
+    public Request createRequest(){
+        LatLng srcLatLng;
+        LatLng destLatLng;
+        if(destPlace != null){//user chose destination in autocomplete
+            destLatLng = destPlace.getLatLng();
+        }
+        else{
+            return null;
+        }
+        if(originPlace != null){//user chose destination in autocomplete
+            srcLatLng = originPlace.getLatLng();
+        }
+        else{//try and get user current location
+            //is this ok?
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+
+                return null;//user has not selected origin in autocomplete and not allowing access to current location
+            }
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        currLocation = location;//is it ok to use currLocation?
+                    }
+                }
+            });
+            if(currLocation == null){
+                return null;//cannot get origin
+            }
+            srcLatLng = new LatLng(currLocation.getLatitude(), currLocation.getLongitude());
+        }
+        int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
+        int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
+        User user = null;//?
+        return new Request(user, srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
+    }
+
 }

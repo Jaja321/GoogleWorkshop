@@ -1,10 +1,8 @@
 package com.googleworkshop.taxipool;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
@@ -14,14 +12,16 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+
+
 /**
  * Created by Gal Ze'evi on 11/28/2017.
  */
 
 public class AutocompleteActivity extends AppCompatActivity {
     private static final String TAG = PreferencesActivity.class.getSimpleName();
-    public static final String EXTRA_MESSAGE = "com.example.galzeevi.google_workshop_preferences.MESSAGE";
-    public static Place place1 = null;
+    //public static final String EXTRA_MESSAGE = "com.example.galzeevi.google_workshop_preferences.MESSAGE";//I think this can be deleted
+    public static Place selectedPlace = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +30,6 @@ public class AutocompleteActivity extends AppCompatActivity {
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-    /*
-    * The following code example shows setting an AutocompleteFilter on a PlaceAutocompleteFragment to
-    * set a filter returning only results with a precise address.
-    */
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
                 .build();
@@ -60,7 +56,7 @@ public class AutocompleteActivity extends AppCompatActivity {
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName());//get place details here
-                place1 = place;
+                selectedPlace = place;
             }
 
             @Override
@@ -72,9 +68,9 @@ public class AutocompleteActivity extends AppCompatActivity {
     }
 
     public void writeLocation(View view){
-        if(place1 != null) {
+        if(selectedPlace != null) {
             Intent intent = new Intent(this, PreferencesActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, place1.getName().toString());
+            //intent.putExtra(EXTRA_MESSAGE, selectedPlace.getName().toString());
             startActivity(intent);
         }
     }
