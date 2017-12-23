@@ -8,16 +8,13 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-/**
- * Created by Jerafi on 12/20/2017.
- */
-
 public class Group implements Parcelable {
     private List<Request> requests;
     private List<LatLng> destinations;
     private LatLng meetingPoint;
     private String groupId;
-    public Group(List<Request> requests,List<LatLng> destinations){
+
+    Group(List<Request> requests,List<LatLng> destinations){
         this.requests = requests;
         this.destinations = destinations;
         // Creating groupID using current time and the first user's ID
@@ -32,7 +29,7 @@ public class Group implements Parcelable {
         meetingPoint = new LatLng(avgLat/requests.size(),avgLng/requests.size());
     }
 
-    protected Group(Parcel in) {
+    private Group(Parcel in) {
         requests = in.createTypedArrayList(Request.CREATOR);
         destinations = in.createTypedArrayList(LatLng.CREATOR);
         meetingPoint = in.readParcelable(LatLng.class.getClassLoader());

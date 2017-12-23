@@ -3,10 +3,6 @@ package com.googleworkshop.taxipool;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Jerafi on 12/20/2017.
- */
-
 public class User implements Parcelable{
     private String homeId;
     private String profilePicture;
@@ -17,7 +13,7 @@ public class User implements Parcelable{
     private int numOfRaters = 0;
     private float rating = 5.0f;
 
-    public User(String userId,String name,byte gender,int age,String profilePicture){
+    User(String userId,String name,byte gender,int age,String profilePicture){
         this.userId = userId;
         this.name = name;
         this.gender = gender;
@@ -82,7 +78,7 @@ public class User implements Parcelable{
         return name;
     }
 
-    public String getUserId() {return name; }
+    String getUserId() {return name; }
 
     public byte getGender() {
         return gender;

@@ -5,10 +5,6 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/**
- * Created by Jerafi on 12/20/2017.
- */
-
 public class Request implements Parcelable{
     private User requester;
     private LatLng src;
@@ -17,7 +13,7 @@ public class Request implements Parcelable{
     private int numOfPassengers;
     private String groupId=null;
 
-    public Request(User requester,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
+    Request(User requester,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
         this.requester = requester;
         this.src = src;
         this.dest = dest;
@@ -25,15 +21,15 @@ public class Request implements Parcelable{
         this.numOfPassengers = numOfPassengers;
     }
 
-    public User getRequester() {
+    User getRequester() {
         return requester;
     }
 
-    public LatLng getSrc() {
+    LatLng getSrc() {
         return src;
     }
 
-    public LatLng getDest() {
+    LatLng getDest() {
         return dest;
     }
 
@@ -78,7 +74,7 @@ public class Request implements Parcelable{
         this.groupId = in.readString();
     }
 
-    public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>(){
+    static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>(){
 
         @Override
         public Request createFromParcel(Parcel parcel) {
