@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,12 +32,12 @@ import com.google.android.gms.tasks.Task;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static int buttonSearch = 0;
-    public static String dest = "Destination";
-    public static Place destPlace = null;
-    public static String origin = "Your current location";
-    public static Place originPlace = null;
+    private String dest = "Destination";
+    private Place destPlace = null;
+    private String origin = "Your current location";
+    private Place originPlace = null;
     protected FusedLocationProviderClient mFusedLocationClient;
-    protected static Location currLocation;
+    private LatLng currLocation;
     protected SharedPreferences homeSettings;
     protected SharedPreferences.Editor homePrefEditor;
     protected CheckBox homeCBox;
@@ -48,6 +49,8 @@ public class PreferencesActivity extends AppCompatActivity {
     public final String HOME_SAVED = "HOME_SAVED";
     public final String homePrefs = "UserHomePreferences";
     protected Spinner timeSpinner;
+    private final int ACCESS_FINE_LOCATION_CODE = 17;
+    private User user = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,11 @@ public class PreferencesActivity extends AppCompatActivity {
         homePrefEditor = homeSettings.edit();
         destButton = findViewById(R.id.destination);
         originButton = findViewById(R.id.origin);
+
+        // TODO find a better way to get user..
+        if (user == null){
+            user = getIntent().getParcelableExtra("User");
+        }
 
         originButton.setText(origin);
         destButton.setText(dest);
@@ -98,7 +106,20 @@ public class PreferencesActivity extends AppCompatActivity {
         //passengersEditText = (EditText)findViewById(R.id.number_of_people);
         passengersEditText = findViewById(R.id.number_of_people);
 
+        if (destPlace==null){
+            homeCBox.setClickable(false);
+        }
+        else{
+            homeCBox.setClickable(true);
+            homeCBox.setChecked(homeSettings.getBoolean(HOME_SAVED,false));
+            destButton.setText(destPlace.getName());
+        }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if(AutocompleteActivity.selectedPlace != null) {//a place has been selected in autocomplete
             //Intent intent = getIntent();
             //String selectedPlaceName = intent.getStringExtra(AutocompleteActivity.EXTRA_MESSAGE);
@@ -108,6 +129,8 @@ public class PreferencesActivity extends AppCompatActivity {
                 button = destButton;
                 destPlace = AutocompleteActivity.selectedPlace;//update destination
                 dest = selectedPlaceName;//update destination button message
+                homeCBox.setChecked(false);
+                homeCBox.setClickable(true);
                 //originButton.setText(origin);//so that origin will not go back to showing "your current location"
             }
             else{//the user clicked on origin before going to autocomplete screen
@@ -122,14 +145,9 @@ public class PreferencesActivity extends AppCompatActivity {
             destButton.setText(dest);
             originButton.setText(origin);
         }
-        if (destPlace==null){
-            homeCBox.setClickable(false);
-        }
-        else{
-            homeCBox.setClickable(true);
-            homeCBox.setChecked(homeSettings.getBoolean(HOME_SAVED,false));
-            destButton.setText(destPlace.getName());
-        }
+
+
+
 
     }
 
@@ -159,62 +177,38 @@ public class PreferencesActivity extends AppCompatActivity {
     public void searchDestLocation(View view){//the user clicks on destination before moving to autocomplete screen
         Intent intent = new Intent(this, AutocompleteActivity.class);
         buttonSearch = 1;
-        startActivity(intent);
+        startActivityForResult(intent,buttonSearch);
     }
     public void searchOriginLocation(View view){//the user clicks on origin before moving to autocomplete screen
         Intent intent = new Intent(this, AutocompleteActivity.class);
         buttonSearch = 0;
-        startActivity(intent);
+        startActivityForResult(intent,buttonSearch);
     }
 
     public void goToRoute(View view){
 
-        Intent intent = new Intent(this, MatchScreenActivity.class);
-        if (destPlace == null){//user has not specified a destination
+        Intent intent = new Intent(this, MockServerCommunicationActivity.class);
+        Request request = createRequest();
+        if (request == null){ // could not set dest or src
             return;
         }
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    // Logic to handle location object
-                    currLocation = location;
-                }
-            }
-        });
         if (homeCBox.isChecked()) {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
-            homePrefEditor.putBoolean(HOME_SAVED,true);
+            homePrefEditor.apply();
         }
-        else{
-            homePrefEditor.putBoolean(HOME_SAVED,false);
-        }
-        homePrefEditor.apply();
-        Log.d("bla","bla");
-
+        intent.putExtra("Request",request);
         startActivity(intent);
     }
 
 
     public void goToSearchingScreen(View view){
         Intent intent = new Intent(this, SearchingActivity.class);
+        //TODO delete because already included in request?
         intent.putExtra("numOfSeconds",timeSpinner.getSelectedItemPosition());
         startActivity(intent);
     }
 
-    public static int getNumOfSeconds(int pos){// move to auxiliary class?
+    private static int getNumOfSeconds(int pos){// move to auxiliary class?
         if(pos == 0) {//"Leave in" selected
             return 0;
         }
@@ -224,50 +218,82 @@ public class PreferencesActivity extends AppCompatActivity {
         return (pos - 3) * 60 * 60;//"1 hour", "2 hours" or "3 hours" selected
     }
 
-    public Request createRequest(){
+    @Nullable
+    private Request createRequest(){
         LatLng srcLatLng;
         LatLng destLatLng;
-        if(destPlace != null){//user chose destination in autocomplete
+        if(destPlace != null){//user chose destination in autocomplete or previously saved one
             destLatLng = destPlace.getLatLng();
         }
         else{
             return null;
         }
-        if(originPlace != null){//user chose destination in autocomplete
+        if(originPlace != null){//user chose origin in autocomplete
             srcLatLng = originPlace.getLatLng();
         }
         else{//try and get user current location
-            //is this ok?
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-
-                return null;//user has not selected origin in autocomplete and not allowing access to current location
-            }
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        currLocation = location;//is it ok to use currLocation?
-                    }
-                }
-            });
+            getUserLocation();
             if(currLocation == null){
                 return null;//cannot get origin
             }
-            srcLatLng = new LatLng(currLocation.getLatitude(), currLocation.getLongitude());
+            srcLatLng = currLocation;
         }
+        // TODO how does this int help us?
         int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
+        // TODO use edittext.getselected?
         int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
-        User user = null;//?
         return new Request(user, srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
+    }
+
+    private void getUserLocation(){
+        //is this ok?
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            getPermissions();
+            return;//user has not selected origin in autocomplete and not allowing access to current location
+        }
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    currLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                }
+            }
+        });
+
+    }
+
+    public void getPermissions(){
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},ACCESS_FINE_LOCATION_CODE);
+    }
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Log.i("I am here","This is good..");
+        switch (requestCode) {
+            case ACCESS_FINE_LOCATION_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 }

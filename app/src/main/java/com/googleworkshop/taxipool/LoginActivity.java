@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         User appUser = new User("MyMockUser","Ran Nachmany",(byte)1,31,"MyProfilePicture.png");
         Intent intent = new Intent(this,PreferencesActivity.class);
         intent.putExtra("User",appUser);
+        intent.putExtra("FirstRun",true);
 
         startActivity(intent);
         finish();

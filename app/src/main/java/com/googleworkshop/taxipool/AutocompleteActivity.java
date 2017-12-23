@@ -69,9 +69,10 @@ public class AutocompleteActivity extends AppCompatActivity {
 
     public void writeLocation(View view){
         if(selectedPlace != null) {
-            Intent intent = new Intent(this, PreferencesActivity.class);
+//            Intent intent = new Intent(this, PreferencesActivity.class);
             //intent.putExtra(EXTRA_MESSAGE, selectedPlace.getName().toString());
-            startActivity(intent);
+//            startActivity(intent);
+            finish();
         }
     }
 
