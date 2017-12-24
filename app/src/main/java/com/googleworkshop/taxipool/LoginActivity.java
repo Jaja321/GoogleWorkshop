@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
         setContentView(R.layout.activity_login);
-        LoginButton fbloginButton = (LoginButton) findViewById(R.id.fb_login_button);
+        LoginButton fbloginButton = findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 
         // Add listener to google sign in button
@@ -98,7 +98,14 @@ public class LoginActivity extends AppCompatActivity {
     private void loggedIn(FirebaseUser user) {
         Log.d("LoggedIn","I am here now");
         Toast.makeText(getApplicationContext(), "Welcome, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, PreferencesActivity.class));
+
+        //TODO extract real User instead of mock user:
+        User appUser = new User("MyMockUser","Ran Nachmany",(byte)1,31,"MyProfilePicture.png");
+        Intent intent = new Intent(this,PreferencesActivity.class);
+        intent.putExtra("User",appUser);
+        intent.putExtra("FirstRun",true);
+
+        startActivity(intent);
         finish();
     }
 

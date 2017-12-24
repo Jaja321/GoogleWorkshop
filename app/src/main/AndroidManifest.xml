@@ -35,6 +35,7 @@
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".AutocompleteActivity" />
         <activity android:name=".ProfileActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDx-kOrD9qc4yhbw1oFqPK4wycIXdGM5Xs" />
@@ -42,9 +43,6 @@
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" /> -->
 
-        <activity
-            android:name=".RouteOverviewActivity"
-            android:label="@string/title_activity_showuseractivity" />
         <activity android:name=".MatchScreenActivity" />
 
         <meta-data
@@ -55,7 +53,8 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".SearchingActivity"></activity>
+        <activity android:name=".SearchingActivity" />
+        <activity android:name=".MockServerCommunicationActivity"></activity>
     </application>
 
 </manifest>
