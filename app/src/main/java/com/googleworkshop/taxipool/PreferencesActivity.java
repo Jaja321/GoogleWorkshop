@@ -242,7 +242,7 @@ public class PreferencesActivity extends AppCompatActivity {
         int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         // TODO use edittext.getselected?
         int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
-        return new Request(user, srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
+        return new Request(user.getUserId(), srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
     }
 
     private void getUserLocation(){

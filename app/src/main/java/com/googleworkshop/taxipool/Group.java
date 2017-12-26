@@ -18,13 +18,13 @@ public class Group implements Parcelable {
         this.requests = requests;
         this.destinations = destinations;
         // Creating groupID using current time and the first user's ID
-        groupId = String.valueOf(System.currentTimeMillis()) + requests.get(0).getRequester().getUserId();
+        groupId = String.valueOf(System.currentTimeMillis()) + requests.get(0).getRequesterId();
         // Creating the group meeting point
         double avgLat = 0d;
         double avgLng = 0d;
         for (Request r: requests){
-            avgLat += r.getSrc().latitude;
-            avgLng += r.getSrc().longitude;
+            avgLat += r.srcLatLng().latitude;
+            avgLng += r.srcLatLng().longitude;
         }
         meetingPoint = new LatLng(avgLat/requests.size(),avgLng/requests.size());
     }

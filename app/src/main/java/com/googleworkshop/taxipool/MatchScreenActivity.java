@@ -36,9 +36,12 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         builder.include(group.getMeetingPoint());
         float i = 30.0f;
         for (Request r : group.getRequests()){
-            mMap.addMarker(new MarkerOptions().position(r.getDest()).title(r.getRequester().getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(i)));
+            //TODO: fix.
+            /*
+            mMap.addMarker(new MarkerOptions().position(r.getDestLatLng()).title(r.getRequester().getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(i)));
             i += 30.0f;
-            builder.include(r.getDest());
+            builder.include(r.getDestLatLng());
+            */
         }
 //        LatLng userDest = PreferencesActivity.destPlace.getLatLng();
 //        mMap.addMarker(new MarkerOptions().position(userOrigin).title("User Origin").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));

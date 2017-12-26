@@ -12,12 +12,13 @@ import java.util.List;
 
 public class MockServerCommunicationActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         Request request = intent.getParcelableExtra("Request");
-
+        /*
         // Creating Mocks
         User MOCKUser1 = new User("MOCK1","Alice Alison",(byte)0,30,null);
         User MOCKUser2 = new User("MOCK2","Bob Bobson",(byte)1,25,null);
@@ -34,5 +35,6 @@ public class MockServerCommunicationActivity extends AppCompatActivity {
         Intent next = new Intent(this,MatchScreenActivity.class);
         next.putExtra("Group",group);
         startActivity(next);
+        */
     }
 }
