@@ -186,26 +186,17 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
-        Log.d("debugtag","start of gotoRoute");
         Intent intent = new Intent(this, SearchingActivity.class);
-        Log.d("debugtag","before createRequest");
         Request request = createRequest();
-        Log.d("debugtag","after createRequest");
         if (request == null){ // could not set dest or src
-            Log.d("debugtag","request == null");
             return;
         }
-        /*
         if (homeCBox.isChecked()) {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
             homePrefEditor.apply();
         }
-        */
-        Log.d("debugtag","before adding request");
         String requestId=ServerUtils.addRequest(request);
-
         intent.putExtra("requestId",requestId);
-        Log.d("debugtag","end of gotoRoute");
         startActivity(intent);
     }
 
