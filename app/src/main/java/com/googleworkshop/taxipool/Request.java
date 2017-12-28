@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Request implements Parcelable{
     private String requesterId;
+    private String requesterName;
     private String src;
     private String dest;
     private int timePrefs;
@@ -14,17 +15,19 @@ public class Request implements Parcelable{
     private String groupId;
     public Request(){}
 
-    Request(String requesterId,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
+    Request(String requesterId,String requesterName,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
         this.requesterId = requesterId;
-        this.src = src.toString();
-        this.dest = dest.toString();
+        this.requesterName=requesterName;
+        this.src = latlngToStr(src);
+        this.dest = latlngToStr(dest);
         this.timePrefs = timePrefs;
         this.numOfPassengers = numOfPassengers;
         groupId=null;
     }
 
-    Request(String requesterId,String src,String dest,int timePrefs,int numOfPassengers, String groupId){
+    Request(String requesterId,String requesterName, String src,String dest,int timePrefs,int numOfPassengers, String groupId){
         this.requesterId = requesterId;
+        this.requesterName=requesterName;
         this.src = src;
         this.dest = dest;
         this.timePrefs = timePrefs;
@@ -33,21 +36,19 @@ public class Request implements Parcelable{
     }
 
     public LatLng srcLatLng(){
-        return strToLatlng(src);
+        return ServerUtils.strToLatlng(src);
     }
     public LatLng destLatLng(){
-        return strToLatlng(dest);
+        return ServerUtils.strToLatlng(dest);
     }
-    private static LatLng strToLatlng(String str){
-        String[] latlong =  str.split(",");
-        double latitude = Double.parseDouble(latlong[0]);
-        double longitude = Double.parseDouble(latlong[1]);
-        return new LatLng(latitude,longitude);
-    }
+
     String getRequesterId() {
         return requesterId;
     }
 
+    public String getRequesterName() {
+        return requesterName;
+    }
     public String getSrc() { return src;
     }
 
@@ -106,4 +107,8 @@ public class Request implements Parcelable{
             return new Request[size];
         }
     };
+
+    private String latlngToStr(LatLng latLng){
+        return latLng.latitude+","+ latLng.longitude;
+    }
 }

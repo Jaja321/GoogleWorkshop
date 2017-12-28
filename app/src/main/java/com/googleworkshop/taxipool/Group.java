@@ -14,6 +14,8 @@ public class Group implements Parcelable {
     private LatLng meetingPoint;
     private String groupId;
 
+
+
     Group(List<Request> requests,List<LatLng> destinations){
         this.requests = requests;
         this.destinations = destinations;

@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
         Log.d("userId", "id: "+user.getUserId());
         LatLng l=new LatLng(0,1);
-        Request request=new Request(user.getUserId(), l,l,0,0);
+        Request request=new Request(user.getUserId(),user.getName(), l,l,0,0);
         ServerUtils.addRequest(request);
     /*
         DatabaseReference userRef = database.child("users").child(userID); //get a reference to the user in the database

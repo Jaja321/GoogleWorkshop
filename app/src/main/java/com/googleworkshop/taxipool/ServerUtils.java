@@ -2,6 +2,7 @@ package com.googleworkshop.taxipool;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,9 +27,18 @@ public class ServerUtils {
         return user;
     }
 
-    public static void addRequest(Request request){
-        database.child("requests").push().setValue(request);
-        Log.d("hello","this is after pushing");
+    public static String addRequest(Request request){
+        DatabaseReference requestsRef=database.child("requests");
+        String requestId= requestsRef.push().getKey();
+        requestsRef.child(requestId).setValue(request);
+        return requestId;
+    }
+
+    public static LatLng strToLatlng(String str){
+        String[] latlong =  str.split(",");
+        double latitude = Double.parseDouble(latlong[0]);
+        double longitude = Double.parseDouble(latlong[1]);
+        return new LatLng(latitude,longitude);
     }
 
 

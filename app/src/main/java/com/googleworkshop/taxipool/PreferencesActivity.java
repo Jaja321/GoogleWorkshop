@@ -186,17 +186,26 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
-
-        Intent intent = new Intent(this, MockServerCommunicationActivity.class);
+        Log.d("debugtag","start of gotoRoute");
+        Intent intent = new Intent(this, SearchingActivity.class);
+        Log.d("debugtag","before createRequest");
         Request request = createRequest();
+        Log.d("debugtag","after createRequest");
         if (request == null){ // could not set dest or src
+            Log.d("debugtag","request == null");
             return;
         }
+        /*
         if (homeCBox.isChecked()) {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
             homePrefEditor.apply();
         }
-        intent.putExtra("Request",request);
+        */
+        Log.d("debugtag","before adding request");
+        String requestId=ServerUtils.addRequest(request);
+
+        intent.putExtra("requestId",requestId);
+        Log.d("debugtag","end of gotoRoute");
         startActivity(intent);
     }
 
@@ -242,7 +251,7 @@ public class PreferencesActivity extends AppCompatActivity {
         int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         // TODO use edittext.getselected?
         int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
-        return new Request(user.getUserId(), srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
+        return new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
     }
 
     private void getUserLocation(){
