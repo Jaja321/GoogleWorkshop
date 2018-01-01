@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -68,7 +69,8 @@ public class LoginActivity extends AppCompatActivity {
         fbloginButton.setReadPermissions("email", "public_profile");
 
         // Add listener to google sign in button
-        SignInButton googleSignIn = findViewById(R.id.sign_in_button);
+        //Jerafi changed SigninButton to Imagebutton
+        ImageButton googleSignIn = findViewById(R.id.sign_in_button);
         googleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
