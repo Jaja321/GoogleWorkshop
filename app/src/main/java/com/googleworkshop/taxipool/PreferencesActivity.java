@@ -116,15 +116,15 @@ public class PreferencesActivity extends AppCompatActivity {
 //        genderSpinner.setAdapter(gAdapter);
 //        genderSpinner.setSelection(0);
 //
-//        passengersSpinner  = findViewById(R.id.num_of_passengers);
-//        // Create an ArrayAdapter using the string array and a default spinner layout
-//        ArrayAdapter<CharSequence> pAdapter = ArrayAdapter.createFromResource(this,
-//                R.array.num_of_passengers, R.layout.spinner_item);
-//        // Specify the layout to use when the list of choices appears
-//        pAdapter.setDropDownViewResource(R.layout.spinner_item);
-//        // Apply the adapter to the spinner
-//        passengersSpinner.setAdapter(pAdapter);
-//        passengersSpinner.setSelection(0);
+        passengersSpinner  = findViewById(R.id.num_of_passengers);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> pAdapter = ArrayAdapter.createFromResource(this,
+                R.array.num_of_passengers, R.layout.spinner_item);
+        // Specify the layout to use when the list of choices appears
+        pAdapter.setDropDownViewResource(R.layout.spinner_item);
+        // Apply the adapter to the spinner
+        passengersSpinner.setAdapter(pAdapter);
+        passengersSpinner.setSelection(0);
 
         //passengersEditText = (EditText)findViewById(R.id.number_of_people);
         //XXX CHANGED TO SPINNER
