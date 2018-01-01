@@ -28,8 +28,14 @@
         <item>22:00</item>
         <item>23:00</item>
     </string-array>
+    <string-array name="num_of_passengers">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
     <string-array name="relative_time">
-        <item>Leave in</item>
+        <!--<item>Leave in</item>-->
         <item>15 min</item>
         <item>30 min</item>
         <item>45 min</item>
@@ -38,7 +44,7 @@
         <item>3 hours</item>
     </string-array>
     <string-array name="gender">
-        <item>Gender</item>
+        <!--<item>Gender</item>-->
         <item>N/A</item>
         <item>M</item>
         <item>F</item>

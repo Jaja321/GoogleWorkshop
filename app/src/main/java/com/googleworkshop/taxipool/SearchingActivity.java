@@ -19,8 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class SearchingActivity extends AppCompatActivity {
     protected static final String FORMAT = "%02d:%02d";
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
-    //protected int numOfSeconds = getIntent().getIntExtra("numOfSeconds", 0);//for now, should come from
-    protected int numOfSeconds = 1000;// TODO: change
+    protected int numOfSeconds;
     private DatabaseReference database;
     private String requestId;
     Intent nextIntent;
@@ -34,6 +33,9 @@ public class SearchingActivity extends AppCompatActivity {
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);
+        //TODO CHANGE DEFAULT
+        numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
+
 
         new CountDownTimer(numOfSeconds*1000, 1000) {
 

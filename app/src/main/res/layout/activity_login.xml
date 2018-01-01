@@ -22,8 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="80dp" />
+        <!--Commented out because it is available only from SDK 26-->
+        <!--android:layout_marginHorizontal="10dp"-->
 
         <TextView
             android:id="@+id/or"
@@ -41,17 +42,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textSize="17dp"
+            android:textSize="17sp"
             android:layout_marginTop="30dp"
-            android:layout_marginHorizontal="15dp"
             android:layout_marginBottom="30dp" />
-
-        <Button
-            android:id="@+id/short_cut_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="next"
-            android:text="UGLY SHORTCUT" />
+        <!--android:layout_marginHorizontal="15dp"-->
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -1,15 +1,21 @@
 package com.googleworkshop.taxipool;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -49,8 +55,11 @@ public class PreferencesActivity extends AppCompatActivity {
     public final String HOME_SAVED = "HOME_SAVED";
     public final String homePrefs = "UserHomePreferences";
     protected Spinner timeSpinner;
+    protected Spinner passengersSpinner;
     private final int ACCESS_FINE_LOCATION_CODE = 17;
+    private final int LOCATION_SETTINGS_CODE = 123;
     private User user = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,19 +101,34 @@ public class PreferencesActivity extends AppCompatActivity {
         tAdapter.setDropDownViewResource(R.layout.spinner_item);
         // Apply the adapter to the spinner
         timeSpinner.setAdapter(tAdapter);
+        timeSpinner.setSelection(0);
 
-        //Spinner genderSpinner = (Spinner) findViewById(R.id.gender);
-        Spinner genderSpinner = findViewById(R.id.gender);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> gAdapter = ArrayAdapter.createFromResource(this,
-                R.array.gender, R.layout.spinner_item);
-        // Specify the layout to use when the list of choices appears
-        gAdapter.setDropDownViewResource(R.layout.spinner_item);
-        // Apply the adapter to the spinner
-        genderSpinner.setAdapter(gAdapter);
+        //Jerafi commented out the gender spinner
+
+//        //Spinner genderSpinner = (Spinner) findViewById(R.id.gender);
+//        Spinner genderSpinner = findViewById(R.id.gender);
+//        // Create an ArrayAdapter using the string array and a default spinner layout
+//        ArrayAdapter<CharSequence> gAdapter = ArrayAdapter.createFromResource(this,
+//                R.array.gender, R.layout.spinner_item);
+//        // Specify the layout to use when the list of choices appears
+//        gAdapter.setDropDownViewResource(R.layout.spinner_item);
+//        // Apply the adapter to the spinner
+//        genderSpinner.setAdapter(gAdapter);
+//        genderSpinner.setSelection(0);
+//
+//        passengersSpinner  = findViewById(R.id.num_of_passengers);
+//        // Create an ArrayAdapter using the string array and a default spinner layout
+//        ArrayAdapter<CharSequence> pAdapter = ArrayAdapter.createFromResource(this,
+//                R.array.num_of_passengers, R.layout.spinner_item);
+//        // Specify the layout to use when the list of choices appears
+//        pAdapter.setDropDownViewResource(R.layout.spinner_item);
+//        // Apply the adapter to the spinner
+//        passengersSpinner.setAdapter(pAdapter);
+//        passengersSpinner.setSelection(0);
 
         //passengersEditText = (EditText)findViewById(R.id.number_of_people);
-        passengersEditText = findViewById(R.id.number_of_people);
+        //XXX CHANGED TO SPINNER
+//        passengersEditText = findViewById(R.id.number_of_people);
 
         if (destPlace==null){
             homeCBox.setClickable(false);
@@ -120,6 +144,9 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
+            return;
+        }
         if(AutocompleteActivity.selectedPlace != null) {//a place has been selected in autocomplete
             //Intent intent = getIntent();
             //String selectedPlaceName = intent.getStringExtra(AutocompleteActivity.EXTRA_MESSAGE);
@@ -204,7 +231,7 @@ public class PreferencesActivity extends AppCompatActivity {
     public void goToSearchingScreen(View view){
         Intent intent = new Intent(this, SearchingActivity.class);
         //TODO delete because already included in request?
-        intent.putExtra("numOfSeconds",timeSpinner.getSelectedItemPosition());
+        intent.putExtra("numOfSeconds",getNumOfSeconds(timeSpinner.getSelectedItemPosition()));
         startActivity(intent);
     }
 
@@ -241,33 +268,60 @@ public class PreferencesActivity extends AppCompatActivity {
         // TODO how does this int help us?
         int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         // TODO use edittext.getselected?
-        int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
+        //XXX CHANGED TO SPINNER
+//        int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
+        int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
         return new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
     }
 
     private void getUserLocation(){
-        //is this ok?
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            getPermissions();
-            return;//user has not selected origin in autocomplete and not allowing access to current location
-        }
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                // Got last known location. In some rare situations this can be null.
-                if (location != null) {
-                    // Logic to handle location object
-                    currLocation = new LatLng(location.getLatitude(),location.getLongitude());
-                }
+        if (isLocationEnabled(this)){
+            //is this ok?
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                getPermissions();
+                return;//user has not selected origin in autocomplete and not allowing access to current location
             }
-        });
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        currLocation = new LatLng(location.getLatitude(),location.getLongitude());
+                    }
+                }
+            });
+            return;
+        }
+        else{
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("GPS signal is disabled :(");
+            dialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    PreferencesActivity.this.startActivityForResult(myIntent,LOCATION_SETTINGS_CODE);
+                    //get gps
+                }
+            });
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    currLocation = null;
+                }
+            });
+            dialog.show();
+            return;
+        }
 
     }
 
@@ -295,5 +349,29 @@ public class PreferencesActivity extends AppCompatActivity {
             // permissions this app might request
         }
     }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+
+
+    }
+
 
 }
