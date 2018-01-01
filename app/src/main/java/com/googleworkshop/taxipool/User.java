@@ -8,17 +8,39 @@ public class User implements Parcelable{
     private String profilePicture;
     private String name;
     private String userId;
-    private byte gender;
+    private boolean gender;
     private int age;
-    private int numOfRaters = 0;
-    private float rating = 5.0f;
+    private int numOfRaters;
+    private double rating;
 
-    User(String userId,String name,byte gender,int age,String profilePicture){
+    User(){
+
+    }
+
+    User(String userId,String name,String profilePicture){
         this.userId = userId;
         this.name = name;
         this.gender = gender;
         this.age = age;
         this.profilePicture = profilePicture;
+        this.rating=0;
+        this.numOfRaters=0;
+        this.homeId=null;
+        this.gender=false;
+        this.age=0;
+    }
+
+    User(String userId,String name,String profilePicture, boolean gender, int age, int rating, int numOfRaters, String homeId){
+        this.userId = userId;
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.profilePicture = profilePicture;
+        this.rating=rating;
+        this.numOfRaters=numOfRaters;
+        this.homeId=homeId;
+        this.gender=gender;
+        this.age=age;
     }
 
     @Override
@@ -32,10 +54,10 @@ public class User implements Parcelable{
         parcel.writeString(profilePicture);
         parcel.writeString(name);
         parcel.writeString(userId);
-        parcel.writeByte(gender);
+        parcel.writeByte((byte) (gender ? 1 : 0));
         parcel.writeInt(age);
         parcel.writeInt(numOfRaters);
-        parcel.writeFloat(rating);
+        parcel.writeDouble(rating);
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>(){
@@ -56,7 +78,7 @@ public class User implements Parcelable{
         this.profilePicture = in.readString();
         this.name = in.readString();
         this.userId = in.readString();
-        this.gender = in.readByte();
+        this.gender = in.readByte() != 0;
         this.age = in.readInt();
         this.numOfRaters = in.readInt();
         this.rating = in.readFloat();
@@ -78,9 +100,9 @@ public class User implements Parcelable{
         return name;
     }
 
-    String getUserId() {return name; }
+    String getUserId() {return userId; }
 
-    public byte getGender() {
+    public boolean getGender() {
         return gender;
     }
 
@@ -88,11 +110,11 @@ public class User implements Parcelable{
         return age;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -102,6 +124,25 @@ public class User implements Parcelable{
 
     public void setNumOfRaters(int numOfRaters) {
         this.numOfRaters = numOfRaters;
+    }
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
 }

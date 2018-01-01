@@ -32,6 +32,11 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -42,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     CallbackManager callbackManager;
     public static final String EXTRA_USER = "com.googleworkshop.taxipool.USER";
+    private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +101,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void loggedIn(FirebaseUser user) {
+    private void loggedIn(final FirebaseUser firebaseUser) {
         Log.d("LoggedIn","I am here now");
-        Toast.makeText(getApplicationContext(), "Welcome, " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Welcome, " + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
+        DatabaseReference userReference=database.child("users").child(firebaseUser.getUid());
 
-        //TODO extract real User instead of mock user:
-        User appUser = new User("MyMockUser","Ran Nachmany",(byte)1,31,"MyProfilePicture.png");
+        userReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){ //User already exist
+                    Log.d("User already exists","I am here now");
+                    User user=dataSnapshot.getValue(User.class);
+                    gotoPreferences(user);
+                }else{
+                    Log.d("User doesn't exist","I am here now");
+                    User user=ServerUtils.createNewUser(firebaseUser);
+                    gotoPreferences(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.d("onCancelled","I am here now");
+            }
+        });
+    }
+
+    private void gotoPreferences(User user){
         Intent intent = new Intent(this,PreferencesActivity.class);
-        intent.putExtra("User",appUser);
+        intent.putExtra("User",user);
         intent.putExtra("FirstRun",true);
 
         startActivity(intent);

@@ -186,8 +186,7 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
-
-        Intent intent = new Intent(this, MockServerCommunicationActivity.class);
+        Intent intent = new Intent(this, SearchingActivity.class);
         Request request = createRequest();
         if (request == null){ // could not set dest or src
             return;
@@ -196,7 +195,8 @@ public class PreferencesActivity extends AppCompatActivity {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
             homePrefEditor.apply();
         }
-        intent.putExtra("Request",request);
+        String requestId=ServerUtils.addRequest(request);
+        intent.putExtra("requestId",requestId);
         startActivity(intent);
     }
 
@@ -242,7 +242,7 @@ public class PreferencesActivity extends AppCompatActivity {
         int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         // TODO use edittext.getselected?
         int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
-        return new Request(user, srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
+        return new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds,nOfPassengers);
     }
 
     private void getUserLocation(){

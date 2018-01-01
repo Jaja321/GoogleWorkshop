@@ -60,6 +60,8 @@ public class ChatActivity extends AppCompatActivity {
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
+    private String groupId;
+    private String userId;
 
 
     private String mUsername;
@@ -78,8 +80,11 @@ public class ChatActivity extends AppCompatActivity {
         else
             mUsername = ANONYMOUS;
 
+        groupId=getIntent().getStringExtra("groupId");
+        userId=currentUser.getUid();
+
         mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mMessagesDatabaseReference=mFirebaseDatabase.getReference().child("messages");
+        mMessagesDatabaseReference=mFirebaseDatabase.getReference().child("messages").child(groupId);
 
         // Initialize references to views
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -121,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Send messages on click
-                ChatMessage chatMessage = new ChatMessage(mMessageEditText.getText().toString(), mUsername, null);
+                ChatMessage chatMessage = new ChatMessage(mMessageEditText.getText().toString(), mUsername, userId, currentUser.getPhotoUrl().toString());
                 mMessagesDatabaseReference.push().setValue(chatMessage);
                 // Clear input box
                 mMessageEditText.setText("");

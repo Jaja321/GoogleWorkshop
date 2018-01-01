@@ -6,30 +6,53 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Request implements Parcelable{
-    private User requester;
-    private LatLng src;
-    private LatLng dest;
+    private String requesterId;
+    private String requesterName;
+    private String src;
+    private String dest;
     private int timePrefs;
     private int numOfPassengers;
-    private String groupId=null;
+    private String groupId;
+    public Request(){}
 
-    Request(User requester,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
-        this.requester = requester;
+    Request(String requesterId,String requesterName,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
+        this.requesterId = requesterId;
+        this.requesterName=requesterName;
+        this.src = latlngToStr(src);
+        this.dest = latlngToStr(dest);
+        this.timePrefs = timePrefs;
+        this.numOfPassengers = numOfPassengers;
+        groupId=null;
+    }
+
+    Request(String requesterId,String requesterName, String src,String dest,int timePrefs,int numOfPassengers, String groupId){
+        this.requesterId = requesterId;
+        this.requesterName=requesterName;
         this.src = src;
         this.dest = dest;
         this.timePrefs = timePrefs;
         this.numOfPassengers = numOfPassengers;
+        this.groupId=groupId;
     }
 
-    User getRequester() {
-        return requester;
+    public LatLng srcLatLng(){
+        return ServerUtils.strToLatlng(src);
+    }
+    public LatLng destLatLng(){
+        return ServerUtils.strToLatlng(dest);
     }
 
-    LatLng getSrc() {
-        return src;
+    String getRequesterId() {
+        return requesterId;
     }
 
-    LatLng getDest() {
+    public String getRequesterName() {
+        return requesterName;
+    }
+    public String getSrc() { return src;
+    }
+
+    public String getDest() {
         return dest;
     }
 
@@ -56,19 +79,17 @@ public class Request implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(requester,i);
-        parcel.writeDouble(src.latitude);
-        parcel.writeDouble(src.longitude);
-        parcel.writeDouble(dest.latitude);
-        parcel.writeDouble(dest.longitude);
+        parcel.writeString(requesterId);
+        parcel.writeString(src);
+        parcel.writeString(dest);
         parcel.writeInt(timePrefs);
         parcel.writeInt(numOfPassengers);
         parcel.writeString(groupId);
     }
     private Request(Parcel in){
-        this.requester = in.readParcelable(User.class.getClassLoader());
-        this.src = new LatLng(in.readDouble(),in.readDouble());
-        this.dest = new LatLng(in.readDouble(),in.readDouble());
+        this.requesterId = in.readString();
+        this.src = in.readString();
+        this.dest = in.readString();
         this.timePrefs = in.readInt();
         this.numOfPassengers = in.readInt();
         this.groupId = in.readString();
@@ -86,4 +107,8 @@ public class Request implements Parcelable{
             return new Request[size];
         }
     };
+
+    private String latlngToStr(LatLng latLng){
+        return latLng.latitude+","+ latLng.longitude;
+    }
 }

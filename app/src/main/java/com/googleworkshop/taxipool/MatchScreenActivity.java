@@ -14,54 +14,97 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MatchScreenActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private Group group;
+    private LatLng meetingPoint;
+    private String groupId;
+    private DatabaseReference database;
+    LatLngBounds.Builder builder;
+    private float hue=30f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_screen);
+        database = FirebaseDatabase.getInstance().getReference();
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
-
-        group = getIntent().getParcelableExtra("Group");
+        groupId=getIntent().getStringExtra("groupId");
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder = new LatLngBounds.Builder();
         mMap = googleMap;
-        mMap.addMarker(new MarkerOptions().position(group.getMeetingPoint()).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        builder.include(group.getMeetingPoint());
-        float i = 30.0f;
-        for (Request r : group.getRequests()){
-            mMap.addMarker(new MarkerOptions().position(r.getDest()).title(r.getRequester().getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(i)));
-            i += 30.0f;
-            builder.include(r.getDest());
-        }
-//        LatLng userDest = PreferencesActivity.destPlace.getLatLng();
-//        mMap.addMarker(new MarkerOptions().position(userOrigin).title("User Origin").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-//        mMap.addMarker(new MarkerOptions().position(userDest).title("User Destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+        handleMeetingPoint(); //Get the group's meeting point and put it on the map
+        handleRequests(); //Get the group's requests and deal with them
+    }
 
-
-//        LatLng rabinSq = new LatLng(32.0795, 34.7802);
-//        LatLng mock1 = new LatLng(32.082,34.7944);
-//        LatLng mock2 = new LatLng(32.086,34.7911);
-//        mMap.addMarker(new MarkerOptions().position(rabinSq).title("Meeting point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-//        mMap.addMarker(new MarkerOptions().position(mock1).title("Alice's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-//        mMap.addMarker(new MarkerOptions().position(mock2).title("Sarah's destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-//        builder.include(rabinSq);
-//        builder.include(mock1);
-//        builder.include(mock2);
-
-
-//        builder.include(userOrigin);
-//        builder.include(userDest);
+    private void fixCamera(){
         LatLngBounds bounds = builder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
+    }
+
+    private void handleMeetingPoint(){
+        DatabaseReference meetingPointRef = database.child("groups").child(groupId).child("meetingPoint");
+        meetingPointRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                meetingPoint=ServerUtils.strToLatlng(dataSnapshot.getValue(String.class));
+                mMap.addMarker(new MarkerOptions().position(meetingPoint).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                builder.include(meetingPoint);
+                fixCamera();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
+
+    private void handleRequests(){
+        DatabaseReference requestRef=database.child("requests");
+        requestRef.orderByChild("groupId").equalTo(groupId).addChildEventListener(new ChildEventListener() {
+            //For each request in group:
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Request request=dataSnapshot.getValue(Request.class);
+                mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(request.getRequesterName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                builder.include(request.destLatLng());
+                hue+=30f;
+                fixCamera();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //TODO maybe: Deal with someone leaving the group.
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 //    private LatLng getUserLocation(){
 //        if (PreferencesActivity.originPlace == null){
 //            return new LatLng(PreferencesActivity.currLocation.getLatitude(),PreferencesActivity.currLocation.getLongitude());
@@ -72,6 +115,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 //    }
 
     public void goToChat(View view){
-        startActivity(new Intent(this,ChatActivity.class));
+        Intent chatIntent=new Intent(this,ChatActivity.class);
+        chatIntent.putExtra("groupId",groupId);
+        startActivity(chatIntent);
     }
 }
