@@ -11,41 +11,51 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:paddingTop="70dp"
+        android:paddingTop="60dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
         android:orientation="vertical">
 
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="80dp" />
-        <!--Commented out because it is available only from SDK 26-->
-        <!--android:layout_marginHorizontal="10dp"-->
-
         <TextView
-            android:id="@+id/or"
+            android:id="@+id/welcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:text="or"
-            android:textColor="#000000" />
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="Welcome!
+Please sign in:"
+             />
 
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/fb_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/sign_in_button"
+            android:layout_marginTop="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            android:textSize="17sp"
+            android:src="@drawable/google_login"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+
+            />
+
+        <ImageButton
+            android:id="@+id/fb_login_button"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp" />
-        <!--android:layout_marginHorizontal="15dp"-->
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/facebook_login"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@null"
+
+            />
+
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
