@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#313131"
     tools:context="com.googleworkshop.taxipool.PreferencesActivity">
 
     <Button
@@ -53,7 +52,6 @@
         android:layout_marginTop="8dp"
         android:buttonTint="@android:color/holo_orange_dark"
         android:text="Set as home"
-        android:textColor="@android:color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/destination" />
@@ -67,7 +65,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:text="Leaving in:"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -133,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="My group size:"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time" />
