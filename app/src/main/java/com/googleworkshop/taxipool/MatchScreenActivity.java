@@ -24,6 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
+
 public class MatchScreenActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private LatLng meetingPoint;
@@ -33,6 +36,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     //private float hue=30f;
     private float hue=30;
     private int buddyCount=0;
+    private Intent intent;
+    private ArrayList<User> groupUsers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
+        intent = new Intent(MatchScreenActivity.this, RatingActivity.class);
+
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -49,6 +56,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
         handleMeetingPoint(); //Get the group's meeting point and put it on the map
         handleRequests(); //Get the group's requests and deal with them
+        intent.putExtra("groupSize", buddyCount);
+        intent.putExtra("groupUsers", groupUsers);
 
     }
 
@@ -82,7 +91,9 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
             //For each request in group:
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                buddyCount++;
                 final Request request=dataSnapshot.getValue(Request.class);
+                groupUsers.add(dataSnapshot.getValue(User.class));
                 database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
