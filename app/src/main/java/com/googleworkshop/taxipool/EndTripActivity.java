@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,7 +19,14 @@ public class EndTripActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent launchGettIntent = getPackageManager().getLaunchIntentForPackage("com.gettaxi.android");
-                startActivity(launchGettIntent);
+                if( launchGettIntent != null){
+                    startActivity(launchGettIntent);
+                }
+                else{
+                    Uri playStoreGettPage = Uri.parse("http://play.google.com/store/apps/details?id=com.gettaxi.android");
+                    Intent playStoreGettIntent = new Intent(Intent.ACTION_VIEW, playStoreGettPage);
+                    startActivity(playStoreGettIntent);
+                }
             }
         });
 
@@ -27,7 +35,15 @@ public class EndTripActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent launchPepperIntent = getPackageManager().getLaunchIntentForPackage("com.pepper.pay");
-                startActivity(launchPepperIntent);
+                if( launchPepperIntent != null){
+                    startActivity(launchPepperIntent);
+                }
+                else{
+                    Uri playStorePepperPage = Uri.parse("http://play.google.com/store/apps/details?id=com.pepper.pay");
+                    Intent playStorePepperIntent = new Intent(Intent.ACTION_VIEW, playStorePepperPage);
+                    startActivity(playStorePepperIntent);
+                }
+
             }
         });
     }
