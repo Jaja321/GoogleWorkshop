@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,7 +28,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     private String groupId;
     private DatabaseReference database;
     LatLngBounds.Builder builder;
-    private float hue=30f;
+    //private float hue=30f;
+    private float hue=30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +81,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                 Request request=dataSnapshot.getValue(Request.class);
                 mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(request.getRequesterName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                 builder.include(request.destLatLng());
-                hue+=30f;
+                //hue+=30f;
+                hue = ((int)hue + 30)%360;
                 fixCamera();
             }
 

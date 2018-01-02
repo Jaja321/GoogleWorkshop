@@ -54,7 +54,9 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity android:name=".SearchingActivity" />
-        <activity android:name=".MockServerCommunicationActivity"></activity>
+        <activity android:name=".MockServerCommunicationActivity"/>
+        <activity android:name=".EndTripActivity"/>
     </application>
+
 
 </manifest>
