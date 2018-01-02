@@ -270,7 +270,7 @@ public class PreferencesActivity extends AppCompatActivity {
         //XXX CHANGED TO SPINNER
 //        int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
         int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
-        return new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
+        return new Request(user.getUserId(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
     }
 
     private void getUserLocation(){

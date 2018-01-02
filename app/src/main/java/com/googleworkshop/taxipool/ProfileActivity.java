@@ -29,35 +29,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         final TextView userName = (TextView) findViewById(R.id.user_name);
         final ImageView profileImg = (ImageView) findViewById(R.id.profile_img);
-        //mAuth = FirebaseAuth.getInstance();
-        //FirebaseUser user = mAuth.getCurrentUser(); //get current user
-        //userID = user.getUid(); //get user ID of current user
 
         Intent intent = getIntent();
         User user=intent.getParcelableExtra("User");
 
         userName.setText(user.getName());
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
-        Log.d("userId", "id: "+user.getUserId());
-        LatLng l=new LatLng(0,1);
-        Request request=new Request(user.getUserId(),user.getName(), l,l,0,0);
-        ServerUtils.addRequest(request);
-    /*
-        DatabaseReference userRef = database.child("users").child(userID); //get a reference to the user in the database
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) { //Always gets called once, and also whenever the user data changes.
-                String name = dataSnapshot.child("name").getValue(String.class); //get the value of 'name' field from the database
-                userName.setText(name);
-                String profilePicture = dataSnapshot.child("profilePicture").getValue(String.class);
-                Glide.with(getApplicationContext()).load(profilePicture).into(profileImg); //Set profile image
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-
-        });
-        */
 
     }
 }

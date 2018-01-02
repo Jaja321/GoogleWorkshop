@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,6 +32,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     LatLngBounds.Builder builder;
     //private float hue=30f;
     private float hue=30;
+    private int buddyCount=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
         handleMeetingPoint(); //Get the group's meeting point and put it on the map
         handleRequests(); //Get the group's requests and deal with them
+
     }
 
     private void fixCamera(){
@@ -78,12 +82,23 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
             //For each request in group:
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Request request=dataSnapshot.getValue(Request.class);
-                mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(request.getRequesterName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
-                builder.include(request.destLatLng());
-                //hue+=30f;
-                hue = ((int)hue + 30)%360;
-                fixCamera();
+                final Request request=dataSnapshot.getValue(Request.class);
+                database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User requester=dataSnapshot.getValue(User.class);
+                        mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(requester.getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                        builder.include(request.destLatLng());
+                        hue = ((int)hue + 30)%360;
+                        fixCamera();
+                        //buddyCount++;
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
             }
 
             @Override
