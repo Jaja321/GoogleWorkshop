@@ -3,8 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GoogleWorkshop.iml" filepath="$PROJECT_DIR$/GoogleWorkshop.iml" />
+<<<<<<< HEAD
       <module fileurl="file://C:\Users\Benjamin\Desktop\TaxiPool\GoogleWorkshop.iml" filepath="C:\Users\Benjamin\Desktop\TaxiPool\GoogleWorkshop.iml" />
       <module fileurl="file://C:\Users\Ilana\Documents\GitHub\GoogleWorkshop\TaxiPool.iml" filepath="C:\Users\Ilana\Documents\GitHub\GoogleWorkshop\TaxiPool.iml" />
+=======
+>>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
