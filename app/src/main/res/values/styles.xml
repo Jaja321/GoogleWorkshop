@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
     <style name="editText_style">
         <item name="android:background">@drawable/edittext_background</item>
         <item name="android:gravity">center</item>
