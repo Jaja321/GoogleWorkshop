@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Request implements Parcelable{
     private String requesterId;
-    private String requesterName;
     private String src;
     private String dest;
     private int timePrefs;
@@ -15,9 +14,8 @@ public class Request implements Parcelable{
     private String groupId;
     public Request(){}
 
-    Request(String requesterId,String requesterName,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
+    Request(String requesterId,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
         this.requesterId = requesterId;
-        this.requesterName=requesterName;
         this.src = latlngToStr(src);
         this.dest = latlngToStr(dest);
         this.timePrefs = timePrefs;
@@ -25,9 +23,8 @@ public class Request implements Parcelable{
         groupId=null;
     }
 
-    Request(String requesterId,String requesterName, String src,String dest,int timePrefs,int numOfPassengers, String groupId){
+    Request(String requesterId, String src,String dest,int timePrefs,int numOfPassengers, String groupId){
         this.requesterId = requesterId;
-        this.requesterName=requesterName;
         this.src = src;
         this.dest = dest;
         this.timePrefs = timePrefs;
@@ -46,9 +43,6 @@ public class Request implements Parcelable{
         return requesterId;
     }
 
-    public String getRequesterName() {
-        return requesterName;
-    }
     public String getSrc() { return src;
     }
 
