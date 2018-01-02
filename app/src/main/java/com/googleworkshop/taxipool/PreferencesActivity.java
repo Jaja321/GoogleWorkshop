@@ -224,25 +224,24 @@ public class PreferencesActivity extends AppCompatActivity {
         }
         String requestId=ServerUtils.addRequest(request);
         intent.putExtra("requestId",requestId);
+        intent.putExtra("numOfSeconds",getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         startActivity(intent);
     }
 
-
+    /*
     public void goToSearchingScreen(View view){
         Intent intent = new Intent(this, SearchingActivity.class);
         //TODO delete because already included in request?
         intent.putExtra("numOfSeconds",getNumOfSeconds(timeSpinner.getSelectedItemPosition()));
         startActivity(intent);
     }
+    */
 
     private static int getNumOfSeconds(int pos){// move to auxiliary class?
-        if(pos == 0) {//"Leave in" selected
-            return 0;
+        if(pos <= 3){//"15 min", "30 min" or "45 min" selected
+            return (pos + 1) * 15 * 60;
         }
-        if(pos <= 3 && pos >= 1){//"15 min", "30 min" or "45 min" selected
-            return pos * 15 * 60;
-        }
-        return (pos - 3) * 60 * 60;//"1 hour", "2 hours" or "3 hours" selected
+        return (pos - 2) * 60 * 60;//"1 hour", "2 hours" or "3 hours" selected
     }
 
     @Nullable
