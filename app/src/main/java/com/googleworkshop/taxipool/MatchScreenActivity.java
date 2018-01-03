@@ -23,6 +23,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +52,9 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private User user;
+    private User tmpUser;
+    private FirebaseAuth mAuth;
     //------
 
     @Override
@@ -119,13 +124,31 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     private void handleRequests(){
         DatabaseReference requestRef=database.child("requests");
+        user = intent.getParcelableExtra("User");
+        if(user==null) {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
         requestRef.orderByChild("groupId").equalTo(groupId).addChildEventListener(new ChildEventListener() {
             //For each request in group:
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 buddyCount++;
                 final Request request=dataSnapshot.getValue(Request.class);
-                groupUsers.add(dataSnapshot.getValue(User.class));
+                tmpUser = dataSnapshot.getValue(User.class);
+                if(!user.getName().equals(tmpUser.getName())){ //don't add curr user to list
+                    groupUsers.add(tmpUser);
+                }
                 database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

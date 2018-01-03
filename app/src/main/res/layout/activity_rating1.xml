@@ -45,7 +45,7 @@
                 android:layout_marginTop="90dp">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/name1"
                     android:layout_marginTop="30dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

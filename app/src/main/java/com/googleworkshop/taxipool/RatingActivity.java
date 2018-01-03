@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,13 +41,17 @@ public class RatingActivity extends AppCompatActivity {
         
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
-        //TODO: make sure groupUsers does not incluse curr user
-        //TODO: change user names in layout
         if(groupSize == 4){
             setContentView(R.layout.activity_rating3);
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar3);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            TextView name2 = (TextView)  findViewById(R.id.name2);
+            TextView name3 = (TextView)  findViewById(R.id.name3);
+            name1.setText(groupUsers.get(0).getName());
+            name2.setText(groupUsers.get(1).getName());
+            name3.setText(groupUsers.get(2).getName());
             Button submitButton = (Button) findViewById(R.id.submit);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -60,9 +66,13 @@ public class RatingActivity extends AppCompatActivity {
 
         }
         else if(groupSize == 3){
-            setContentView(R.layout.activity_rating3);
+            setContentView(R.layout.activity_rating2);
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            TextView name2 = (TextView)  findViewById(R.id.name2);
+            name1.setText(groupUsers.get(0).getName());
+            name2.setText(groupUsers.get(1).getName());
             Button submitButton = (Button) findViewById(R.id.submit);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -76,8 +86,10 @@ public class RatingActivity extends AppCompatActivity {
 
         }
         else if(groupSize == 2){
-            setContentView(R.layout.activity_rating3);
+            setContentView(R.layout.activity_rating1);
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            name1.setText(groupUsers.get(0).getName());
             Button submitButton = (Button) findViewById(R.id.submit);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -135,6 +135,8 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("User",user);
         intent.putExtra("FirstRun",true);
 
+        Intent intent2 = new Intent(this, MatchScreenActivity.class);
+        intent2.putExtra("User",user);
         startActivity(intent);
         finish();
     }
