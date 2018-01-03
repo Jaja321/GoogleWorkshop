@@ -2,6 +2,7 @@ package com.googleworkshop.taxipool;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.opengl.Visibility;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -46,6 +49,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     private int buddyCount=0;
     private Intent intent;
     private ArrayList<User> groupUsers = new ArrayList<>();
+    private TextView[] names;
+    private ImageView[] photos;
 
     //added for navigation drawer
     private DrawerLayout mDrawer;
@@ -65,7 +70,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
-
+        initViews();
         intent = new Intent(MatchScreenActivity.this, RatingActivity.class);
 
 
@@ -98,6 +103,18 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+    private void initViews(){
+        names=new TextView[3];
+        photos=new ImageView[3];
+        names[0]=(TextView)findViewById(R.id.buddy1_text);
+        names[1]=(TextView)findViewById(R.id.buddy2_text);
+        names[2]=(TextView)findViewById(R.id.buddy3_text);
+        photos[0]=(ImageView)findViewById(R.id.buddy1);
+        photos[1]=(ImageView)findViewById(R.id.buddy2);
+        photos[2]=(ImageView)findViewById(R.id.buddy3);
+    }
+
+
     private void fixCamera(){
         LatLngBounds bounds = builder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
@@ -122,6 +139,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     }
 
+
+
     private void handleRequests(){
         DatabaseReference requestRef=database.child("requests");
         user = intent.getParcelableExtra("User");
@@ -143,7 +162,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
             //For each request in group:
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                buddyCount++;
+
                 final Request request=dataSnapshot.getValue(Request.class);
                 tmpUser = dataSnapshot.getValue(User.class);
                 if(!user.getName().equals(tmpUser.getName())){ //don't add curr user to list
@@ -157,7 +176,19 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                         builder.include(request.destLatLng());
                         hue = ((int)hue + 30)%360;
                         fixCamera();
-                        //buddyCount++;
+                        if(buddyCount<=3) {
+                            Log.d("buddyCount",buddyCount+" ");
+                            TextView textView=names[buddyCount];
+                            ImageView imageView=photos[buddyCount];
+                            textView.setText(requester.getName());
+                            RequestOptions options = new RequestOptions();
+                            options.circleCrop();
+                            Glide.with(getApplicationContext()).load(requester.getProfilePicture()).apply(options).into(imageView);
+                            textView.setVisibility(View.VISIBLE);
+                            imageView.setVisibility(View.VISIBLE);
+
+                        }
+                        buddyCount++;
                     }
 
                     @Override
