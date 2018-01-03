@@ -14,10 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -29,6 +35,9 @@ public class ProfileActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private TextView userName;
+    private ImageView profileImg;
+    private User user;
     //------
 
 
@@ -37,14 +46,32 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         //setContentView(R.layout.activity_profile);
 
-        final TextView userName = (TextView) findViewById(R.id.user_name);
-        final ImageView profileImg = (ImageView) findViewById(R.id.profile_img);
+
+
+        userName = (TextView) findViewById(R.id.user_name);
+        profileImg = (ImageView) findViewById(R.id.profile_img);
 
         Intent intent = getIntent();
-        User user = intent.getParcelableExtra("User");//TODO: user is null
+        user = intent.getParcelableExtra("User");
+        if(user==null) {
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user=dataSnapshot.getValue(User.class);
+                    initProfile(user);
+                }
 
-        userName.setText(user.getName());
-        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }else{
+            initProfile(user);
+        }
+
+
 
         //added for navigation drawer
         // Set a Toolbar to replace the ActionBar.
@@ -64,6 +91,10 @@ public class ProfileActivity extends AppCompatActivity {
         //-------
 
 
+    }
+    private void initProfile(User user){
+        userName.setText(user.getName());
+        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
     }
 
     //added for navigation drawer
