@@ -7,15 +7,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-<<<<<<< HEAD
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
-=======
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
->>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -23,10 +19,9 @@ import java.util.ArrayList;
 
 
 public class RatingActivity extends AppCompatActivity {
-<<<<<<< HEAD
     private ArrayList<User> groupUsers;
     private int groupSize;
-=======
+
     private String groupId;
     private DatabaseReference database;
     //added for navigation drawer
@@ -35,13 +30,12 @@ public class RatingActivity extends AppCompatActivity {
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
     //------
->>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< HEAD
         
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
@@ -99,7 +93,7 @@ public class RatingActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
-=======
+
         database = FirebaseDatabase.getInstance().getReference();
         groupId=getIntent().getStringExtra("groupId");
 
@@ -141,22 +135,8 @@ public class RatingActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
->>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
     }
 
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (drawerToggle.onOptionsItemSelected(item)) {

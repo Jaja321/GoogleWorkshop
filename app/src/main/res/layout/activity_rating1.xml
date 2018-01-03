@@ -38,19 +38,6 @@
 
                 />
 
-<<<<<<< HEAD
-        <Button
-            android:id="@+id/submit"
-            android:layout_marginTop="100dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_round_rect"
-            android:text="Submit" />
-
-=======
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -80,6 +67,17 @@
                     android:stepSize="1"
                     />
 
+                <Button
+                    android:id="@+id/submit"
+                    android:layout_marginTop="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/button_round_rect"
+                    android:text="Submit" />
+
             </LinearLayout>
 
 
@@ -90,7 +88,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
->>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
+
     </LinearLayout>
 
     <!-- The navigation drawer that comes from the left -->

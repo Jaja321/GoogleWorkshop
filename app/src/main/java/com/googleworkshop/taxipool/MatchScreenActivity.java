@@ -60,10 +60,9 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
-<<<<<<< HEAD
+
         intent = new Intent(MatchScreenActivity.this, RatingActivity.class);
 
-=======
 
         //added for navigation drawer
         // Set a Toolbar to replace the ActionBar.
@@ -81,7 +80,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         // Setup drawer view
         setupDrawerContent(nvDrawer);
         //-------
->>>>>>> 33c950a4238a5999d1f08b6e41264162f0c19e41
+
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
