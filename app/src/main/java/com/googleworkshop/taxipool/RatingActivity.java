@@ -2,35 +2,30 @@ package com.googleworkshop.taxipool;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.CountDownTimer;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RatingBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
-public class SearchingActivity extends AppCompatActivity {
-    protected static final String FORMAT = "%02d:%02d";
-    //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
-    protected int numOfSeconds;
+
+public class RatingActivity extends AppCompatActivity {
+    private ArrayList<User> groupUsers;
+    private int groupSize;
+
+    private String groupId;
     private DatabaseReference database;
-    private String requestId;
-    Intent nextIntent;
-
     //added for navigation drawer
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
@@ -39,16 +34,80 @@ public class SearchingActivity extends AppCompatActivity {
     //------
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.searching_screen_layout);
+        
+        groupSize = getIntent().getIntExtra("groupSize", 0);
+        groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
+        if(groupSize == 4){
+            setContentView(R.layout.activity_rating3);
+            final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
+            final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
+            final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar3);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            TextView name2 = (TextView)  findViewById(R.id.name2);
+            TextView name3 = (TextView)  findViewById(R.id.name3);
+            name1.setText(groupUsers.get(0).getName());
+            name2.setText(groupUsers.get(1).getName());
+            name3.setText(groupUsers.get(2).getName());
+            Button submitButton = (Button) findViewById(R.id.submit);
+            submitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getNumStars());
+                    finish();
+                    System.exit(0);
+                }
+            });
 
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
-        final TextView timer = (TextView)findViewById(R.id.timer);
-        //TODO CHANGE DEFAULT
-        numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
+        }
+        else if(groupSize == 3){
+            setContentView(R.layout.activity_rating2);
+            final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
+            final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            TextView name2 = (TextView)  findViewById(R.id.name2);
+            name1.setText(groupUsers.get(0).getName());
+            name2.setText(groupUsers.get(1).getName());
+            Button submitButton = (Button) findViewById(R.id.submit);
+            submitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
+                    finish();
+                    System.exit(0);
+                }
+            });
+
+        }
+        else if(groupSize == 2){
+            setContentView(R.layout.activity_rating1);
+            final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
+            TextView name1 = (TextView)  findViewById(R.id.name1);
+            name1.setText(groupUsers.get(0).getName());
+            Button submitButton = (Button) findViewById(R.id.submit);
+            submitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    finish();
+                    System.exit(0);
+                }
+            });
+
+        }
+        else{
+            finish();
+            System.exit(0);
+        }
+
+        database = FirebaseDatabase.getInstance().getReference();
+        groupId=getIntent().getStringExtra("groupId");
 
         //added for navigation drawer
         // Set a Toolbar to replace the ActionBar.
@@ -67,48 +126,6 @@ public class SearchingActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
         //-------
 
-
-        new CountDownTimer(numOfSeconds*1000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                //check for a match?
-                timer.setText(String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
-            }
-
-            public void onFinish() {
-                timer.setText("done!");//for now
-            }
-        }.start();
-        nextIntent=new Intent(this,MatchScreenActivity.class);
-        requestId=getIntent().getStringExtra("requestId");
-        waitForGroup();
-    }
-
-    private void waitForGroup(){
-        database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference groupIdRef=database.child("requests").child(requestId).child("groupId");
-        groupIdRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String groupId=dataSnapshot.getValue(String.class);
-                if(groupId!=null){
-                    //Found a group:
-                    nextIntent.putExtra("groupId",groupId);
-                    startActivity(nextIntent);
-                    finish();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     //added for navigation drawer
@@ -160,7 +177,7 @@ public class SearchingActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
-                //TODO: add sign_out
+                //TODO:add sign_out
                 break;
             default:
                 //?

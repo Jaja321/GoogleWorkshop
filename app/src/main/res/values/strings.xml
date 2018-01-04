@@ -56,4 +56,6 @@
     <string name="group_size">My group size:</string>
     <string name="curr_location">Your current location</string>
     <string name="destination">Destination</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

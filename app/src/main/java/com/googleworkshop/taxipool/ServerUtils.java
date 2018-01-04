@@ -34,6 +34,16 @@ public class ServerUtils {
         return requestId;
     }
 
+    public static void rateUser(User user, int rating){
+        int num=user.getNumOfRaters();
+        double oldRating=user.getRating();
+        double newRating=(oldRating*num+rating)/(num+1);
+        DatabaseReference userReference=database.child("users").child(user.getUserId());
+        userReference.child("rating").setValue(newRating);
+        userReference.child("numOfRaters").setValue(num+1);
+
+    }
+
     public static LatLng strToLatlng(String str){
         String[] latlong =  str.split(",");
         double latitude = Double.parseDouble(latlong[0]);
