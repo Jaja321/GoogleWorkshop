@@ -15,12 +15,12 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/round_rect"
         android:gravity="center"
-        android:onClick="searchOriginLocation"
+        android:onClick="placeAutoComplete"
         android:padding="3dp"
-        android:text="Your current location"
-        android:textSize="18sp"
+        android:text="@string/curr_location"
         android:textAllCaps="false"
         android:textColor="#000"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -36,12 +36,12 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/round_rect"
         android:gravity="center"
-        android:onClick="searchDestLocation"
-        android:textAllCaps="false"
+        android:onClick="placeAutoComplete"
         android:padding="3dp"
-        android:textSize="18sp"
         android:text="Destination"
+        android:textAllCaps="false"
         android:textColor="#000"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:buttonTint="@android:color/holo_orange_dark"
-        android:text="Set as home"
+        android:text="@string/home_check_box_text"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/destination" />
@@ -68,7 +68,7 @@
         android:layout_marginLeft="160dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="Leaving in:"
+        android:text="@string/leave_in"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -134,7 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="My group size:"
+        android:text="@string/group_size"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -145,7 +145,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:indeterminate="true"
         android:theme="@style/CircularProgress"
         android:visibility="invisible"
@@ -153,4 +153,28 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/go" />
 
+    <!--<fragment-->
+        <!--android:id="@+id/origin_AC_fragment"-->
+        <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/origin"-->
+        <!--app:layout_constraintEnd_toEndOf="@+id/origin"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/origin"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/origin" />-->
+
+    <!--<fragment-->
+        <!--android:id="@+id/destination_AC_fragment"-->
+        <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+        <!--android:layout_width="371dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="AutoComplete!"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/num_of_passengers" />-->
 </android.support.constraint.ConstraintLayout>

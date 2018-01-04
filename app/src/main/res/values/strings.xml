@@ -50,5 +50,10 @@
     <string name="searching_text">Searching…</string>
     <string name="title_activity_showuseractivity">Map</string>
     <string name="facebook_app_id">1996581547291394</string>
-    <string name="fb_login_protocol_scheme">fb1996581547291394</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1996581547291394</string>
+    <string name="home_check_box_text">Set as home</string>
+    <string name="leave_in">Leaving in:</string>
+    <string name="group_size">My group size:</string>
+    <string name="curr_location">Your current location</string>
+    <string name="destination">Destination</string>
 </resources>

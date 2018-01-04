@@ -23,14 +23,20 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,8 +64,17 @@ public class PreferencesActivity extends AppCompatActivity {
     protected Spinner passengersSpinner;
     private final int ACCESS_FINE_LOCATION_CODE = 17;
     private final int LOCATION_SETTINGS_CODE = 123;
+    private int DEST_AUTOCOMPLETE_REQUEST_CODE = 912;
+    private int ORIGIN_AUTOCOMPLETE_REQUEST_CODE = 913;
     private User user = null;
-
+    private Request userRequest = null;
+    private LatLng srcLatLng;
+    private LatLng destLatLng;
+    private ProgressBar pBar;
+    private String countryISOCode = "IL";// Default, for now
+    private AutocompleteFilter typeFilter;
+    private AutocompleteFilter countryFilter;
+    private AutocompleteFilter allFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +88,15 @@ public class PreferencesActivity extends AppCompatActivity {
         homePrefEditor = homeSettings.edit();
         destButton = findViewById(R.id.destination);
         originButton = findViewById(R.id.origin);
+        pBar = findViewById(R.id.gettingLocationProgress);
+//        countryFilter = new AutocompleteFilter.Builder()
+//                .setCountry(countryISOCode)
+//                .build();
+//        typeFilter = new AutocompleteFilter.Builder()
+//                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+//                .build();
+        allFilter = new AutocompleteFilter.Builder().setCountry(countryISOCode).setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
+
 
         // TODO find a better way to get user..
         if (user == null){
@@ -144,6 +168,38 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == DEST_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                destPlace = PlaceAutocomplete.getPlace(this, data);
+                Log.i("Hey:", "Place: " + destPlace.getName());
+                destButton.setText(destPlace.getName().toString());
+                homeCBox.setChecked(false);
+                homeCBox.setClickable(true);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i("Hey:", status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
+        if (requestCode == ORIGIN_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                originPlace = PlaceAutocomplete.getPlace(this, data);
+                Log.i("Hey:", "Place: " + originPlace.getName());
+                originButton.setText(originPlace.getName().toString());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Log.i("Hey:", status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+            return;
+        }
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
             return;
         }
@@ -172,10 +228,6 @@ public class PreferencesActivity extends AppCompatActivity {
             destButton.setText(dest);
             originButton.setText(origin);
         }
-
-
-
-
     }
 
     private void initializeHome(){
@@ -213,19 +265,11 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
-        Intent intent = new Intent(this, SearchingActivity.class);
-        Request request = createRequest();
-        if (request == null){ // could not set dest or src
+        createRequest();
+        if (userRequest == null){ // could not set dest or src
             return;
         }
-        if (homeCBox.isChecked()) {
-            homePrefEditor.putString(HOME_ID, destPlace.getId());
-            homePrefEditor.apply();
-        }
-        String requestId=ServerUtils.addRequest(request);
-        intent.putExtra("requestId",requestId);
-        intent.putExtra("numOfSeconds",getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
-        startActivity(intent);
+        finishRequest();
     }
 
     /*
@@ -237,44 +281,74 @@ public class PreferencesActivity extends AppCompatActivity {
     }
     */
 
-    private static int getNumOfSeconds(int pos){// move to auxiliary class?
-        if(pos <= 3){//"15 min", "30 min" or "45 min" selected
-            return (pos + 1) * 15 * 60;
-        }
-        return (pos - 2) * 60 * 60;//"1 hour", "2 hours" or "3 hours" selected
-    }
+
 
     @Nullable
-    private Request createRequest(){
-        LatLng srcLatLng;
-        LatLng destLatLng;
+    private void createRequest(){
+        if (checkOriginDest()){
+            finishRequest();
+        }
+    }
+
+    private void finishRequest(){
+        int nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
+        int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
+        userRequest = new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
+        if (homeCBox.isChecked()) {
+            homePrefEditor.putString(HOME_ID, destPlace.getId());
+            homePrefEditor.apply();
+        }
+        String requestId=ServerUtils.addRequest(userRequest);
+        Intent intent = new Intent(this, SearchingActivity.class);
+        intent.putExtra("requestId",requestId);
+        intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
+        startActivity(intent);
+    }
+
+    private boolean checkOriginDest(){
         if(destPlace != null){//user chose destination in autocomplete or previously saved one
             destLatLng = destPlace.getLatLng();
         }
         else{
-            return null;
+            return false;
         }
         if(originPlace != null){//user chose origin in autocomplete
             srcLatLng = originPlace.getLatLng();
         }
         else{//try and get user current location
             getUserLocation();
-            if(currLocation == null){
-                return null;//cannot get origin
-            }
-            srcLatLng = currLocation;
+            return false;
+            //            if(currLocation == null){
+//                return null;//cannot get origin
+//            }
+//            srcLatLng = currLocation;
         }
-        // TODO how does this int help us?
-        int nOfSeconds = getNumOfSeconds(timeSpinner.getSelectedItemPosition());
-        // TODO use edittext.getselected?
-        //XXX CHANGED TO SPINNER
-//        int nOfPassengers = Integer.parseInt(passengersEditText.getText().toString());
-        int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
-        return new Request(user.getUserId(),user.getName(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
+        return true;
+    }
+
+    private void fetchUserLocation(){
+        pBar.setVisibility(View.VISIBLE);
+        try{mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    pBar.setVisibility(View.INVISIBLE);
+                    srcLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                    finishRequest();
+                    return;
+                }
+            }
+        });}
+        catch (SecurityException e){
+            // Happens when user didn't allow location on run-time.
+            // We will never get here
+        }
     }
 
     private void getUserLocation(){
-        if (isLocationEnabled(this)){
+        if (PreferencesUtils.isLocationEnabled(this)){
             //is this ok?
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
@@ -284,20 +358,10 @@ public class PreferencesActivity extends AppCompatActivity {
                 //                                          int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
-                getPermissions();
-                return;//user has not selected origin in autocomplete and not allowing access to current location
+                getPermissions();//user has not selected origin in autocomplete and not allowing access to current location
+                return;
             }
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        currLocation = new LatLng(location.getLatitude(),location.getLongitude());
-                    }
-                }
-            });
-            return;
+            fetchUserLocation();
         }
         else{
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -305,7 +369,6 @@ public class PreferencesActivity extends AppCompatActivity {
             dialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
                     Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     PreferencesActivity.this.startActivityForResult(myIntent,LOCATION_SETTINGS_CODE);
                     //get gps
@@ -315,7 +378,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    currLocation = null;
+                    srcLatLng = null;
                 }
             });
             dialog.show();
@@ -337,6 +400,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    fetchUserLocation();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -349,28 +413,24 @@ public class PreferencesActivity extends AppCompatActivity {
         }
     }
 
-    public static boolean isLocationEnabled(Context context) {
-        int locationMode = 0;
-        String locationProviders;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-                return false;
+    public void placeAutoComplete(View view){
+        try {
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).setFilter(allFilter).build(this);
+            if (view.getId() == R.id.destination){
+                startActivityForResult(intent, DEST_AUTOCOMPLETE_REQUEST_CODE);
+            }
+            else{
+                startActivityForResult(intent, ORIGIN_AUTOCOMPLETE_REQUEST_CODE);
             }
 
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
-        }else{
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
+        } catch (GooglePlayServicesRepairableException e) {
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
         }
-
-
     }
+
 
 
 }
