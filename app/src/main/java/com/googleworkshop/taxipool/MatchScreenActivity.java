@@ -176,7 +176,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                         builder.include(request.destLatLng());
                         hue = ((int)hue + 30)%360;
                         fixCamera();
-                        if(buddyCount<=3) {
+                        if(buddyCount < 3) {//names and photos are arrays of size 3 so buddyCount == 3 causes crash
                             Log.d("buddyCount",buddyCount+" ");
                             TextView textView=names[buddyCount];
                             ImageView imageView=photos[buddyCount];

@@ -76,10 +76,12 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
+        <activity android:name=".SearchingServiceActivity" />
 
         <service
             android:name=".MyTestService"
             android:exported="false"/>
+        <service android:name=".TaxiPoolService" />
 
     </application>
 

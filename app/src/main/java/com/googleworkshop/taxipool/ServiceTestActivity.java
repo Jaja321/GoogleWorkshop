@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +12,7 @@ import android.widget.Toast;
  */
 
 public class ServiceTestActivity extends Activity{
-    public MyTestReceiver receiverForTest;
+    public MyReceiver receiverForTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +33,9 @@ public class ServiceTestActivity extends Activity{
 
     // Setup the callback for when data is received from the service
     public void setupServiceReceiver() {
-        receiverForTest = new MyTestReceiver(new Handler());
+        receiverForTest = new MyReceiver(new Handler());
         // This is where we specify what happens when data is received from the service
-        receiverForTest.setReceiver(new MyTestReceiver.Receiver() {
+        receiverForTest.setReceiver(new MyReceiver.Receiver() {
             @Override
             public void onReceiveResult(int resultCode, Bundle resultData) {
                 if (resultCode == 10) {

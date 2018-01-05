@@ -321,7 +321,8 @@ public class PreferencesActivity extends AppCompatActivity {
             homePrefEditor.apply();
         }
         String requestId=ServerUtils.addRequest(userRequest);
-        Intent intent = new Intent(this, SearchingActivity.class);
+        //Intent intent = new Intent(this, SearchingActivity.class);
+        Intent intent = new Intent(this, SearchingServiceActivity.class);
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         startActivity(intent);
