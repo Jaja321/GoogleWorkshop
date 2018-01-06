@@ -288,11 +288,10 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void goToRoute(View view){
-        createRequest();
-        if (userRequest == null){ // could not set dest or src
+        if (checkOriginDest()){
+            createRequest();
             return;
         }
-        finishRequest();
     }
 
     /*
@@ -304,16 +303,7 @@ public class PreferencesActivity extends AppCompatActivity {
     }
     */
 
-
-
-    @Nullable
     private void createRequest(){
-        if (checkOriginDest()){
-            finishRequest();
-        }
-    }
-
-    private void finishRequest(){
         int nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
         userRequest = new Request(user.getUserId(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
@@ -361,7 +351,7 @@ public class PreferencesActivity extends AppCompatActivity {
                     // Logic to handle location object
                     pBar.setVisibility(View.INVISIBLE);
                     srcLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                    finishRequest();
+                    createRequest();
                     return;
                 }
             }
