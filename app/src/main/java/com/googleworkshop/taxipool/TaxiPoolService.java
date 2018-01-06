@@ -51,9 +51,6 @@ public class TaxiPoolService extends IntentService {
         rec = intent.getParcelableExtra("receiver");
         //Get requestId
         String requestId = intent.getStringExtra("requestId");
-        //get numOfSeconds
-        //int numOfSeconds = intent.getIntExtra("numOfSeconds", 999);
-        //numOfSeconds = 10;
 
         int resultCode = 0;
         while(resultCode == 0 && !stop){

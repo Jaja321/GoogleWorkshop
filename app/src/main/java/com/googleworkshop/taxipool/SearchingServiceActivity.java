@@ -44,7 +44,6 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
         //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
-        numOfSeconds = 10;
 
         //added for navigation drawer
         // Set a Toolbar to replace the ActionBar.
