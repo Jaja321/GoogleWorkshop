@@ -1,12 +1,15 @@
 package com.googleworkshop.taxipool;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.opengl.Visibility;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -233,6 +236,36 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         Intent chatIntent=new Intent(this,ChatActivity.class);
         chatIntent.putExtra("groupId",groupId);
         startActivity(chatIntent);
+    }
+
+    public void closeGroup(View view){
+        //Show "are you sure?" dialog
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Ready to go? People won't be able to join the group anymore."); //TODO word it better..
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Go!",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        database.child("groups").child(groupId).child("closed").setValue(true);
+                        Intent startTripIntent=new Intent(MatchScreenActivity.this,EndTripActivity.class);
+                        //chatIntent.putExtra("groupId",groupId);
+                        startActivity(startTripIntent);
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Not yet",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
     }
 
     //added for navigation drawer

@@ -181,33 +181,6 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        switch(item.getItemId()){
-            case R.id.sign_out_menu:
-                signOut();
-                return true;
-            /*
-            //added for navigation drawer
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            //-----
-            */
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
