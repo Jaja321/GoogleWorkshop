@@ -35,7 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-    private TextView userName;
+    private TextView userName, rating;
     private ImageView profileImg;
     private User user;
     //------
@@ -49,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         userName = (TextView) findViewById(R.id.user_name);
+        rating = (TextView) findViewById(R.id.rating);
         profileImg = (ImageView) findViewById(R.id.profile_img);
 
         Intent intent = getIntent();
@@ -94,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
     private void initProfile(User user){
         userName.setText(user.getName());
+        rating.setText(user.getRating()+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
     }
 
