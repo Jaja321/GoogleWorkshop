@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static int buttonSearch = 0;
@@ -326,6 +327,7 @@ public class PreferencesActivity extends AppCompatActivity {
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         startActivity(intent);
+        finish();
     }
 
     private boolean checkOriginDest(){
@@ -504,7 +506,9 @@ public class PreferencesActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
-                //TODO:add sign_out
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
             default:
                 //?

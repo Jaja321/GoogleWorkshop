@@ -122,7 +122,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     private void handleMeetingPoint(){
         DatabaseReference meetingPointRef = database.child("groups").child(groupId).child("meetingPoint");
-        meetingPointRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        meetingPointRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 meetingPoint=ServerUtils.strToLatlng(dataSnapshot.getValue(String.class));
@@ -284,7 +284,9 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
-                //TODO:add sign_out
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
             default:
                 //?
