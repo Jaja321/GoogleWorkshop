@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ public class SearchingServiceActivity extends AppCompatActivity {
     private DatabaseReference database;
     private String requestId;
     Intent nextIntent;
+    Intent i;
 
     //added for navigation drawer
     private DrawerLayout mDrawer;
@@ -33,10 +35,8 @@ public class SearchingServiceActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     //------
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching_screen_layout);
 
@@ -44,6 +44,7 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
         //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
+        numOfSeconds = 10;
 
         //added for navigation drawer
         // Set a Toolbar to replace the ActionBar.
@@ -75,6 +76,7 @@ public class SearchingServiceActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+                stopService(i);
                 timer.setText("done!");//for now
             }
         }.start();
@@ -87,27 +89,32 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
     // Starts the IntentService
     public void onStartService() {
-        Intent i = new Intent(this, TaxiPoolService.class);
+        i = new Intent(this, TaxiPoolService.class);
         i.putExtra("requestId", requestId);
         i.putExtra("receiver", receiver);
+        //i.putExtra("numOfSeconds", numOfSeconds);
         startService(i);
+        //finish();
     }
 
     // Setup the callback for when data is received from the service
     public void setupServiceReceiver() {
+        //Log.i("In setupServiceReceiver", "In setupServiceReceiver");
         receiver = new MyReceiver(new Handler());
         // onReceiveResult is called when data is received from the service
         receiver.setReceiver(new MyReceiver.Receiver() {
             @Override
             public void onReceiveResult(int resultCode, Bundle resultData) {
+                //Log.i("In onReceiveResult", "In onReceiveResult");
                 if (resultCode == 1) {//group found
+                    //Log.i("Group Found", "Group Found");
                     String groupId = resultData.getString("groupId");
                     nextIntent.putExtra("groupId",groupId);
                     startActivity(nextIntent);
                     finish();
                 }
-                else{//does that necessarily means time ran out? I don't think so
-
+                else{//does that necessarily means time ran out? I think so
+                    finish();
                 }
             }
         });
