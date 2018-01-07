@@ -47,7 +47,7 @@ public class RatingActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                //ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
                 finish();
                 System.exit(0);
             }
