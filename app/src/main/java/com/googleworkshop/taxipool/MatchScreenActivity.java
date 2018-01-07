@@ -175,6 +175,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final User requester=dataSnapshot.getValue(User.class);
+                        String firstName=requester.getName().split(" ")[0];
                         mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(requester.getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                         builder.include(request.destLatLng());
                         hue = ((int)hue + 30)%360;
@@ -186,7 +187,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                             Log.d("buddyCount",buddyCount+" ");
                             TextView textView=names[buddyCount];
                             ImageView imageView=photos[buddyCount];
-                            textView.setText(requester.getName().split(" ")[0]);
+                            textView.setText(firstName);
                             RequestOptions options = new RequestOptions();
                             options.circleCrop();
                             Glide.with(getApplicationContext()).load(requester.getProfilePicture()).apply(options).into(imageView);
@@ -197,7 +198,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                                 @Override
                                 public void onClick(View view) {
                                     Intent profileIntent=new Intent(MatchScreenActivity.this,ProfileActivity.class);
-                                    profileIntent.putExtra("user",requester);
+                                    profileIntent.putExtra("User",requester);
                                     startActivity(profileIntent);
                                 }
                             });

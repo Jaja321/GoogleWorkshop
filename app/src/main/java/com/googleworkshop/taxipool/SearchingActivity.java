@@ -1,6 +1,8 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.CountDownTimer;
 import android.support.design.widget.NavigationView;
@@ -83,8 +85,16 @@ public class SearchingActivity extends AppCompatActivity {
                 timer.setText("done!");//for now
             }
         }.start();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
         requestId=getIntent().getStringExtra("requestId");
+        if(requestId!=null){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("requestId",requestId);
+            editor.commit();
+        }else{
+            requestId = sharedPref.getString("requestId",null);
+        }
         waitForGroup();
     }
 
@@ -98,17 +108,21 @@ public class SearchingActivity extends AppCompatActivity {
                 final String groupId=dataSnapshot.getValue(String.class);
                 if(groupId!=null){
                     //Found a group:
+                    /*
                     nextIntent.putExtra("groupId", groupId);
                     startActivity(nextIntent);
                     finish();
-                    /*
+                    */
+
                     DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
                     isActiveRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             boolean isActive=dataSnapshot.getValue(boolean.class);
                             if(isActive) {
-
+                                nextIntent.putExtra("groupId", groupId);
+                                startActivity(nextIntent);
+                                finish();
                             }
                         }
 
@@ -117,7 +131,7 @@ public class SearchingActivity extends AppCompatActivity {
 
                         }
                     });
-                        */
+
                 }
             }
 
