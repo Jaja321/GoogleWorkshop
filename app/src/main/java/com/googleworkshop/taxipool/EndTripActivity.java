@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.content.Intent;
 
@@ -59,6 +60,15 @@ public class EndTripActivity extends AppCompatActivity {
                     startActivity(playStorePepperIntent);
                 }
 
+            }
+        });
+
+        final Button ratingButton = (Button) findViewById(R.id.ratingButton);
+        pepperButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent( EndTripActivity.this, RatingActivity.class);
+                startActivity(myIntent);
             }
         });
 
