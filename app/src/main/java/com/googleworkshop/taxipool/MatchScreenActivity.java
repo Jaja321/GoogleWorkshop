@@ -171,23 +171,22 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 final Request request=dataSnapshot.getValue(Request.class);
-                tmpUser = dataSnapshot.getValue(User.class);
-                if(!user.getName().equals(tmpUser.getName())){ //don't add curr user to list
-                    groupUsers.add(tmpUser);
-                }
                 database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        User requester=dataSnapshot.getValue(User.class);
+                        final User requester=dataSnapshot.getValue(User.class);
                         mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(requester.getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                         builder.include(request.destLatLng());
                         hue = ((int)hue + 30)%360;
                         fixCamera();
+                        if(!user.getUserId().equals(requester.getUserId())){ //don't add curr user to list
+                            groupUsers.add(requester);
+                        }
                         if(buddyCount < 3) {//names and photos are arrays of size 3 so buddyCount == 3 causes crash
                             Log.d("buddyCount",buddyCount+" ");
                             TextView textView=names[buddyCount];
                             ImageView imageView=photos[buddyCount];
-                            textView.setText(requester.getName());
+                            textView.setText(requester.getName().split(" ")[0]);
                             RequestOptions options = new RequestOptions();
                             options.circleCrop();
                             Glide.with(getApplicationContext()).load(requester.getProfilePicture()).apply(options).into(imageView);
@@ -198,7 +197,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                                 @Override
                                 public void onClick(View view) {
                                     Intent profileIntent=new Intent(MatchScreenActivity.this,ProfileActivity.class);
-                                    profileIntent.putExtra("user",user);
+                                    profileIntent.putExtra("user",requester);
                                     startActivity(profileIntent);
                                 }
                             });
