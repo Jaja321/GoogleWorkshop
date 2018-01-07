@@ -100,7 +100,7 @@ public class PreferencesActivity extends AppCompatActivity {
         destButton = findViewById(R.id.destination);
         originButton = findViewById(R.id.origin);
         pBar = findViewById(R.id.gettingLocationProgress);
-        allFilter = new AutocompleteFilter.Builder().setCountry(countryISOCode).setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
+        allFilter = new AutocompleteFilter.Builder().setCountry(countryISOCode).build();
 
 
         // TODO find a better way to get user..

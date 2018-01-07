@@ -76,11 +76,10 @@
                 android:id="@+id/buddy2_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
                 android:text="Buddy2"
                 android:visibility="invisible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/buddy1_text"
-                app:layout_constraintStart_toEndOf="@+id/buddy1_text" />
+                tools:layout_editor_absoluteX="99dp" />
 
             <TextView
                 android:id="@+id/buddy1_text"
@@ -96,12 +95,11 @@
             <TextView
                 android:id="@+id/buddy3_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
+                android:layout_height="18dp"
                 android:text="Buddy3"
                 android:visibility="invisible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/buddy2_text"
-                app:layout_constraintStart_toEndOf="@+id/buddy2_text" />
+                tools:layout_editor_absoluteX="174dp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -125,7 +123,7 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/floatingActionButton3"
+                        android:id="@+id/goButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|right"
@@ -139,7 +137,7 @@
                         app:srcCompat="@drawable/ic_local_taxi_black_24dp" />
 
                     <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/floatingActionButton2"
+                        android:id="@+id/chatButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|left"

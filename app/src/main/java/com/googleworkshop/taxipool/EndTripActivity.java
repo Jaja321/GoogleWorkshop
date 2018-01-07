@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.content.Intent;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class EndTripActivity extends AppCompatActivity {
     //added for navigation drawer
@@ -131,7 +133,9 @@ public class EndTripActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
-                //TODO:add sign_out
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
             case R.id.nav_preferences:
                 intent = new Intent(this, PreferencesActivity.class);

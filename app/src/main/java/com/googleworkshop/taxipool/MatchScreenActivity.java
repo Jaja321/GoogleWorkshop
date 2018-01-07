@@ -54,6 +54,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     private ArrayList<User> groupUsers = new ArrayList<>();
     private TextView[] names;
     private ImageView[] photos;
+    private View goButton;
 
     //added for navigation drawer
     private DrawerLayout mDrawer;
@@ -86,6 +87,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
 
+
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
         // Find our drawer view
@@ -104,9 +106,11 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         intent.putExtra("groupSize", buddyCount);
         intent.putExtra("groupUsers", groupUsers);
 
+
     }
 
     private void initViews(){
+        goButton = findViewById(R.id.goButton);
         names=new TextView[3];
         photos=new ImageView[3];
         names[0]=(TextView)findViewById(R.id.buddy1_text);
@@ -252,6 +256,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                         Intent startTripIntent=new Intent(MatchScreenActivity.this,EndTripActivity.class);
                         //chatIntent.putExtra("groupId",groupId);
                         startActivity(startTripIntent);
+                        goButton.setVisibility(View.INVISIBLE);
                     }
                 });
 
@@ -324,7 +329,6 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                 break;
             case R.id.nav_preferences:
                 intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
                 intent.putExtra("User", user);
                 startActivity(intent);
                 break;
