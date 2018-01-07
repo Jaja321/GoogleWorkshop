@@ -26,7 +26,18 @@ android:layout_height="fill_parent">
         android:layout_height="match_parent"
         tools:context="com.googleworkshop.taxipool.ChatActivity">
 
-
+        <Button
+            android:id="@+id/StartRide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textAllCaps="false"
+            android:layout_marginStart="270dp"
+            android:layout_marginTop="10dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_round_rect"
+            android:text="Start ride"/>
 
         <ListView
             android:id="@+id/messageListView"
