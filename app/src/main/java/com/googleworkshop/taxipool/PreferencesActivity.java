@@ -490,9 +490,10 @@ public class PreferencesActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
+        Intent intent;
         switch(menuItem.getItemId()) {
             case R.id.nav_my_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
+                intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
@@ -500,6 +501,8 @@ public class PreferencesActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 break;
+            case R.id.nav_preferences:
+                break;//do nothing, already in preferences
             default:
                 //?
         }

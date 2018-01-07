@@ -154,13 +154,20 @@ public class SearchingActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
+        Intent intent;
         switch(menuItem.getItemId()) {
             case R.id.nav_my_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
+                intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_sign_out:
                 //TODO: add sign_out
+                break;
+            case R.id.nav_preferences:
+                intent = new Intent(this, PreferencesActivity.class);
+                User user = null;//TODO
+                intent.putExtra("User", user);
+                startActivity(intent);
                 break;
             default:
                 //?
