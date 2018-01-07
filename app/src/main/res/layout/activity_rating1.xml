@@ -35,7 +35,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Please rate your last ride:"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="23sp"
 
                 />
 
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textStyle="bold"
                     android:text="Alice"
@@ -75,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textAllCaps="false"
+                    android:textSize="18sp"
                     android:textColor="@android:color/white"
                     android:background="@drawable/button_round_rect"
                     android:text="Submit" />
