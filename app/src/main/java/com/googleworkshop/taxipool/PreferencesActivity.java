@@ -45,6 +45,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static int buttonSearch = 0;
@@ -77,10 +83,11 @@ public class PreferencesActivity extends AppCompatActivity {
     private ProgressBar pBar;
     private String countryISOCode = "IL";// Default, for now
     private AutocompleteFilter allFilter;
-
+    private static DatabaseReference database;
     //added for navigation drawer
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
+    private FirebaseAuth mAuth;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
     //------
@@ -101,13 +108,27 @@ public class PreferencesActivity extends AppCompatActivity {
         originButton = findViewById(R.id.origin);
         pBar = findViewById(R.id.gettingLocationProgress);
         allFilter = new AutocompleteFilter.Builder().setCountry(countryISOCode).build();
+        database= FirebaseDatabase.getInstance().getReference();
 
 
         // TODO find a better way to get user..
         if (user == null){
             user = getIntent().getParcelableExtra("User");
         }
+        if(user==null){
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user=dataSnapshot.getValue(User.class);
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
         originButton.setText(origin);
         destButton.setText(dest);
 

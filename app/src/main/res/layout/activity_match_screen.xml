@@ -76,10 +76,11 @@
                 android:id="@+id/buddy2_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
                 android:text="Buddy2"
                 android:visibility="invisible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/buddy1_text"
-                tools:layout_editor_absoluteX="99dp" />
+                app:layout_constraintStart_toEndOf="@+id/buddy1_text" />
 
             <TextView
                 android:id="@+id/buddy1_text"
@@ -95,11 +96,12 @@
             <TextView
                 android:id="@+id/buddy3_text"
                 android:layout_width="wrap_content"
-                android:layout_height="18dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
                 android:text="Buddy3"
                 android:visibility="invisible"
                 app:layout_constraintBaseline_toBaselineOf="@+id/buddy2_text"
-                tools:layout_editor_absoluteX="174dp" />
+                app:layout_constraintStart_toEndOf="@+id/buddy2_text" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"

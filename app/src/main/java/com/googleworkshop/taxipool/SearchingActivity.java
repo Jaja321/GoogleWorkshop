@@ -91,16 +91,33 @@ public class SearchingActivity extends AppCompatActivity {
     private void waitForGroup(){
         database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference groupIdRef=database.child("requests").child(requestId).child("groupId");
+
         groupIdRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String groupId=dataSnapshot.getValue(String.class);
+                final String groupId=dataSnapshot.getValue(String.class);
                 if(groupId!=null){
                     //Found a group:
-                    nextIntent.putExtra("groupId",groupId);
+                    nextIntent.putExtra("groupId", groupId);
                     startActivity(nextIntent);
                     finish();
+                    /*
+                    DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
+                    isActiveRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            boolean isActive=dataSnapshot.getValue(boolean.class);
+                            if(isActive) {
 
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                        */
                 }
             }
 

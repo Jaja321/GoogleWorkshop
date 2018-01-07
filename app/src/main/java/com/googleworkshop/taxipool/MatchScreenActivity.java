@@ -193,6 +193,15 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                             Glide.with(getApplicationContext()).load(requester.getProfilePicture()).apply(options).into(imageView);
                             textView.setVisibility(View.VISIBLE);
                             imageView.setVisibility(View.VISIBLE);
+                            imageView.setClickable(true);
+                            imageView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent profileIntent=new Intent(MatchScreenActivity.this,ProfileActivity.class);
+                                    profileIntent.putExtra("user",user);
+                                    startActivity(profileIntent);
+                                }
+                            });
 
                         }
                         buddyCount++;
