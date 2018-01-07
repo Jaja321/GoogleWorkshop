@@ -16,6 +16,8 @@ import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 
 public class EndTripActivity extends AppCompatActivity {
     //added for navigation drawer
@@ -23,11 +25,16 @@ public class EndTripActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private ArrayList<User> groupUsers;
+    private int groupSize;
     //------
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
+
+        groupSize = getIntent().getIntExtra("groupSize", 0);
+        groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
         //setContentView(R.layout.activity_trip_end);
 
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
@@ -68,6 +75,8 @@ public class EndTripActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent( EndTripActivity.this, RatingActivity.class);
+                myIntent.putExtra("groupSize", groupSize);
+                myIntent.putExtra("groupUsers", groupUsers);
                 startActivity(myIntent);
             }
         });
