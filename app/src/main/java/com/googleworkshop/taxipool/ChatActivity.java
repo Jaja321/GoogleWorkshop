@@ -60,7 +60,6 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton mPhotoPickerButton;
     private EditText mMessageEditText;
     private Button mSendButton;
-    private Button mStartTripButton;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
     private ChildEventListener mChildEventListener;
@@ -104,7 +103,6 @@ public class ChatActivity extends AppCompatActivity {
         mMessageListView = (ListView) findViewById(R.id.messageListView);
         mMessageEditText = (EditText) findViewById(R.id.messageEditText);
         mSendButton = (Button) findViewById(R.id.sendButton);
-        mStartTripButton = (Button) findViewById(R.id.StartRide);
 
 
         // Initialize message ListView and its adapter
@@ -148,13 +146,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        mStartTripButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent( ChatActivity.this, EndTripActivity.class);
-                startActivity(myIntent);
-            }
-        });
 
 
         mChildEventListener=new ChildEventListener() {

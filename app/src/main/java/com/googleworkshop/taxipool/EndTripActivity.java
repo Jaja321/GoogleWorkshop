@@ -64,7 +64,7 @@ public class EndTripActivity extends AppCompatActivity {
         });
 
         final Button ratingButton = (Button) findViewById(R.id.ratingButton);
-        pepperButton.setOnClickListener(new View.OnClickListener() {
+        ratingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent( EndTripActivity.this, RatingActivity.class);
