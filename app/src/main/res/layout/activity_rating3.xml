@@ -34,7 +34,7 @@
                 android:layout_gravity="center_horizontal"
                 android:text="Please rate your last ride:"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="23sp"
 
                 />
 
@@ -50,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textStyle="bold"
                     android:text="Alice"
@@ -75,7 +75,7 @@
                     android:layout_gravity="center_horizontal"
                     android:textColor="@android:color/holo_green_dark"
                     android:textStyle="bold"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:text="Bob"
                     />
 
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textColor="@android:color/holo_red_light"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:text="Sarah"
                     />
@@ -115,6 +115,7 @@
                 <Button
                     android:id="@+id/submit"
                     android:layout_marginTop="20dp"
+                    android:textSize="18sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
