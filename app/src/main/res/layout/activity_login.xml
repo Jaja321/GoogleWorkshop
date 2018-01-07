@@ -14,6 +14,7 @@
         android:paddingTop="60dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
+        android:background="@drawable/screen_background"
         android:orientation="vertical">
 
 
