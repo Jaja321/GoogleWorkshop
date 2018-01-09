@@ -33,7 +33,7 @@ Please sign in:"
 
         <ImageButton
             android:id="@+id/sign_in_button"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="80dp"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
@@ -44,20 +44,35 @@ Please sign in:"
 
             />
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/fb_login_button"
-            android:layout_width="240dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
-            android:adjustViewBounds="true"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            android:src="@drawable/facebook_login"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            android:textSize="16sp"
-            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="50dp">
+
+            <ImageButton
+                android:id="@+id/fb_login_button"
+                android:layout_width="240dp"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/facebook_login"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:background="@null" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/facebookButton"
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="25dp"
+                android:paddingBottom="18dp"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                android:layout_alignStart="@+id/fb_login_button"
+                android:layout_alignTop="@+id/fb_login_button" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
