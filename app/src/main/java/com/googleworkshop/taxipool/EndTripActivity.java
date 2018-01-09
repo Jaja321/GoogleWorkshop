@@ -13,8 +13,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.content.Intent;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -27,15 +33,33 @@ public class EndTripActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     private ArrayList<User> groupUsers;
     private int groupSize;
+    private String groupId;
+    private DatabaseReference database;
     //------
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
 
+        database = FirebaseDatabase.getInstance().getReference();
+
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
-        //setContentView(R.layout.activity_trip_end);
+        groupId=getIntent().getStringExtra("groupId");
+
+        database.child("groups").child(groupId).child("numOfUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(int.class) != null){
+                    groupSize = dataSnapshot.getValue(int.class);
+                }
+
+            }
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
 
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
         gettButton.setOnClickListener(new View.OnClickListener() {

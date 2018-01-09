@@ -14,8 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -39,20 +42,6 @@ public class RatingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_rating1);
-        final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
-        //TextView name1 = (TextView)  findViewById(R.id.name1);
-        // name1.setText(groupUsers.get(0).getName());
-        Button submitButton = (Button) findViewById(R.id.submit);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                finish();
-                System.exit(0);
-            }
-        });
-        /*
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
         if(groupSize == 4){
@@ -97,7 +86,6 @@ public class RatingActivity extends AppCompatActivity {
                     System.exit(0);
                 }
             });
-
         }
         else if(groupSize == 2){
             setContentView(R.layout.activity_rating1);
@@ -119,7 +107,6 @@ public class RatingActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
-        */
 
         database = FirebaseDatabase.getInstance().getReference();
         groupId=getIntent().getStringExtra("groupId");

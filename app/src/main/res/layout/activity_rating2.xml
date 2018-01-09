@@ -53,7 +53,6 @@
                     android:textSize="20sp"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textStyle="bold"
-                    android:text="Alice"
                     />
 
                 <RatingBar
@@ -76,7 +75,6 @@
                     android:textColor="@android:color/holo_green_dark"
                     android:textStyle="bold"
                     android:textSize="20sp"
-                    android:text="Bob"
                     />
 
                 <RatingBar

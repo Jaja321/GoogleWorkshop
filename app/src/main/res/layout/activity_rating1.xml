@@ -54,7 +54,6 @@
                     android:textSize="20sp"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textStyle="bold"
-                    android:text="Keren Mizrahi"
                     />
 
                 <RatingBar
@@ -66,6 +65,7 @@
                     android:progressTint="@color/colorPrimary"
                     android:numStars="5"
                     android:stepSize="1"
+                    android:max="5"
                     />
 
                 <Button

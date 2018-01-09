@@ -3,10 +3,7 @@ package com.googleworkshop.taxipool;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.opengl.Visibility;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -50,7 +47,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     //private float hue=30f;
     private float hue=30;
     private int buddyCount=0;
-    private Intent intent;
+    private Intent endTripIntent;
     private ArrayList<User> groupUsers = new ArrayList<>();
     private TextView[] names;
     private ImageView[] photos;
@@ -75,7 +72,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
         initViews();
-        intent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
+        endTripIntent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
+        endTripIntent.putExtra("groupId", groupId);
 
 
         //added for navigation drawer
@@ -103,8 +101,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mMap = googleMap;
         handleMeetingPoint(); //Get the group's meeting point and put it on the map
         handleRequests(); //Get the group's requests and deal with them
-        intent.putExtra("groupSize", buddyCount);
-        intent.putExtra("groupUsers", groupUsers);
+        endTripIntent.putExtra("groupSize", buddyCount);
+        endTripIntent.putExtra("groupUsers", groupUsers);
 
 
     }
@@ -150,7 +148,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     private void handleRequests(){
         DatabaseReference requestRef=database.child("requests");
-        user = intent.getParcelableExtra("User");
+        user = endTripIntent.getParcelableExtra("User");
         if(user==null) {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -172,7 +170,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
                 final Request request=dataSnapshot.getValue(Request.class);
                 database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
+                        @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final User requester=dataSnapshot.getValue(User.class);
                         String firstName=requester.getName().split(" ")[0];
@@ -263,7 +261,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                     public void onClick(DialogInterface dialog, int id) {
                         database.child("groups").child(groupId).child("closed").setValue(true);
                         //chatIntent.putExtra("groupId",groupId);
-                        startActivity(intent);
+                        startActivity(endTripIntent);
                         goButton.setVisibility(View.INVISIBLE);
                     }
                 });
