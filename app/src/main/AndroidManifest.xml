@@ -76,6 +76,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchingServiceActivity" />
+        <activity android:name=".GeofenceTestActivity" />
 
         <service
             android:name=".MyTestService"
@@ -89,6 +90,7 @@
             </intent-filter>
         </service>
         <service android:name=".TaxiPoolService" />
+        <service android:name=".GeofenceTransitionsIntentService" />
     </application>
 
 </manifest>
