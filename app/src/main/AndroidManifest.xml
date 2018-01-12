@@ -76,7 +76,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchingServiceActivity" />
-        <activity android:name=".GeofenceTestActivity" />
+        <activity android:name=".GeofenceTestActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+        <activity android:name=".EndTripServiceActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".MyTestService"
@@ -91,6 +104,7 @@
         </service>
         <service android:name=".TaxiPoolService" />
         <service android:name=".GeofenceTransitionsIntentService" />
+        <service android:name=".GeofenceRatingIntentService" />
     </application>
 
 </manifest>

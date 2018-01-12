@@ -24,16 +24,22 @@ import java.util.List;
  * Created by Gal Ze'evi on 1/10/2018.
  */
 
-public class GeofenceTransitionsIntentService extends IntentService {
+public class GeofenceRatingIntentService extends IntentService {
     private static final String CHANNEL_ID = "channel_01";
     private final String TAG = "taxipool.geofence";
+    private ArrayList<User> groupUsers;
+    private int groupSize;
 
-    public GeofenceTransitionsIntentService() {
-        super("GeofenceTransitionsIntentService");
+    public GeofenceRatingIntentService() {
+        super("GeofenceRatingIntentService");
     }
 
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+
+        groupSize = intent.getIntExtra("groupSize", 0);
+        groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
+
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     geofencingEvent.getErrorCode());
@@ -56,7 +62,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
             String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition, triggeringGeofences);
 
             // Send notification and log the transition details.
-            sendNotification(geofenceTransitionDetails);
+            //sendNotification(geofenceTransitionDetails);
+            sendNotification("Please rate your travel buddies");
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
@@ -110,13 +117,16 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
 
         // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);//TODO change to RatingActivity
+        Intent notificationIntent = new Intent(getApplicationContext(), RatingActivity.class);//TODO change to RatingActivity
+
+        notificationIntent.putExtra("groupSize", groupSize);
+        notificationIntent.putExtra("groupUsers", groupUsers);
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
         // Add the main Activity to the task stack as the parent.
-        stackBuilder.addParentStack(LoginActivity.class);//TODO change to RatingActivity
+        stackBuilder.addParentStack(RatingActivity.class);//TODO change to RatingActivity
 
         // Push the content Intent onto the stack.
         stackBuilder.addNextIntent(notificationIntent);
@@ -136,7 +146,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                         R.drawable.ic_launcher_background))
                 .setColor(Color.BLACK)
                 .setContentTitle(notificationDetails)
-                .setContentText(getString(R.string.geofence_transition_notification_text))
+                .setContentText("Rating helps us find you a better match")
                 .setContentIntent(notificationPendingIntent);
 
         // Set the Channel ID for Android O.
