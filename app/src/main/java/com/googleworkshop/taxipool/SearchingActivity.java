@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,7 +70,6 @@ public class SearchingActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
         //-------
 
-
         new CountDownTimer(numOfSeconds*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -87,6 +87,7 @@ public class SearchingActivity extends AppCompatActivity {
         }.start();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
+        nextIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));//TODO should I check if null?
         requestId=getIntent().getStringExtra("requestId");
         if(requestId!=null){
             SharedPreferences.Editor editor = sharedPref.edit();

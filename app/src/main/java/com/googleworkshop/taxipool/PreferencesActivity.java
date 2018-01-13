@@ -337,6 +337,7 @@ public class PreferencesActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, SearchingServiceActivity.class);
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
+        intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         startActivity(intent);
         finish();
     }

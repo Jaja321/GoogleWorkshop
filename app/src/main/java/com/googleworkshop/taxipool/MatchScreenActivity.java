@@ -72,7 +72,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
         initViews();
-        endTripIntent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
+        //endTripIntent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
+        endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
 
 
@@ -261,6 +262,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                     public void onClick(DialogInterface dialog, int id) {
                         database.child("groups").child(groupId).child("closed").setValue(true);
                         //chatIntent.putExtra("groupId",groupId);
+                        endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.INVISIBLE);
                     }
