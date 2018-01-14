@@ -221,7 +221,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
             dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    //start timer
+                    //TODO start timer
                 }
             });
             dialog.show();
