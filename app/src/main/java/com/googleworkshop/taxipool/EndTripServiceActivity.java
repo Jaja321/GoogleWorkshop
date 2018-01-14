@@ -1,19 +1,23 @@
 package com.googleworkshop.taxipool;
 
 import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,10 +26,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,6 +54,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
     private Geofence mGeofence;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private final int ACCESS_FINE_LOCATION_CODE = 17;//TODO I used the same code as PreferencesActivity, is that OK?
+    private final int LOCATION_SETTINGS_CODE = 123;
     //navigation drawer
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
@@ -58,36 +65,13 @@ public class EndTripServiceActivity extends AppCompatActivity {
     private String groupId;
     private DatabaseReference database;
     private LatLng destLatLng;
+    private boolean tryAgain = true;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
-
-        //------------------Geofencing-----------------------
-        destLatLng = getIntent().getParcelableExtra("destLatLng");//TODO make sure is sent from matchScreen
-
-        mGeofence = new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("myGeofence")
-
-                .setCircularRegion(
-                        destLatLng.latitude,
-                        destLatLng.longitude,
-                        3000//Radius in meters
-                )
-                //Duration in milliseconds,
-                .setExpirationDuration(300000)//TODO change duration
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .build();
-        mGeofenceList.add(mGeofence);
-
-        mGeofencingClient = LocationServices.getGeofencingClient(this);
-
-        addGeofences();
-        //---------------------------------------------------
 
         //------------------End Trip-------------------------
         database = FirebaseDatabase.getInstance().getReference();
@@ -170,6 +154,31 @@ public class EndTripServiceActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
         //---------------------------------------------------
 
+        //------------------Geofencing-----------------------
+        destLatLng = getIntent().getParcelableExtra("destLatLng");//TODO make sure is sent from matchScreen
+
+        mGeofence = new Geofence.Builder()
+                // Set the request ID of the geofence. This is a string to identify this
+                // geofence.
+                .setRequestId("myGeofence")
+
+                .setCircularRegion(
+                        destLatLng.latitude,
+                        destLatLng.longitude,
+                        3000//Radius in meters
+                )
+                //Duration in milliseconds,
+                .setExpirationDuration(300000)//TODO change duration
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .build();
+        mGeofenceList.add(mGeofence);
+
+        mGeofencingClient = LocationServices.getGeofencingClient(this);
+
+        addGeofences();
+        //---------------------------------------------------
+
+
     }
 
     //------------------Geofencing-----------------------
@@ -195,10 +204,37 @@ public class EndTripServiceActivity extends AppCompatActivity {
         return builder.build();
     }
 
+    private void checkGPSOn(){
+        if (!PreferencesUtils.isLocationEnabled(EndTripServiceActivity.this)){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(EndTripServiceActivity.this);
+            dialog.setMessage("GPS signal is disabled :(");
+
+            dialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    EndTripServiceActivity.this.startActivityForResult(myIntent,LOCATION_SETTINGS_CODE);
+                    //get gps
+                }
+            });
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    //start timer
+                }
+            });
+            dialog.show();
+            return;
+        }
+
+    }
+
     @SuppressWarnings("MissingPermission")
     private void addGeofences() {
         if (!checkPermissions()) {
             getPermissions();
+            Log.i("hello hello", "hello hello");
             //showSnackbar(getString(R.string.insufficient_permissions));
             //return;
         }
@@ -215,10 +251,25 @@ public class EndTripServiceActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Failed to add geofences
+                        if(tryAgain) {
+                            checkGPSOn();
+                        }
                         Log.i("Did not add Geofence", "Did not add Geofence");
+
                     }
                 });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
+            tryAgain = false;
+            addGeofences();
+            return;
+        }
+    }
+
 
     private void showSnackbar(final String text) {
         View container = findViewById(android.R.id.content);
