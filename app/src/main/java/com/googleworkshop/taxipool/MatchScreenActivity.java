@@ -127,7 +127,8 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void handleMeetingPoint(){
-        DatabaseReference meetingPointRef = database.child("groups").child(groupId).child("meetingPoint");
+        DatabaseReference groupRef=database.child("groups").child(groupId);
+        DatabaseReference meetingPointRef = groupRef.child("meetingPoint");
         meetingPointRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,6 +136,21 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
                 mMap.addMarker(new MarkerOptions().position(meetingPoint).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                 builder.include(meetingPoint);
                 fixCamera();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        DatabaseReference groupClosedRef=groupRef.child("closed");
+        groupClosedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean closed=dataSnapshot.getValue(boolean.class);
+                if(closed){
+                    goButton.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
