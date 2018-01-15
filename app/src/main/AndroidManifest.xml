@@ -105,6 +105,7 @@
         <service android:name=".TaxiPoolService" />
         <service android:name=".GeofenceTransitionsIntentService" />
         <service android:name=".GeofenceRatingIntentService" />
+        <service android:name=".RatingTimerService" />
     </application>
 
 </manifest>

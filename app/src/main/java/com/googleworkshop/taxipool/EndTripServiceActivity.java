@@ -74,24 +74,6 @@ public class EndTripServiceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_end);
 
         //------------------End Trip-------------------------
-        database = FirebaseDatabase.getInstance().getReference();
-
-        groupSize = getIntent().getIntExtra("groupSize", 0);
-        groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
-        groupId=getIntent().getStringExtra("groupId");
-
-        database.child("groups").child(groupId).child("numOfUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue(int.class) != null){
-                    groupSize = dataSnapshot.getValue(int.class);
-                }
-
-            }
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
         gettButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,9 +157,25 @@ public class EndTripServiceActivity extends AppCompatActivity {
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
 
-        addGeofences();
-        //---------------------------------------------------
+        database = FirebaseDatabase.getInstance().getReference();
 
+        groupSize = getIntent().getIntExtra("groupSize", 0);
+        groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
+        groupId=getIntent().getStringExtra("groupId");
+
+        database.child("groups").child(groupId).child("numOfUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(int.class) != null){
+                    groupSize = dataSnapshot.getValue(int.class);
+                    addGeofences();
+                }
+
+            }
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        //---------------------------------------------------
 
     }
 
@@ -222,6 +220,11 @@ public class EndTripServiceActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     //TODO start timer
+                    Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                    timerIntent.putExtra("groupSize", groupSize);
+                    timerIntent.putExtra("groupUsers", groupUsers);
+                    startService(timerIntent);
+                    //finish();
                 }
             });
             dialog.show();
@@ -263,8 +266,9 @@ public class EndTripServiceActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        tryAgain = false;
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
-            tryAgain = false;
+            //tryAgain = false;
             addGeofences();
             return;
         }
@@ -300,6 +304,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+                    //TODO handle permission not granted
                 }
                 return;
             }
