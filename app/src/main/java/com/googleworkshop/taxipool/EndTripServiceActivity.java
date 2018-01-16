@@ -254,9 +254,15 @@ public class EndTripServiceActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Failed to add geofences
+                        /*
                         if(tryAgain) {
                             checkGPSOn();
                         }
+                        */
+                        Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                        timerIntent.putExtra("groupSize", groupSize);
+                        timerIntent.putExtra("groupUsers", groupUsers);
+                        startService(timerIntent);
                         Log.i("Did not add Geofence", "Did not add Geofence");
 
                     }

@@ -62,7 +62,7 @@ public class GeofenceRatingIntentService extends IntentService {
             String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition, triggeringGeofences);
 
             // Send notification and log the transition details.
-            //sendNotification(geofenceTransitionDetails);
+            //sendRatingNotification();
             sendNotification("Please rate your travel buddies");
             Log.i(TAG, geofenceTransitionDetails);
         } else {
@@ -161,6 +161,15 @@ public class GeofenceRatingIntentService extends IntentService {
         mNotificationManager.notify(0, builder.build());
     }
 
+    private void sendRatingNotification(){
+        Intent notificationIntent = new Intent(getApplicationContext(), RatingActivity.class);//TODO change to RatingActivity
+        notificationIntent.putExtra("groupSize", groupSize);
+        notificationIntent.putExtra("groupUsers", groupUsers);
 
+        String notificationTitle = "Please rate your travel buddies";
+        String notificationBody = "Rating helps us find you a better match";
+
+        NotificationUtils.sendNotification(notificationTitle, notificationBody, notificationIntent, getApplicationContext());
+    }
 
 }
