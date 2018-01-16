@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
@@ -93,6 +94,8 @@ public class RatingActivity extends AppCompatActivity {
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());
             Button submitButton = (Button) findViewById(R.id.submit1);
+
+
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -102,6 +105,7 @@ public class RatingActivity extends AppCompatActivity {
                 }
             });
 
+            //submitButton.setOnClickListener(onClick1);
         }
         else{
             //TODO: change, this is for debugging
@@ -201,5 +205,6 @@ public class RatingActivity extends AppCompatActivity {
         mDrawer.closeDrawers();
     }
     //------
+
 
 }
