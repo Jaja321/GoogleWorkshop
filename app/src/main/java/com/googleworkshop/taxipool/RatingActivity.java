@@ -62,8 +62,8 @@ public class RatingActivity extends AppCompatActivity {
                     ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
                     ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
                     ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getNumStars());
-                    finish();
-                    System.exit(0);
+                    Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
+                    startActivity(myIntent);
                 }
             });
 
@@ -82,8 +82,8 @@ public class RatingActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
                     ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
-                    finish();
-                    System.exit(0);
+                    Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
+                    startActivity(myIntent);
                 }
             });
         }
@@ -97,15 +97,16 @@ public class RatingActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                    finish();
-                    System.exit(0);
+                    Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
+                    startActivity(myIntent);
                 }
             });
 
         }
         else{
-            finish();
-            System.exit(0);
+            //TODO: change, this is for debugging
+            Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
+            startActivity(myIntent);
         }
 
         database = FirebaseDatabase.getInstance().getReference();
