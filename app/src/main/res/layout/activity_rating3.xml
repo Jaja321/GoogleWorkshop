@@ -110,7 +110,7 @@
                     />
 
                 <Button
-                    android:id="@+id/submit"
+                    android:id="@+id/submit3"
                     android:layout_marginTop="20dp"
                     android:textSize="18sp"
                     android:layout_width="wrap_content"

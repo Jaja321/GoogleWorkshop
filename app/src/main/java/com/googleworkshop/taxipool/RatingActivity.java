@@ -55,13 +55,13 @@ public class RatingActivity extends AppCompatActivity {
             name1.setText(groupUsers.get(0).getName());
             name2.setText(groupUsers.get(1).getName());
             name3.setText(groupUsers.get(2).getName());
-            Button submitButton = (Button) findViewById(R.id.submit);
+            Button submitButton = (Button) findViewById(R.id.submit3);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getNumStars());
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);
                 }
@@ -76,12 +76,12 @@ public class RatingActivity extends AppCompatActivity {
             TextView name2 = (TextView)  findViewById(R.id.name2);
             name1.setText(groupUsers.get(0).getName());
             name2.setText(groupUsers.get(1).getName());
-            Button submitButton = (Button) findViewById(R.id.submit);
+            Button submitButton = (Button) findViewById(R.id.submit2);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);
                 }
@@ -92,11 +92,11 @@ public class RatingActivity extends AppCompatActivity {
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());
-            Button submitButton = (Button) findViewById(R.id.submit);
+            Button submitButton = (Button) findViewById(R.id.submit1);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    //ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);
                 }
