@@ -28,6 +28,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="350dp">
+
                 <LinearLayout
                     android:background="@drawable/profile_background"
                     android:layout_width="match_parent"
@@ -59,12 +60,23 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp">
+                >
+
+                <TextView
+                    android:id="@+id/report"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="20dp"
+                    android:text="report this user"
+                    android:textSize="20sp"
+                    android:textColor="#000"
+                    android:textStyle="italic"/>
 
                 <LinearLayout
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="40dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="25dp"
+                    android:paddingStart="25dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView
