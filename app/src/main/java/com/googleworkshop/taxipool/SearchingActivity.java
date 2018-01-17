@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SearchingActivity extends NavDrawerActivity {
     protected static final String FORMAT = "%02d:%02d";
+    protected static final String FORMAT1 = "%2d:%02d:%02d";
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
     protected int numOfSeconds;
     private DatabaseReference database;
@@ -50,11 +51,22 @@ public class SearchingActivity extends NavDrawerActivity {
 
             public void onTick(long millisUntilFinished) {
                 //check for a match?
-                timer.setText(String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                if(millisUntilFinished >= 60*60*1000) {//over an hour left
+                    timer.setText(String.format(FORMAT1,
+                            TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                }
+                else {
+                    timer.setText(String.format(FORMAT,
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                }
             }
 
             public void onFinish() {
@@ -119,6 +131,7 @@ public class SearchingActivity extends NavDrawerActivity {
         });
     }
 
+    /*
      public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -147,6 +160,6 @@ public class SearchingActivity extends NavDrawerActivity {
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
-    }
+    }*/
 
 }

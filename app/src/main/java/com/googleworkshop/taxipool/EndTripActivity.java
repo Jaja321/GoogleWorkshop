@@ -99,6 +99,7 @@ public class EndTripActivity extends NavDrawerActivity {
         });
     }
 
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -130,5 +131,5 @@ public class EndTripActivity extends NavDrawerActivity {
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
-
+    */
 }

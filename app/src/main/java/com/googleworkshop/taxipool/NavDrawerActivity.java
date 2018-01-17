@@ -11,6 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 /**
  * Created by Gal Ze'evi on 1/17/2018.
  */
@@ -109,6 +115,7 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
                 });
     }
 
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -137,6 +144,33 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
+    }*/
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        Intent intent;
+        switch(menuItem.getItemId()) {
+            case R.id.nav_my_profile:
+                intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_sign_out:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                break;
+            case R.id.nav_preferences:
+                intent = new Intent(this, PreferencesActivity.class);
+                //intent.putExtra("User", user);
+                startActivity(intent);
+                break;
+            default:
+                //?
+        }
+
+        // Close the navigation drawer
+        mDrawer.closeDrawers();
     }
+    //------
+
 
 }

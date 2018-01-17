@@ -132,6 +132,7 @@ public class ProfileActivity extends NavDrawerActivity {
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
     }
 
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -140,7 +141,9 @@ public class ProfileActivity extends NavDrawerActivity {
             case R.id.nav_my_profile:
                 break;//do nothing, already in profile
             case R.id.nav_sign_out:
-                //TODO: add sign_out
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
             case R.id.nav_preferences:
                 intent = new Intent(this, PreferencesActivity.class);
@@ -158,6 +161,13 @@ public class ProfileActivity extends NavDrawerActivity {
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
+    }*/
+
+    @Override
+    public void selectDrawerItem(MenuItem menuItem) {
+        if(menuItem.getItemId() != R.id.nav_my_profile){
+            super.selectDrawerItem(menuItem);
+        }
     }
 
 }

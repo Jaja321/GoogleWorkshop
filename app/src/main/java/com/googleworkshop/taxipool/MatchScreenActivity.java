@@ -274,6 +274,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
     }
 
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -303,7 +304,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
-    }
+    }*/
     //------
 
 }

@@ -295,6 +295,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     //---------------------------------------------------
 
     //---------------navigation drawer-------------------
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -323,7 +324,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         menuItem.setChecked(true);//TODO Remove?
         // Close the navigation drawer
         mDrawer.closeDrawers();
-    }
+    }*/
     //---------------------------------------------------
 
 
