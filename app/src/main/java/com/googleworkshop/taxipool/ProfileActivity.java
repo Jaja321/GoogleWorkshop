@@ -1,5 +1,7 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -10,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.support.v7.app.AlertDialog;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -35,9 +39,10 @@ public class ProfileActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-    private TextView userName, rating;
+    private TextView userName, rating, report;
     private ImageView profileImg;
     private User user;
+    private User currUser;
     //------
 
 
@@ -47,20 +52,22 @@ public class ProfileActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_profile);
 
 
-
+        report = (TextView) findViewById(R.id.report);
         userName = (TextView) findViewById(R.id.user_name);
         rating = (TextView) findViewById(R.id.rating);
         profileImg = (ImageView) findViewById(R.id.profile_img);
 
         Intent intent = getIntent();
         user = intent.getParcelableExtra("User");
+        //TODO: change so not in if else
         if(user==null) {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
             database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    user=dataSnapshot.getValue(User.class);
+                    user = dataSnapshot.getValue(User.class);
+                    currUser = user;
                     initProfile(user);
                 }
 
@@ -69,9 +76,58 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             });
         }else{
-            initProfile(user);
-        }
+            mAuth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currUser = dataSnapshot.getValue(User.class);
+                    initProfile(user);
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+        if(user.getUserId() != currUser.getUserId()){ //TODO: this does not work
+            report.setVisibility(View.VISIBLE);
+            report.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileActivity.this);
+
+                    // set title
+                    alertDialogBuilder.setTitle("Report");
+
+                    // set dialog message
+                    alertDialogBuilder
+                            .setMessage("Would you like to report this user?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    //TODO: report
+                                    dialog.cancel();
+                                }
+                            })
+                            .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    // if this button is clicked, just close
+                                    // the dialog box and do nothing
+                                    dialog.cancel();
+                                }
+                            });
+
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+
+                    // show it
+                    alertDialog.show();
+                }
+            });
+
+
+        }
 
 
         //added for navigation drawer

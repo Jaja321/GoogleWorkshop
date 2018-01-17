@@ -37,8 +37,6 @@ public class RatingActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     //------
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,8 +92,6 @@ public class RatingActivity extends AppCompatActivity {
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());
             Button submitButton = (Button) findViewById(R.id.submit1);
-
-
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

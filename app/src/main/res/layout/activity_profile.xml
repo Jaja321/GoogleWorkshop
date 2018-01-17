@@ -71,6 +71,7 @@
                     android:text="report this user"
                     android:textSize="20sp"
                     android:textColor="#000"
+                    android:visibility="invisible"
                     android:textStyle="italic"/>
 
                 <LinearLayout
