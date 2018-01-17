@@ -29,27 +29,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends NavDrawerActivity {
     private FirebaseAuth mAuth;
     private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
     private String userID;
 
-    //added for navigation drawer
-    private DrawerLayout mDrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
     private TextView userName, rating, report;
     private ImageView profileImg;
     private User user;
     private User currUser;
-    //------
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         //setContentView(R.layout.activity_profile);
+        addDrawer();
 
 
         report = (TextView) findViewById(R.id.report);
@@ -63,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
         if(user==null) {
             mAuth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = mAuth.getCurrentUser();
-            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {//TODO the app crashes here when I run it
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     user = dataSnapshot.getValue(User.class);
@@ -129,70 +125,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
 
-
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
-
-
     }
     private void initProfile(User user){
         userName.setText(user.getName());
         rating.setText(user.getRating()+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
-    }
-
-    //added for navigation drawer
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
@@ -216,12 +153,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
+        //menuItem.setChecked(true);
         // Set action bar title
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
-    //------
 
 }

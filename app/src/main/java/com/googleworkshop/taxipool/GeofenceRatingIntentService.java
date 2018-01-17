@@ -62,7 +62,7 @@ public class GeofenceRatingIntentService extends IntentService {
             String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition, triggeringGeofences);
 
             // Send notification and log the transition details.
-            //sendRatingNotification();
+            //sendNotification(geofenceTransitionDetails);
             sendNotification("Please rate your travel buddies");
             Log.i(TAG, geofenceTransitionDetails);
         } else {
@@ -132,8 +132,9 @@ public class GeofenceRatingIntentService extends IntentService {
         stackBuilder.addNextIntent(notificationIntent);
 
         // Get a PendingIntent containing the entire back stack.
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
@@ -161,15 +162,6 @@ public class GeofenceRatingIntentService extends IntentService {
         mNotificationManager.notify(0, builder.build());
     }
 
-    private void sendRatingNotification(){
-        Intent notificationIntent = new Intent(getApplicationContext(), RatingActivity.class);//TODO change to RatingActivity
-        notificationIntent.putExtra("groupSize", groupSize);
-        notificationIntent.putExtra("groupUsers", groupUsers);
 
-        String notificationTitle = "Please rate your travel buddies";
-        String notificationBody = "Rating helps us find you a better match";
-
-        NotificationUtils.sendNotification(notificationTitle, notificationBody, notificationIntent, getApplicationContext());
-    }
 
 }

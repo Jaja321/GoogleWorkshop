@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
-public class SearchingActivity extends AppCompatActivity {
+public class SearchingActivity extends NavDrawerActivity {
     protected static final String FORMAT = "%02d:%02d";
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
     protected int numOfSeconds;
@@ -34,43 +34,19 @@ public class SearchingActivity extends AppCompatActivity {
     private String requestId;
     Intent nextIntent;
 
-    //added for navigation drawer
-    private DrawerLayout mDrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
-    //------
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching_screen_layout);
+        addDrawer();
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);
         //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
 
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
-
-        new CountDownTimer(numOfSeconds*1000, 1000) {
+         new CountDownTimer(numOfSeconds*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 //check for a match?
@@ -143,47 +119,7 @@ public class SearchingActivity extends AppCompatActivity {
         });
     }
 
-    //added for navigation drawer
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
-    public void selectDrawerItem(MenuItem menuItem) {
+     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
         Intent intent;
@@ -206,12 +142,11 @@ public class SearchingActivity extends AppCompatActivity {
         }
 
         // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
+        //menuItem.setChecked(true);
         // Set action bar title
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
-    //------
 
 }
