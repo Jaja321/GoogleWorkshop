@@ -63,4 +63,5 @@
         <item name="android:listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
     </style>
 
+
 </resources>

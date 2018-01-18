@@ -71,16 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         LoginButton fbloginButton = findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 
-        // Add listener to google sign in button
-        //Jerafi changed SigninButton to Imagebutton
-        ImageButton googleSignIn = findViewById(R.id.sign_in_button);
-        googleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInWithGoogle(view);
-            }
-        });
-
         // Callback registration
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -151,6 +141,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signInWithGoogle(View view) {
+        View progressBar=findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
