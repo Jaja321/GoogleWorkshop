@@ -36,6 +36,7 @@ public class SearchingActivity extends NavDrawerActivity {
     Intent nextIntent;
     private boolean isActive;
     private SharedPreferences.Editor editor;
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,7 @@ public class SearchingActivity extends NavDrawerActivity {
         final TextView timer = (TextView)findViewById(R.id.timer);
         //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
-         new CountDownTimer(numOfSeconds*1000, 1000) {
-
+        countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 //check for a match?
                 if(millisUntilFinished >= 60*60*1000) {//over an hour left
@@ -77,7 +77,8 @@ public class SearchingActivity extends NavDrawerActivity {
                 NotificationUtils.sendNotification("Sorry, We could not find a match",
                         "you are welcome to try again soon", nextIntent, getApplicationContext());
             }
-        }.start();
+        };
+        countDownTimer.start();
         SharedPreferences sharedPref = this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
         //TODO should I check if null?
@@ -150,6 +151,7 @@ public class SearchingActivity extends NavDrawerActivity {
 
     @Override
     public void gotoPreferences(){
+        countDownTimer.cancel();
         if(groupId!=null &&!isActive)
             database.child("groups").child(groupId).child("closed").setValue(true);
         editor.putString("requestId",null);
