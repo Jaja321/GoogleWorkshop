@@ -59,38 +59,51 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         user = intent.getParcelableExtra("User");
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currUser = dataSnapshot.getValue(User.class);
+                if(user==null) {
+                    user = currUser;
+                }
+                initProfile(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         //TODO: change so not in if else
-        if(user==null) {
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    user = dataSnapshot.getValue(User.class);
-                    currUser = user;
-                    initProfile(user);
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }else{
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    currUser = dataSnapshot.getValue(User.class);
-                    initProfile(user);
-                }
+        //if(user.getUserId() != currUser.getUserId()){ //TODO: this does not work
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
-        if(user.getUserId() != currUser.getUserId()){ //TODO: this does not work
+
+        //added for navigation drawer
+        // Set a Toolbar to replace the ActionBar.
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Find our drawer view
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = setupDrawerToggle();
+
+        // Tie DrawerLayout events to the ActionBarToggle
+        mDrawer.addDrawerListener(drawerToggle);
+        // Find our drawer view
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        // Setup drawer view
+        setupDrawerContent(nvDrawer);
+        //-------
+
+
+    }
+    private void initProfile(User user){
+        userName.setText(user.getName());
+        rating.setText(user.getRating()+"/5.0");
+        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
+        if(!currUser.getUserId().equals(user.getUserId())){ //TODO: this does not work
             report.setVisibility(View.VISIBLE);
             report.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,30 +142,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
 
-
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
-
-
-    }
-    private void initProfile(User user){
-        userName.setText(user.getName());
-        rating.setText(user.getRating()+"/5.0");
-        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
     }
 
     //added for navigation drawer
