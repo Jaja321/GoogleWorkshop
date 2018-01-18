@@ -10,6 +10,7 @@ import android.widget.Button;
 public class ThankYouActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_thank_you);
         final Button newTripButton = (Button) findViewById(R.id.find_new_trip);
         newTripButton.setOnClickListener(new View.OnClickListener() {
             @Override

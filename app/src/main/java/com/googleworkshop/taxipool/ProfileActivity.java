@@ -44,7 +44,6 @@ public class ProfileActivity extends NavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        //setContentView(R.layout.activity_profile);
         addDrawer();
 
 
@@ -55,38 +54,30 @@ public class ProfileActivity extends NavDrawerActivity {
 
         Intent intent = getIntent();
         user = intent.getParcelableExtra("User");
-        //TODO: change so not in if else
-        if(user==null) {
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {//TODO the app crashes here when I run it
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    user = dataSnapshot.getValue(User.class);
-                    currUser = user;
-                    initProfile(user);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currUser = dataSnapshot.getValue(User.class);
+                if (user == null) {
+                    user = currUser;
                 }
+                initProfile(user);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }else{
-            mAuth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    currUser = dataSnapshot.getValue(User.class);
-                    initProfile(user);
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
-        if(user.getUserId() != currUser.getUserId()){ //TODO: this does not work
+
+    }
+    private void initProfile(User user){
+        userName.setText(user.getName());
+        rating.setText(user.getRating()+"/5.0");
+        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
+        if(!currUser.getUserId().equals(user.getUserId())){ //TODO: this does not work
             report.setVisibility(View.VISIBLE);
             report.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -124,12 +115,6 @@ public class ProfileActivity extends NavDrawerActivity {
 
 
         }
-
-    }
-    private void initProfile(User user){
-        userName.setText(user.getName());
-        rating.setText(user.getRating()+"/5.0");
-        Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
     }
 
     /*

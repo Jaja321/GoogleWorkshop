@@ -32,8 +32,10 @@ public class SearchingActivity extends NavDrawerActivity {
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
     protected int numOfSeconds;
     private DatabaseReference database;
-    private String requestId;
+    private String requestId, groupId;
     Intent nextIntent;
+    private boolean isActive;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +77,29 @@ public class SearchingActivity extends NavDrawerActivity {
                         "you are welcome to try again soon", nextIntent, getApplicationContext());
             }
         }.start();
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
-        nextIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));//TODO should I check if null?
+        //TODO should I check if null?
         requestId=getIntent().getStringExtra("requestId");
         if(requestId!=null){
-            SharedPreferences.Editor editor = sharedPref.edit();
+           editor = sharedPref.edit();
             editor.putString("requestId",requestId);
             editor.commit();
-        }else{
-            requestId = sharedPref.getString("requestId",null);
         }
         waitForGroup();
     }
 
     private void waitForGroup(){
         database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference groupIdRef=database.child("requests").child(requestId).child("groupId");
+        DatabaseReference groupIdRef=database.child("requests").child(requestId);
 
         groupIdRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final String groupId=dataSnapshot.getValue(String.class);
+                if(!dataSnapshot.exists())
+                    return;
+                final Request request=dataSnapshot.getValue(Request.class);
+                groupId=request.getGroupId();
                 if(groupId!=null){
                     //Found a group:
                     /*
@@ -115,11 +118,14 @@ public class SearchingActivity extends NavDrawerActivity {
                     isActiveRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            boolean isActive=dataSnapshot.getValue(boolean.class);
+                            if(!dataSnapshot.exists())
+                                return;
+                            isActive=dataSnapshot.getValue(boolean.class);
                             if(isActive) {
                                 nextIntent.putExtra("groupId", groupId);
                                 NotificationUtils.sendNotification("We've found a match!",
                                         "Click to see your travel buddies", nextIntent, getApplicationContext());
+                                nextIntent.putExtra("destLatLng", request.destLatLng());
                                 startActivity(nextIntent);
                                 finish();
                             }
@@ -139,6 +145,19 @@ public class SearchingActivity extends NavDrawerActivity {
 
             }
         });
+    }
+
+    @Override
+    public void gotoPreferences(){
+        if(groupId!=null &&!isActive)
+            database.child("groups").child(groupId).child("closed").setValue(true);
+        editor.putString("requestId",null);
+        editor.commit();
+        Intent intent;
+        intent = new Intent(this, PreferencesActivity.class);
+        //intent.putExtra("User", user);
+        startActivity(intent);
+        finish();
     }
 
     /*
