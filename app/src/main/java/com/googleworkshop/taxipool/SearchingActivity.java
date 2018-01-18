@@ -48,7 +48,6 @@ public class SearchingActivity extends NavDrawerActivity {
         final TextView timer = (TextView)findViewById(R.id.timer);
         //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
-
          new CountDownTimer(numOfSeconds*1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -73,6 +72,8 @@ public class SearchingActivity extends NavDrawerActivity {
 
             public void onFinish() {
                 timer.setText("done!");//for now
+                if(groupId!=null &&!isActive)
+                    database.child("groups").child(groupId).child("closed").setValue(true);
                 NotificationUtils.sendNotification("Sorry, We could not find a match",
                         "you are welcome to try again soon", nextIntent, getApplicationContext());
             }
