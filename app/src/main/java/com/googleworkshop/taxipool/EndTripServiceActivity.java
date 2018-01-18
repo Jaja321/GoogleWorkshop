@@ -60,7 +60,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     private String groupId;
     private DatabaseReference database;
     private LatLng destLatLng;
-    private boolean tryAgain = true;
+    //private boolean tryAgain = true;
 
 
     @Override
@@ -129,7 +129,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                         3000//Radius in meters
                 )
                 //Duration in milliseconds,
-                .setExpirationDuration(300000)//TODO change duration
+                .setExpirationDuration(300000)//50 min
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
         mGeofenceList.add(mGeofence);
@@ -166,11 +166,22 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         }
         Intent intent = new Intent(this, GeofenceRatingIntentService.class);
         intent.putExtra("groupSize", groupSize);
-        intent.putExtra("groupUsers", groupUsers);
+        Bundle groupUsersBundle = new Bundle();
+        groupUsersBundle.putParcelableArrayList("groupUsers", groupUsers);
+        intent.putExtra("groupUsersBundle", groupUsersBundle);
+        //intent.putExtra("groupUsers", groupUsers);
+
+        /*
+        for(int i = 0; i < groupSize - 1; i++){
+            String id = "User" + Integer.toString(i);
+            intent.putExtra(id, groupUsers.get(i));
+        }*/
+
+        //intent.putExtra("groupUsers", groupUsers);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
-        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
+        mGeofencePendingIntent = PendingIntent.getService(this, 177, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return mGeofencePendingIntent;
     }
 
@@ -233,9 +244,13 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Failed to add geofences
-                        if(tryAgain) {
-                            checkGPSOn();
-                        }
+                        //if(tryAgain) {
+                         //   checkGPSOn();
+                        //}
+                        Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                        timerIntent.putExtra("groupSize", groupSize);
+                        timerIntent.putExtra("groupUsers", groupUsers);
+                        startService(timerIntent);
                         Log.i("Did not add Geofence", "Did not add Geofence");
 
                     }
@@ -245,9 +260,8 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        tryAgain = false;
+        //tryAgain = false;
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
-            //tryAgain = false;
             addGeofences();
             return;
         }

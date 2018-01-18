@@ -35,12 +35,13 @@ public class RatingActivity extends NavDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addDrawer();
+
 
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
         if(groupSize == 4){
             setContentView(R.layout.activity_rating3);
+            addDrawer();
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar3);
@@ -65,6 +66,7 @@ public class RatingActivity extends NavDrawerActivity {
         }
         else if(groupSize == 3){
             setContentView(R.layout.activity_rating2);
+            addDrawer();
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             TextView name1 = (TextView)  findViewById(R.id.name1);
@@ -84,6 +86,7 @@ public class RatingActivity extends NavDrawerActivity {
         }
         else if(groupSize == 2){
             setContentView(R.layout.activity_rating1);
+            addDrawer();
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());

@@ -71,6 +71,8 @@ public class SearchingActivity extends NavDrawerActivity {
 
             public void onFinish() {
                 timer.setText("done!");//for now
+                NotificationUtils.sendNotification("Sorry, We could not find a match",
+                        "you are welcome to try again soon", nextIntent, getApplicationContext());
             }
         }.start();
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -103,6 +105,12 @@ public class SearchingActivity extends NavDrawerActivity {
                     finish();
                     */
 
+                    //TODO this sends a notification that we've found a match
+                    //TODO I didn't know where to put it
+                    //nextIntent.putExtra("groupId", groupId);
+                    //NotificationUtils.sendNotification("We've found a match!",
+                    //       "Click to see your travel buddies", nextIntent, getApplicationContext());
+
                     DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
                     isActiveRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -110,6 +118,8 @@ public class SearchingActivity extends NavDrawerActivity {
                             boolean isActive=dataSnapshot.getValue(boolean.class);
                             if(isActive) {
                                 nextIntent.putExtra("groupId", groupId);
+                                NotificationUtils.sendNotification("We've found a match!",
+                                        "Click to see your travel buddies", nextIntent, getApplicationContext());
                                 startActivity(nextIntent);
                                 finish();
                             }
@@ -161,5 +171,6 @@ public class SearchingActivity extends NavDrawerActivity {
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }*/
+
 
 }

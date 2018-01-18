@@ -18,7 +18,8 @@ import android.support.v4.app.TaskStackBuilder;
 
 public class NotificationUtils {
     private static final String CHANNEL_ID = "channel_01";
-    private static int notificationCount = 0;
+    private static int notificationCount = 10;
+    private static int pendingIntentCount = 1;
     private static NotificationChannel mChannel = null;
 
     public static void sendNotification(String notificationTitle, String notificationBody, Intent notificationIntent, Context context) {
@@ -29,7 +30,7 @@ public class NotificationUtils {
         // Android O requires a Notification Channel.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //CharSequence name = getString(R.string.app_name);
-            if(mChannel != null){
+            if(mChannel == null){
                 CharSequence name = "TaxiPoolNotificationChannel";
                 // Create the channel for the notification
                 mChannel =
@@ -42,6 +43,7 @@ public class NotificationUtils {
 
         //Intent notificationIntent = new Intent(getApplicationContext(), RatingActivity.class);
 
+        /*
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 
@@ -55,6 +57,12 @@ public class NotificationUtils {
         // Get a PendingIntent containing the entire back stack.
         PendingIntent notificationPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);//TODO check
+         */
+
+        PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, pendingIntentCount,
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntentCount++;
+
 
         // Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);

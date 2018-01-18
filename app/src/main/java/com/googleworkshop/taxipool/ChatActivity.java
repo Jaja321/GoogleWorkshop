@@ -15,6 +15,9 @@
  */
 package com.googleworkshop.taxipool;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -47,7 +50,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends NavDrawerActivity {
+public class ChatActivity extends NavDrawerActivity{
 
     private static final String TAG = "ChatActivity";
 
@@ -67,6 +70,7 @@ public class ChatActivity extends NavDrawerActivity {
     private FirebaseUser currentUser;
     private String groupId;
     private String userId;
+
 
     private String mUsername;
 
@@ -146,6 +150,15 @@ public class ChatActivity extends NavDrawerActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
                 mMessageAdapter.add(chatMessage);
+
+                /* this sends a push notification that you have a new message
+                clicking on it will resume this activity or start it if it was closed
+                Intent notificationIntent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                notificationIntent.setPackage(null); // The golden row !!!
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                NotificationUtils.sendNotification("You have a new message!" ,"Click to view it",
+                            notificationIntent, getApplicationContext());
+                */
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}

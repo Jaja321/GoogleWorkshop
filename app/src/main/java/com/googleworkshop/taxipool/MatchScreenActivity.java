@@ -68,7 +68,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
         initViews();
-        endTripIntent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
+        endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);
         //endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
 
