@@ -72,10 +72,12 @@ public class SearchingActivity extends NavDrawerActivity {
 
             public void onFinish() {
                 timer.setText("done!");//for now
-                if(groupId!=null &&!isActive)
+                if(groupId!=null &&!isActive) {
+                    Intent intent = new Intent(SearchingActivity.this, PreferencesActivity.class);
                     database.child("groups").child(groupId).child("closed").setValue(true);
-                NotificationUtils.sendNotification("Sorry, We could not find a match",
-                        "you are welcome to try again soon", nextIntent, getApplicationContext());
+                    NotificationUtils.sendNotification("Sorry, We could not find a match",
+                            "you are welcome to try again soon", intent, getApplicationContext());
+                }
             }
         };
         countDownTimer.start();
