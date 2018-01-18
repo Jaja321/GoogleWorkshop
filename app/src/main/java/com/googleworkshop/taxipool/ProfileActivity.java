@@ -44,7 +44,6 @@ public class ProfileActivity extends NavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        //setContentView(R.layout.activity_profile);
         addDrawer();
 
 
@@ -70,24 +69,6 @@ public class ProfileActivity extends NavDrawerActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
 
 
 
