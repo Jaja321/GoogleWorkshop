@@ -1,6 +1,8 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -132,14 +134,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void gotoPreferences(User user){
-        String token = FirebaseInstanceId.getInstance().getToken();
-        ServerUtils.updateToken(token);
-        Intent intent = new Intent(this,PreferencesActivity.class);
-        intent.putExtra("User",user);
-        intent.putExtra("FirstRun",true);
-
-        Intent intent2 = new Intent(this, MatchScreenActivity.class);
-        intent2.putExtra("User",user);
+        Intent intent;
+        SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
+        String requestId=sharedPreferences.getString("requestId",null);
+        if(requestId==null) {
+            String token = FirebaseInstanceId.getInstance().getToken();
+            ServerUtils.updateToken(token);
+            intent = new Intent(this, PreferencesActivity.class);
+            intent.putExtra("User", user);
+        }else{
+            intent = new Intent(this, SearchingActivity.class);
+            intent.putExtra("requestId", requestId);
+        }
         startActivity(intent);
         finish();
     }
