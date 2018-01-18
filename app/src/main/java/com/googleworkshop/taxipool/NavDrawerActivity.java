@@ -147,21 +147,16 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
     }*/
 
     public void selectDrawerItem(MenuItem menuItem) {
-        Intent intent;
+
         switch(menuItem.getItemId()) {
             case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
+                gotoMyProfile();
                 break;
             case R.id.nav_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                gotoSignOut();
                 break;
             case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                //intent.putExtra("User", user);
-                startActivity(intent);
+                gotoPreferences();
                 break;
             default:
                 //?
@@ -169,6 +164,25 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
 
         // Close the navigation drawer
         mDrawer.closeDrawers();
+    }
+
+    public void gotoMyProfile(){
+        Intent intent;
+        intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void gotoSignOut(){
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
+    public void gotoPreferences(){
+        Intent intent;
+        intent = new Intent(this, PreferencesActivity.class);
+        //intent.putExtra("User", user);
+        startActivity(intent);
     }
     //------
 

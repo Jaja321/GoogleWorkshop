@@ -86,6 +86,10 @@ public class ProfileActivity extends NavDrawerActivity {
                 }
             });
         }
+
+
+    }
+    private void initProfile(User user){
         if(user.getUserId() != currUser.getUserId()){ //TODO: this does not work
             report.setVisibility(View.VISIBLE);
             report.setOnClickListener(new View.OnClickListener() {
@@ -124,9 +128,6 @@ public class ProfileActivity extends NavDrawerActivity {
 
 
         }
-
-    }
-    private void initProfile(User user){
         userName.setText(user.getName());
         rating.setText(user.getRating()+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);

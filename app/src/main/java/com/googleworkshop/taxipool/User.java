@@ -81,7 +81,7 @@ public class User implements Parcelable{
         this.gender = in.readByte() != 0;
         this.age = in.readInt();
         this.numOfRaters = in.readInt();
-        this.rating = in.readFloat();
+        this.rating = in.readDouble();
     }
 
     public String getHomeId() {
