@@ -146,6 +146,7 @@ public class SearchingActivity extends NavDrawerActivity {
                                 NotificationUtils.sendNotification("We've found a match!",
                                         "Click to see your travel buddies", nextIntent, getApplicationContext());
                                 nextIntent.putExtra("destLatLng", request.destLatLng());
+                                nextIntent.putExtra("currentRequest",request);
                                 startActivity(nextIntent);
                                 finish();
                             }
