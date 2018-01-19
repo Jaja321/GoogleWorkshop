@@ -31,7 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".MatchScreenActivity">
+        </activity>
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".AutocompleteActivity" />
         <activity android:name=".ProfileActivity">
@@ -65,7 +67,8 @@
         </activity>
         <activity android:name=".MockServerCommunicationActivity" />
         <activity android:name=".RatingActivity" />
-        <activity android:name=".EndTripActivity">
+        <activity android:name=".EndTripActivity"
+            android:parentActivityName=".MatchScreenActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -78,28 +81,16 @@
         <activity android:name=".SearchingServiceActivity" />
         <activity android:name=".GeofenceTestActivity">
         <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <activity android:name=".EndTripServiceActivity">
+        <activity android:name=".EndTripServiceActivity"
+            android:parentActivityName=".MatchScreenActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".ThankYouActivity" />
-        <activity android:name=".EndTripTestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-
         <service
             android:name=".MyTestService"
             android:exported="false" />

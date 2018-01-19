@@ -43,8 +43,8 @@ public class RatingTimerService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         groupSize = intent.getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
-        //handler.postDelayed(r, 3600000);//one hour
-        handler.postDelayed(r, 10000);//one hour
+        handler.postDelayed(r, 3600000);//one hour
+        //handler.postDelayed(r, 10000);//one hour
     }
 
     private void sendNotification(String notificationDetails) {

@@ -16,6 +16,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -60,8 +61,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     private String groupId;
     private DatabaseReference database;
     private LatLng destLatLng;
-    //private boolean tryAgain = true;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -155,7 +154,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
             }
         });
         //---------------------------------------------------
-
     }
 
     //------------------Geofencing-----------------------
@@ -169,16 +167,8 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         Bundle groupUsersBundle = new Bundle();
         groupUsersBundle.putParcelableArrayList("groupUsers", groupUsers);
         intent.putExtra("groupUsersBundle", groupUsersBundle);
-        //intent.putExtra("groupUsers", groupUsers);
-
-        /*
-        for(int i = 0; i < groupSize - 1; i++){
-            String id = "User" + Integer.toString(i);
-            intent.putExtra(id, groupUsers.get(i));
-        }*/
-
-        //intent.putExtra("groupUsers", groupUsers);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
         mGeofencePendingIntent = PendingIntent.getService(this, 177, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -228,8 +218,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         if (!checkPermissions()) {
             getPermissions();
             Log.i("hello hello", "hello hello");
-            //showSnackbar(getString(R.string.insufficient_permissions));
-            //return;
         }
 
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
@@ -243,10 +231,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Failed to add geofences
-                        //if(tryAgain) {
-                         //   checkGPSOn();
-                        //}
                         Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
                         timerIntent.putExtra("groupSize", groupSize);
                         timerIntent.putExtra("groupUsers", groupUsers);
@@ -260,7 +244,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //tryAgain = false;
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
             addGeofences();
             return;
