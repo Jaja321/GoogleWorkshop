@@ -52,6 +52,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.TimeUnit;
+
 public class PreferencesActivity extends NavDrawerActivity {
     public static int buttonSearch = 0;
     private String dest;
@@ -85,7 +87,11 @@ public class PreferencesActivity extends NavDrawerActivity {
     private AutocompleteFilter allFilter;
     private static DatabaseReference database;
     private FirebaseAuth mAuth;
-    private NavigationView nvDrawer;
+    //private NavigationView nvDrawer;
+    public final String lastRequest = "lastRequest";
+    protected SharedPreferences lastRequestSharedPref;
+    protected SharedPreferences.Editor lastRequestPrefEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,7 +310,8 @@ public class PreferencesActivity extends NavDrawerActivity {
     */
 
     private void createRequest(){
-        int nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
+        long nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
+        writeNumOfSeconds(nOfSeconds);
         int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
         userRequest = new Request(user.getUserId(), srcLatLng, destLatLng, nOfSeconds, nOfPassengers);
         if (homeCBox.isChecked()) {
@@ -445,6 +452,16 @@ public class PreferencesActivity extends NavDrawerActivity {
         } catch (GooglePlayServicesNotAvailableException e) {
             // TODO: Handle the error.
         }
+    }
+
+    public void writeNumOfSeconds(long nOfSeconds){
+        lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
+        lastRequestPrefEditor = lastRequestSharedPref.edit();
+
+        lastRequestPrefEditor.putLong("lastRequestTimeStamp", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+        lastRequestPrefEditor.putLong("lastRequestDuration", nOfSeconds);
+
+        lastRequestPrefEditor.commit();//Should I use apply or commit?
     }
 
     /*

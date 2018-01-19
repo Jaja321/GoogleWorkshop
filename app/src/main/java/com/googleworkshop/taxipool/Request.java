@@ -9,12 +9,12 @@ public class Request implements Parcelable{
     private String requesterId;
     private String src;
     private String dest;
-    private int timePrefs;
+    private long timePrefs;
     private int numOfPassengers;
     private String groupId;
     public Request(){}
 
-    Request(String requesterId,LatLng src,LatLng dest,int timePrefs,int numOfPassengers){
+    Request(String requesterId,LatLng src,LatLng dest,long timePrefs,int numOfPassengers){
         this.requesterId = requesterId;
         this.src = latlngToStr(src);
         this.dest = latlngToStr(dest);
@@ -23,7 +23,7 @@ public class Request implements Parcelable{
         groupId=null;
     }
 
-    Request(String requesterId, String src,String dest,int timePrefs,int numOfPassengers, String groupId){
+    Request(String requesterId, String src,String dest,long timePrefs,int numOfPassengers, String groupId){
         this.requesterId = requesterId;
         this.src = src;
         this.dest = dest;
@@ -50,7 +50,7 @@ public class Request implements Parcelable{
         return dest;
     }
 
-    public int getTimePrefs() {
+    public long getTimePrefs() {
         return timePrefs;
     }
 
@@ -76,7 +76,7 @@ public class Request implements Parcelable{
         parcel.writeString(requesterId);
         parcel.writeString(src);
         parcel.writeString(dest);
-        parcel.writeInt(timePrefs);
+        parcel.writeLong(timePrefs);
         parcel.writeInt(numOfPassengers);
         parcel.writeString(groupId);
     }
