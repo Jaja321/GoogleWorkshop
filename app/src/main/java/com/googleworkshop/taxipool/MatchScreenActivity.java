@@ -1,7 +1,9 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -58,7 +61,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private float furthestDistance;
     private ArrayList<LatLng> destinations=new ArrayList<>();
     private float distance[] = new float[1];
-    private String groupId;
+    private String groupId,currentUserRequestId;
     private DatabaseReference database;
     LatLngBounds.Builder builder;
     private float hue=30;
@@ -68,6 +71,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private TextView[] names;
     private ImageView[] photos;
     private View goButton;
+    private boolean groupIsClosed;
+    private SharedPreferences sharedPreferences;
 
     //added for directions
     private DirectionsResult directionsResult;
@@ -94,6 +99,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         setContentView(R.layout.activity_match_screen);
         addDrawer();
         database = FirebaseDatabase.getInstance().getReference();
+        sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
+        currentUserRequestId=sharedPreferences.getString("requestId",null);
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
@@ -119,14 +126,16 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
     private void initViews(){
         goButton = findViewById(R.id.goButton);
-        names=new TextView[3];
-        photos=new ImageView[3];
+        names=new TextView[4];
+        photos=new ImageView[4];
         names[0]=(TextView)findViewById(R.id.buddy1_text);
         names[1]=(TextView)findViewById(R.id.buddy2_text);
         names[2]=(TextView)findViewById(R.id.buddy3_text);
+        names[3]=(TextView)findViewById(R.id.buddy4_text);
         photos[0]=(ImageView)findViewById(R.id.buddy1);
         photos[1]=(ImageView)findViewById(R.id.buddy2);
         photos[2]=(ImageView)findViewById(R.id.buddy3);
+        photos[3]=(ImageView)findViewById(R.id.buddy4);
     }
 
 
@@ -141,6 +150,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         meetingPointRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    return;
                 meetingPoint=ServerUtils.strToLatlng(dataSnapshot.getValue(String.class));
                 meetingMarker = mMap.addMarker(new MarkerOptions().position(meetingPoint).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                 if (updated&&userSrc != null){
@@ -162,8 +173,10 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         groupClosedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean closed=dataSnapshot.getValue(boolean.class);
-                if(closed){
+                if(!dataSnapshot.exists())
+                    return;
+                groupIsClosed=dataSnapshot.getValue(boolean.class);
+                if(groupIsClosed){
                     goButton.setVisibility(View.INVISIBLE);
                 }
             }
@@ -231,29 +244,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                             builder.include(request.srcLatLng());
 //                            fixCamera();
                         }
-
-                        if(buddyCount < 3) {//names and photos are arrays of size 3 so buddyCount == 3 causes crash
-                            Log.d("buddyCount",buddyCount+" ");
-                            TextView textView=names[buddyCount];
-                            ImageView imageView=photos[buddyCount];
-                            textView.setText(firstName);
-                            RequestOptions options = new RequestOptions();
-                            options.circleCrop();
-                            Glide.with(getApplicationContext()).load(requester.getProfilePicture()).apply(options).into(imageView);
-                            textView.setVisibility(View.VISIBLE);
-                            imageView.setVisibility(View.VISIBLE);
-                            imageView.setClickable(true);
-                            imageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent profileIntent=new Intent(MatchScreenActivity.this,ProfileActivity.class);
-                                    profileIntent.putExtra("User",requester);
-                                    startActivity(profileIntent);
-                                }
-                            });
-
-                        }
                         buddyCount++;
+                        updateLayout();
+
                     }
 
                     @Override
@@ -270,7 +263,26 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                //TODO maybe: Deal with someone leaving the group.
+                if(dataSnapshot.getKey()==currentUserRequestId)
+                    return;
+                buddyCount--;
+                if (buddyCount == 1 && !groupIsClosed) {
+                    Toast.makeText(MatchScreenActivity.this, "Someone left the group, please search again.",
+                            Toast.LENGTH_SHORT).show();
+                    Intent preferencesIntent=new Intent(MatchScreenActivity.this, PreferencesActivity.class);
+                    preferencesIntent.putExtra("User",user);
+                    database.child("groups").child(groupId).child("closed").setValue(true);
+                    SharedPreferences.Editor editor=MatchScreenActivity.this.getSharedPreferences("requestId", Context.MODE_PRIVATE).edit();
+                    editor.putString("requestId",null);
+                    editor.commit();
+                    startActivity(preferencesIntent);
+                    finish();
+                } else {
+                    final Request request = dataSnapshot.getValue(Request.class);
+                    String requesterId = request.getRequesterId();
+                    removeUserFromList(requesterId);
+                    updateLayout();
+                }
             }
 
             @Override
@@ -283,6 +295,46 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
             }
         });
+    }
+    private void setUserLayout(final User user, int index) {
+        TextView textView = names[index];
+        ImageView imageView = photos[index];
+        textView.setText(user.getName().split(" ")[0]);
+        RequestOptions options = new RequestOptions();
+        options.circleCrop();
+        Glide.with(getApplicationContext()).load(user.getProfilePicture()).apply(options).into(imageView);
+        textView.setVisibility(View.VISIBLE);
+        imageView.setVisibility(View.VISIBLE);
+        imageView.setClickable(true);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profileIntent = new Intent(MatchScreenActivity.this, ProfileActivity.class);
+                profileIntent.putExtra("User", user);
+                startActivity(profileIntent);
+            }
+        });
+    }
+
+    private void removeUserFromList(String userId){
+        for(int i=0;i<groupUsers.size();i++){
+            if(groupUsers.get(i).getUserId().equals(userId)){
+                groupUsers.remove(i);
+                return;
+            }
+        }
+    }
+
+    private void updateLayout(){
+        setUserLayout(user, 0);
+        for(int i=1;i<buddyCount;i++)
+            setUserLayout(groupUsers.get(i-1), i);
+        for(int i=buddyCount;i<4;i++) {
+            names[i].setVisibility(View.INVISIBLE);
+            photos[i].setVisibility(View.INVISIBLE);
+        }
+
+
     }
 
     public void goToChat(View view){
@@ -448,4 +500,70 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         List<LatLng> decodedPath = PolyUtil.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath());
         currPolyline = mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
     }
+
+    @Override
+    public void gotoPreferences(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage("Leave the group and find a new ride?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        findANewRide();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
+    }
+
+    /*
+Delete the current request and go to Preferences screen
+ */
+    private void findANewRide() {
+        final Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
+        preferencesIntent.putExtra("User",user);
+        if(!groupIsClosed) {
+            database.child("requests").child(currentUserRequestId).setValue(null);
+            final DatabaseReference groupRef=database.child("groups").child(groupId);
+            groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    int numOfUsers=dataSnapshot.child("numOfUsers").getValue(int.class);
+                    int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
+                    if(numOfUsers==1){
+                        //Delete group:
+                        groupRef.setValue(null);
+                    }else {
+                        groupRef.child("numOfUsers").setValue(numOfUsers - 1);
+                        groupRef.child("numOfPassengers").setValue(numOfPassengers - 1);
+                    }
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("requestId",null);
+                    editor.commit();
+                    startActivity(preferencesIntent);
+                    finish();
+                }
+                @Override
+                public void onCancelled(DatabaseError firebaseError) {
+                }
+            });
+
+        }else {
+            startActivity(preferencesIntent);
+            finish();
+        }
+    }
+
 }

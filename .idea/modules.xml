@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GoogleWorkshop.iml" filepath="$PROJECT_DIR$/GoogleWorkshop.iml" />
+      <module fileurl="file://C:\Users\Benjamin\Desktop\TaxiPool\GoogleWorkshop.iml" filepath="C:\Users\Benjamin\Desktop\TaxiPool\GoogleWorkshop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TaxiPool.iml" filepath="$PROJECT_DIR$/TaxiPool.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

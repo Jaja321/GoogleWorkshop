@@ -27,6 +27,28 @@
             android:layout_height="match_parent"
             tools:context="com.googleworkshop.taxipool.MatchScreenActivity">
 
+            <ImageView
+                android:id="@+id/buddy4"
+                android:layout_width="29dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="4dp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toEndOf="@+id/buddy3"
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:srcCompat="@drawable/com_facebook_profile_picture_blank_square" />
+
+            <TextView
+                android:id="@+id/buddy4_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buddy3"
+                android:textAlignment="center"
+                android:visibility="invisible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buddy2_text"
+                app:layout_constraintEnd_toEndOf="@+id/buddy4"
+                app:layout_constraintStart_toStartOf="@+id/buddy4" />
+
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
