@@ -44,6 +44,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
@@ -52,12 +53,19 @@ public class LoginActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     public static final String EXTRA_USER = "com.googleworkshop.taxipool.USER";
     private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
+    public final String lastRequest = "lastRequest";
+    protected SharedPreferences lastRequestSharedPref;
+    //protected SharedPreferences.Editor lastRequestPrefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getHashKey();
         callbackManager = CallbackManager.Factory.create();
+
+        //lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
+        //lastRequestPrefEditor = lastRequestSharedPref.edit();
+
 
         mAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -127,7 +135,8 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent;
         SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         String requestId=sharedPreferences.getString("requestId",null);
-        if(requestId==null) {
+        long timeLeft = getTimeLeftForRequest();
+        if(requestId==null || timeLeft <= 0) {
             String token = FirebaseInstanceId.getInstance().getToken();
             ServerUtils.updateToken(token);
             intent = new Intent(this, PreferencesActivity.class);
@@ -135,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             intent = new Intent(this, SearchingActivity.class);
             intent.putExtra("requestId", requestId);
+            intent.putExtra("numOfSeconds", timeLeft);
         }
         startActivity(intent);
         finish();
@@ -241,5 +251,22 @@ public class LoginActivity extends AppCompatActivity {
         } catch (NoSuchAlgorithmException e) {
 
         }
+    }
+
+    protected long getTimeLeftForRequest(){
+        lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
+
+        if(!lastRequestSharedPref.contains("lastRequestTimeStamp") || !lastRequestSharedPref.contains("lastRequestDuration")){
+            //no valid last request exists
+            return -1;
+        }
+        long timeStamp = lastRequestSharedPref.getLong("lastRequestTimeStamp", 0);
+        long duration = lastRequestSharedPref.getLong("lastRequestDuration", 0);
+        long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+
+        if(currentTime > timeStamp + duration){//last request has expired
+            return -1;
+        }
+        return duration - (currentTime - timeStamp);
     }
 }

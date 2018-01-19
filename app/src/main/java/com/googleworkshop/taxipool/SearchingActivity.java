@@ -30,7 +30,7 @@ public class SearchingActivity extends NavDrawerActivity {
     protected static final String FORMAT = "%02d:%02d";
     protected static final String FORMAT1 = "%2d:%02d:%02d";
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
-    protected int numOfSeconds;
+    protected long numOfSeconds;
     private DatabaseReference database;
     private String requestId, groupId;
     Intent nextIntent;
@@ -45,10 +45,10 @@ public class SearchingActivity extends NavDrawerActivity {
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
 
-        ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
+        //ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);
         //TODO CHANGE DEFAULT
-        numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
+        numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
         countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 //check for a match?

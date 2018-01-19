@@ -31,7 +31,7 @@ public class PreferencesUtils {
         }
     }
 
-    protected static int getNumOfSeconds(int pos){// move to auxiliary class?
+    protected static long getNumOfSeconds(int pos){// move to auxiliary class?
         if(pos <= 3){//"15 min", "30 min" or "45 min" selected
             return (pos + 1) * 15 * 60;
         }
