@@ -3,7 +3,7 @@ package com.googleworkshop.taxipool;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User implements Parcelable{
@@ -11,8 +11,6 @@ public class User implements Parcelable{
     private String profilePicture;
     private String name;
     private String userId;
-    private boolean gender;
-    private int age;
     private int numOfRaters;
     private double rating;
     private List<String> reportedIDs;
@@ -25,16 +23,12 @@ public class User implements Parcelable{
     User(String userId,String name,String profilePicture){
         this.userId = userId;
         this.name = name;
-        this.gender = gender;
-        this.age = age;
         this.profilePicture = profilePicture;
         this.rating = 0;
         this.numOfRaters = 0;
         this.homeId = null;
-        this.gender = false;
-        this.age = 0;
         this.isBlocked = false;
-        this.reportedIDs = new LinkedList<>();
+        this.reportedIDs = new ArrayList<>();
     }
 
     public List<String> getReportedIDs() {
@@ -53,19 +47,15 @@ public class User implements Parcelable{
         isBlocked = blocked;
     }
 
-    User(String userId, String name, String profilePicture, boolean gender, int age, int rating, int numOfRaters, String homeId){
+    User(String userId, String name, String profilePicture, int rating, int numOfRaters, String homeId){
         this.userId = userId;
         this.name = name;
-        this.gender = gender;
-        this.age = age;
         this.profilePicture = profilePicture;
         this.rating=rating;
         this.numOfRaters=numOfRaters;
         this.homeId=homeId;
-        this.gender=gender;
-        this.age=age;
         this.isBlocked = false;
-        this.reportedIDs = new LinkedList<>();
+        this.reportedIDs = new ArrayList<>();
     }
 
     @Override
@@ -79,10 +69,10 @@ public class User implements Parcelable{
         parcel.writeString(profilePicture);
         parcel.writeString(name);
         parcel.writeString(userId);
-        parcel.writeByte((byte) (gender ? 1 : 0));
-        parcel.writeInt(age);
         parcel.writeInt(numOfRaters);
         parcel.writeDouble(rating);
+        parcel.writeByte((byte) (isBlocked ? 1 : 0));
+        parcel.writeList(reportedIDs);
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>(){
@@ -103,10 +93,10 @@ public class User implements Parcelable{
         this.profilePicture = in.readString();
         this.name = in.readString();
         this.userId = in.readString();
-        this.gender = in.readByte() != 0;
-        this.age = in.readInt();
         this.numOfRaters = in.readInt();
         this.rating = in.readDouble();
+        this.isBlocked = in.readByte() != 0;
+        this.reportedIDs=in.readArrayList(null);
     }
 
     public String getHomeId() {
@@ -127,13 +117,6 @@ public class User implements Parcelable{
 
     String getUserId() {return userId; }
 
-    public boolean getGender() {
-        return gender;
-    }
-
-    public int getAge() {
-        return age;
-    }
 
     public double getRating() {
         return rating;
@@ -162,12 +145,5 @@ public class User implements Parcelable{
         this.userId = userId;
     }
 
-    public void setGender(boolean gender) {
-        this.gender = gender;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
 
 }

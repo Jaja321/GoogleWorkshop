@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileActivity extends NavDrawerActivity {
@@ -98,7 +99,7 @@ public class ProfileActivity extends NavDrawerActivity {
                             .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                                 public void onClick(final DialogInterface dialog, int id) {
                                     //TODO: report
-                                    if (user.getReportedIDs().contains(currUser.getUserId()))
+                                    if (user.getReportedIDs()!=null && user.getReportedIDs().contains(currUser.getUserId()))
                                     {
                                         //if the current user already reported this other user
                                         //Show dialog with alert and close the dialog..
@@ -122,7 +123,10 @@ public class ProfileActivity extends NavDrawerActivity {
                                     {
                                         // report this user!
                                         List<String> reportedUsers = user.getReportedIDs();
+                                        if(reportedUsers==null)
+                                            reportedUsers=new ArrayList<>();
                                         reportedUsers.add(currUser.getUserId());
+
                                         boolean isBlocked = false;
                                         if (reportedUsers.size() >= 1)
                                         { // block user
