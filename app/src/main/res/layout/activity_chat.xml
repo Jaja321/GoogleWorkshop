@@ -93,6 +93,6 @@ android:layout_height="fill_parent">
     app:theme="@style/NavigationViewStyle"
     android:background="@android:color/white"
     app:headerLayout="@layout/nav_header"
-    app:menu="@menu/drawer_view" />
+    app:menu="@menu/drawer_view_chat" />
 </android.support.v4.widget.DrawerLayout>
 

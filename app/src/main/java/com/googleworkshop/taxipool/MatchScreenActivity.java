@@ -288,7 +288,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     public void goToChat(View view){
         Intent chatIntent=new Intent(this,ChatActivity.class);
         chatIntent.putExtra("groupId",groupId);
-        startActivity(chatIntent);
+        //startActivity(chatIntent);
+        startActivityForResult(chatIntent, 12);
     }
 
     public void closeGroup(View view){
@@ -304,6 +305,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         database.child("groups").child(groupId).child("closed").setValue(true);
                         //chatIntent.putExtra("groupId",groupId);
                         endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
+                        //startActivityForResult(endTripIntent, 13);
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.INVISIBLE);
                     }

@@ -292,6 +292,20 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     //---------------------------------------------------
 
     //---------------navigation drawer-------------------
+
+    @Override
+    public void selectDrawerItem(MenuItem menuItem){
+        switch(menuItem.getItemId()) {
+            case R.id.nav_match_screen:
+                Intent intent = new Intent(this, MatchScreenActivity.class);
+                intent.putExtra("groupId", groupId);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //finish();
+                break;
+        }
+        super.selectDrawerItem(menuItem);
+    }
     /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
