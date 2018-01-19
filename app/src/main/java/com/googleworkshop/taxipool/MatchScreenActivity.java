@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class MatchScreenActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MatchScreenActivity extends NavDrawerActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private LatLng meetingPoint;
     private LatLng furthest = null;
@@ -82,47 +82,26 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
     private TextView tDist;
 
     //added for navigation drawer
-    private DrawerLayout mDrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
     private User user;
     private User tmpUser;
     private FirebaseAuth mAuth;
-    //------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_screen);
+        addDrawer();
         database = FirebaseDatabase.getInstance().getReference();
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
         initViews();
-        //endTripIntent = new Intent(MatchScreenActivity.this, EndTripActivity.class);
-        endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
+        endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);
+        //endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
         tTime = findViewById(R.id.totalTime);
         tDist = findViewById(R.id.totalDist);
-
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
 
     }
     @Override
@@ -334,46 +313,7 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
 
     }
 
-    //added for navigation drawer
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -398,12 +338,12 @@ public class MatchScreenActivity extends AppCompatActivity implements OnMapReady
         }
 
         // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
+        //menuItem.setChecked(true);
         // Set action bar title
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
-    }
+    }*/
     //------
 
     public void openNavigation(View view){

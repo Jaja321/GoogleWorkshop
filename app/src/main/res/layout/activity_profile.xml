@@ -27,11 +27,12 @@
             <!--android:layout_marginTop="@dimen/abc_action_bar_default_height_material"-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="300dp">
+                android:layout_height="350dp">
+
                 <LinearLayout
                     android:background="@drawable/profile_background"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="350dp"
                     android:orientation="vertical">
 
                     <ImageView
@@ -39,7 +40,7 @@
                         android:layout_width="180dp"
                         android:layout_height="180dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="25dp"
+                        android:layout_marginTop="60dp"
                         android:src="@drawable/profile_pic" />
 
                     <TextView
@@ -59,29 +60,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp">
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:paddingLeft="25dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/computer_icon"/>
+                >
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:paddingLeft="20dp"
-                        android:text="online"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/report"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="20dp"
+                    android:text="report this user"
+                    android:textSize="20sp"
+                    android:textColor="#000"
+                    android:visibility="invisible"
+                    android:textStyle="italic"/>
+
                 <LinearLayout
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="40dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="25dp"
+                    android:paddingStart="25dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <ImageView

@@ -52,7 +52,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class PreferencesActivity extends AppCompatActivity {
+public class PreferencesActivity extends NavDrawerActivity {
     public static int buttonSearch = 0;
     private String dest;
     private Place destPlace = null;
@@ -84,20 +84,15 @@ public class PreferencesActivity extends AppCompatActivity {
     private String countryISOCode = "IL";// Default, for now
     private AutocompleteFilter allFilter;
     private static DatabaseReference database;
-    //added for navigation drawer
-    private DrawerLayout mDrawer;
-    private Toolbar toolbar;
     private FirebaseAuth mAuth;
     private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
-    //------
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
+        addDrawer();
+
         //XXX JERAFI ADDED ME FOR LOCATION
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mGeoDataClient = Places.getGeoDataClient(this, null);
@@ -190,24 +185,6 @@ public class PreferencesActivity extends AppCompatActivity {
             homeCBox.setChecked(homeSettings.getBoolean(HOME_SAVED,false));
             destButton.setText(destPlace.getName());
         }
-
-        //added for navigation drawer
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //-------
-
 
     }
 
@@ -470,47 +447,7 @@ public class PreferencesActivity extends AppCompatActivity {
         }
     }
 
-
-    //added for navigation drawer
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -532,14 +469,17 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
+        //menuItem.setChecked(true);
         // Set action bar title
         //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
+    }*/
+
+    @Override
+    public void selectDrawerItem(MenuItem menuItem) {
+        if(menuItem.getItemId() != R.id.nav_preferences){
+            super.selectDrawerItem(menuItem);
+        }
     }
-    //------
-
-
-
 }

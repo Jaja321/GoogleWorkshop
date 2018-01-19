@@ -1,6 +1,8 @@
 package com.googleworkshop.taxipool;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -69,16 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         LoginButton fbloginButton = findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 
-        // Add listener to google sign in button
-        //Jerafi changed SigninButton to Imagebutton
-        ImageButton googleSignIn = findViewById(R.id.sign_in_button);
-        googleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInWithGoogle(view);
-            }
-        });
-
         // Callback registration
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -132,19 +124,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void gotoPreferences(User user){
-        String token = FirebaseInstanceId.getInstance().getToken();
-        ServerUtils.updateToken(token);
-        Intent intent = new Intent(this,PreferencesActivity.class);
-        intent.putExtra("User",user);
-        intent.putExtra("FirstRun",true);
-
-        Intent intent2 = new Intent(this, MatchScreenActivity.class);
-        intent2.putExtra("User",user);
+        Intent intent;
+        SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
+        String requestId=sharedPreferences.getString("requestId",null);
+        if(requestId==null) {
+            String token = FirebaseInstanceId.getInstance().getToken();
+            ServerUtils.updateToken(token);
+            intent = new Intent(this, PreferencesActivity.class);
+            intent.putExtra("User", user);
+        }else{
+            intent = new Intent(this, SearchingActivity.class);
+            intent.putExtra("requestId", requestId);
+        }
         startActivity(intent);
         finish();
     }
 
     public void signInWithGoogle(View view) {
+        View progressBar=findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

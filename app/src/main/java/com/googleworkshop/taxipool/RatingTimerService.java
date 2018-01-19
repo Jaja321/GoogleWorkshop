@@ -31,7 +31,7 @@ public class RatingTimerService extends IntentService {
     final Handler handler = new Handler();
     final Runnable r = new Runnable() {
         public void run() {
-            sendNotification("Please rate your travel buddies");
+            sendNotification();
         }
     };
 
@@ -43,7 +43,8 @@ public class RatingTimerService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         groupSize = intent.getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
-        handler.postDelayed(r, 3600000);//one hour
+        //handler.postDelayed(r, 3600000);//one hour
+        handler.postDelayed(r, 10000);//one hour
     }
 
     private void sendNotification(String notificationDetails) {
@@ -107,5 +108,17 @@ public class RatingTimerService extends IntentService {
         mNotificationManager.notify(0, builder.build());
         Log.i("hey", "hey");
     }
+
+    public void sendNotification(){
+        String title = "Please rate your travel buddies";
+        String body = "Rating helps us find you a better match";
+
+        Intent ratingIntent = new Intent(getApplicationContext(), RatingActivity.class);
+        ratingIntent.putExtra("groupSize", groupSize);
+        ratingIntent.putExtra("groupUsers", groupUsers);
+
+        NotificationUtils.sendNotification(title, body, ratingIntent, getApplicationContext());
+    }
+
 
 }

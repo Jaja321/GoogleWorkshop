@@ -48,30 +48,26 @@ import java.util.ArrayList;
  * Created by Gal Ze'evi on 1/10/2018.
  */
 
-public class EndTripServiceActivity extends AppCompatActivity {
+public class EndTripServiceActivity extends NavDrawerActivity {
     private GeofencingClient mGeofencingClient;
     private PendingIntent mGeofencePendingIntent;
     private Geofence mGeofence;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private final int ACCESS_FINE_LOCATION_CODE = 17;//TODO I used the same code as PreferencesActivity, is that OK?
     private final int LOCATION_SETTINGS_CODE = 123;
-    //navigation drawer
-    private DrawerLayout mDrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
     private ArrayList<User> groupUsers;
     private int groupSize;
     private String groupId;
     private DatabaseReference database;
     private LatLng destLatLng;
-    private boolean tryAgain = true;
+    //private boolean tryAgain = true;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
+        addDrawer();
 
         //------------------End Trip-------------------------
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
@@ -119,23 +115,6 @@ public class EndTripServiceActivity extends AppCompatActivity {
         });
         //---------------------------------------------------
 
-        //---------------navigation drawer-------------------
-        // Set a Toolbar to replace the ActionBar.
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-        //---------------------------------------------------
-
         //------------------Geofencing-----------------------
         destLatLng = getIntent().getParcelableExtra("destLatLng");//TODO make sure is sent from matchScreen
 
@@ -150,7 +129,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
                         3000//Radius in meters
                 )
                 //Duration in milliseconds,
-                .setExpirationDuration(300000)//TODO change duration
+                .setExpirationDuration(300000)//50 min
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .build();
         mGeofenceList.add(mGeofence);
@@ -187,11 +166,22 @@ public class EndTripServiceActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, GeofenceRatingIntentService.class);
         intent.putExtra("groupSize", groupSize);
-        intent.putExtra("groupUsers", groupUsers);
+        Bundle groupUsersBundle = new Bundle();
+        groupUsersBundle.putParcelableArrayList("groupUsers", groupUsers);
+        intent.putExtra("groupUsersBundle", groupUsersBundle);
+        //intent.putExtra("groupUsers", groupUsers);
+
+        /*
+        for(int i = 0; i < groupSize - 1; i++){
+            String id = "User" + Integer.toString(i);
+            intent.putExtra(id, groupUsers.get(i));
+        }*/
+
+        //intent.putExtra("groupUsers", groupUsers);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when
         // calling addGeofences() and removeGeofences().
-        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.
-                FLAG_UPDATE_CURRENT);
+        mGeofencePendingIntent = PendingIntent.getService(this, 177, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return mGeofencePendingIntent;
     }
 
@@ -254,9 +244,13 @@ public class EndTripServiceActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // Failed to add geofences
-                        if(tryAgain) {
-                            checkGPSOn();
-                        }
+                        //if(tryAgain) {
+                         //   checkGPSOn();
+                        //}
+                        Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                        timerIntent.putExtra("groupSize", groupSize);
+                        timerIntent.putExtra("groupUsers", groupUsers);
+                        startService(timerIntent);
                         Log.i("Did not add Geofence", "Did not add Geofence");
 
                     }
@@ -266,9 +260,8 @@ public class EndTripServiceActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        tryAgain = false;
+        //tryAgain = false;
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
-            //tryAgain = false;
             addGeofences();
             return;
         }
@@ -316,45 +309,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
     //---------------------------------------------------
 
     //---------------navigation drawer-------------------
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
+    /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -383,7 +338,7 @@ public class EndTripServiceActivity extends AppCompatActivity {
         menuItem.setChecked(true);//TODO Remove?
         // Close the navigation drawer
         mDrawer.closeDrawers();
-    }
+    }*/
     //---------------------------------------------------
 
 

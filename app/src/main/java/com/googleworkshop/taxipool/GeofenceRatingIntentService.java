@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -38,7 +40,18 @@ public class GeofenceRatingIntentService extends IntentService {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
         groupSize = intent.getIntExtra("groupSize", 0);
-        groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
+        //groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
+        Bundle groupUsersBundle = intent.getBundleExtra("groupUsersBundle");
+        groupUsers = groupUsersBundle.getParcelableArrayList("groupUsers");
+        //groupUsers = intent.getParcelableArrayListExtra("groupUsers");
+
+        /*
+        for(int i = 0; i < groupSize - 1; i++){
+            String id = "User" + Integer.toString(i);
+            groupUsers.add(i, (User)intent.getParcelableExtra(id));
+        }
+        */
+
 
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -63,7 +76,8 @@ public class GeofenceRatingIntentService extends IntentService {
 
             // Send notification and log the transition details.
             //sendNotification(geofenceTransitionDetails);
-            sendNotification("Please rate your travel buddies");
+            //sendNotification("Please rate your travel buddies");
+            sendNotification();
             Log.i(TAG, geofenceTransitionDetails);
         } else {
             // Log the error.
@@ -132,8 +146,9 @@ public class GeofenceRatingIntentService extends IntentService {
         stackBuilder.addNextIntent(notificationIntent);
 
         // Get a PendingIntent containing the entire back stack.
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
@@ -159,6 +174,17 @@ public class GeofenceRatingIntentService extends IntentService {
 
         // Issue the notification
         mNotificationManager.notify(0, builder.build());
+    }
+
+    public void sendNotification(){
+        String title = "Please rate your travel buddies";
+        String body = "Rating helps us find you a better match";
+
+        Intent ratingIntent = new Intent(getApplicationContext(), RatingActivity.class);
+        ratingIntent.putExtra("groupSize", groupSize);
+        ratingIntent.putExtra("groupUsers", groupUsers);
+
+        NotificationUtils.sendNotification(title, body, ratingIntent, getApplicationContext());
     }
 
 

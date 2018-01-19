@@ -56,7 +56,7 @@
                     />
 
                 <RatingBar
-                    android:id="@+id/ratingBar"
+                    android:id="@+id/ratingBar1"
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
                     />
 
                 <Button
-                    android:id="@+id/submit"
+                    android:id="@+id/submit2"
                     android:layout_marginTop="40dp"
                     android:textSize="18sp"
                     android:layout_width="wrap_content"
