@@ -80,6 +80,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private Polyline currPolyline = null;
     private TextView tTime;
     private TextView tDist;
+    private boolean updated=false;
 
     //added for navigation drawer
     private User user;
@@ -142,11 +143,14 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             public void onDataChange(DataSnapshot dataSnapshot) {
                 meetingPoint=ServerUtils.strToLatlng(dataSnapshot.getValue(String.class));
                 meetingMarker = mMap.addMarker(new MarkerOptions().position(meetingPoint).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                if (userSrc != null){
-                    showDirectionsOnMap();
+                if (updated&&userSrc != null){
+                    handleDirections();
+                }
+                else{
+                    updated=true;
                 }
                 builder.include(meetingPoint);
-                fixCamera();
+//                fixCamera();
             }
 
             @Override
@@ -205,22 +209,27 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 //                        Not adding the markers because we only display directions to meeting point
 //                        mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(requester.getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                         destinations.add(request.destLatLng());
-                        setFurthest(request.destLatLng());
-                        if (destinations.contains(furthest)){
-                            destinations.remove(destinations.indexOf(furthest));
+                        if (destinations.size()>1&&userSrc!=null){
+                            if (updated){
+                                handleDirections();
+                            }
+                            else{
+                                updated=true;
+                            }
                         }
-                        getRouteInfo();
 
-
-                        builder.include(request.destLatLng());
+//                        builder.include(request.destLatLng());
                         hue = ((int)hue + 30)%360;
-                        fixCamera();
+//                        fixCamera();
                         if(!user.getUserId().equals(requester.getUserId())){ //don't add curr user to list
                             groupUsers.add(requester);
+                        }
+                        else{
                             userDest = request.destLatLng();
                             userSrc = new com.google.maps.model.LatLng(request.srcLatLng().latitude,request.srcLatLng().longitude);
-                            mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
-                            showDirectionsOnMap();
+                            mMap.addMarker(new MarkerOptions().position(request.srcLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                            builder.include(request.srcLatLng());
+//                            fixCamera();
                         }
 
                         if(buddyCount < 3) {//names and photos are arrays of size 3 so buddyCount == 3 causes crash
@@ -355,16 +364,30 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         }
     }
 
-    private void setFurthest(LatLng dest){
-        Location.distanceBetween(meetingPoint.latitude,meetingPoint.longitude,dest.latitude,dest.longitude,distance);
-        if (furthest == null || distance[0]>furthestDistance){
-            if (furthest != null){
-                destinations.add(furthest);
-            }
-            furthest = dest;
-            furthestDistance = distance[0];
+    private void handleDirections(){
+        setFurthest();
+        if (destinations.contains(furthest)){
+            destinations.remove(destinations.indexOf(furthest));
         }
+        getRouteInfo();
+        destinations.add(furthest);
+        showDirectionsOnMap();
+        fixCamera();
+        updated=false;
+    }
 
+
+    private void setFurthest(){
+        Location.distanceBetween(meetingPoint.latitude,meetingPoint.longitude,destinations.get(0).latitude,destinations.get(0).longitude,distance);
+        furthestDistance = distance[0];
+        furthest = destinations.get(0);
+        for (LatLng dest : destinations){
+            Location.distanceBetween(meetingPoint.latitude,meetingPoint.longitude,dest.latitude,dest.longitude,distance);
+            if (distance[0]>furthestDistance){
+                furthest = dest;
+                furthestDistance = distance[0];
+            }
+        }
     }
 
     private void getRouteInfo(){
@@ -380,6 +403,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         }
         catch(Exception e){
             Log.i("Drive dir error:",e.getMessage());
+            tDist.setText("Distance: N/A");
+            tTime.setText("Duration: N/A");
             return;
         }
         long routeDist = 0;
@@ -391,8 +416,11 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 break;
             }
         }
-        tDist.setText("Total distance: "+String.format("%.1d",routeDist/(long)1000)+ " km");
-        tDist.setText("Estimated time: "+String.format("%d",TimeUnit.SECONDS.toMinutes(routeTime))+ " mins");
+        tDist.setText("Distance: "+directionsResult.routes[0].legs[0].distance.humanReadable);
+        tTime.setText("Duration: "+directionsResult.routes[0].legs[0].duration.humanReadable);
+//        tDist.setText("Total distance: "+String.format("%.1d",routeDist/(long)1000)+ " km");
+//        tTime.setText("Estimated time: "+String.format("%d",TimeUnit.SECONDS.toMinutes(routeTime))+ " mins");
+        updated = false;
     }
 
     private GeoApiContext getGeoContext() {
@@ -408,7 +436,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             Log.d("WHAT",directionsResult.routes[0].legs[0].steps[0].htmlInstructions);
         }
         catch(Exception e){
-            Log.i("Not working..",e.getMessage());
+            Log.i("Draw Direction Fail",e.getMessage());
             return;
         }
         if (currPolyline != null){
