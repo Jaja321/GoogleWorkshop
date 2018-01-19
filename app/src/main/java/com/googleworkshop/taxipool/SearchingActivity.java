@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -75,6 +77,13 @@ public class SearchingActivity extends NavDrawerActivity {
                 if(groupId!=null &&!isActive) {
                     Intent intent = new Intent(SearchingActivity.this, PreferencesActivity.class);
                     database.child("groups").child(groupId).child("closed").setValue(true);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    try {
+                        mNotificationManager.cancelAll();//delete all previously sent notifications
+                    }catch (NullPointerException e){
+                        Log.i("null pointer", "NullPointerException in cancelAll()");
+                    }
                     NotificationUtils.sendNotification("Sorry, We could not find a match",
                             "you are welcome to try again soon", intent, getApplicationContext());
                 }
@@ -126,6 +135,13 @@ public class SearchingActivity extends NavDrawerActivity {
                                 return;
                             isActive=dataSnapshot.getValue(boolean.class);
                             if(isActive) {
+                                NotificationManager mNotificationManager =
+                                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                try {
+                                    mNotificationManager.cancelAll();//delete all previously sent notifications
+                                }catch (NullPointerException e){
+                                    Log.i("null pointer", "NullPointerException in cancelAll()");
+                                }
                                 nextIntent.putExtra("groupId", groupId);
                                 NotificationUtils.sendNotification("We've found a match!",
                                         "Click to see your travel buddies", nextIntent, getApplicationContext());
