@@ -84,7 +84,7 @@ public class Request implements Parcelable{
         this.requesterId = in.readString();
         this.src = in.readString();
         this.dest = in.readString();
-        this.timePrefs = in.readInt();
+        this.timePrefs = in.readLong();
         this.numOfPassengers = in.readInt();
         this.groupId = in.readString();
     }

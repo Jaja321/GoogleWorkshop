@@ -41,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
@@ -73,7 +74,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private View goButton;
     private boolean groupIsClosed;
     private SharedPreferences sharedPreferences;
-
+    SharedPreferences.Editor editor;
     //added for directions
     private DirectionsResult directionsResult;
     private com.google.maps.model.LatLng gMeeting;
@@ -86,6 +87,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private TextView tTime;
     private TextView tDist;
     private boolean updated=false;
+    private Request currentUserRequest;
+    ChildEventListener requestChangeListener;
+    Query requestsInGroup;
 
     //added for navigation drawer
     private User user;
@@ -101,6 +105,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         database = FirebaseDatabase.getInstance().getReference();
         sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         currentUserRequestId=sharedPreferences.getString("requestId",null);
+        currentUserRequest =getIntent().getParcelableExtra("currentRequest");
+        editor=sharedPreferences.edit();
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
         groupId=getIntent().getStringExtra("groupId");
@@ -208,7 +214,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 }
             });
         }
-        requestRef.orderByChild("groupId").equalTo(groupId).addChildEventListener(new ChildEventListener() {
+        requestsInGroup= requestRef.orderByChild("groupId").equalTo(groupId);
+        requestChangeListener= new ChildEventListener() {
             //For each request in group:
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -263,19 +270,21 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getKey()==currentUserRequestId)
+                if(dataSnapshot.getKey().equals(currentUserRequestId))
                     return;
                 buddyCount--;
                 if (buddyCount == 1 && !groupIsClosed) {
-                    Toast.makeText(MatchScreenActivity.this, "Someone left the group, please search again.",
-                            Toast.LENGTH_SHORT).show();
-                    Intent preferencesIntent=new Intent(MatchScreenActivity.this, PreferencesActivity.class);
-                    preferencesIntent.putExtra("User",user);
-                    database.child("groups").child(groupId).child("closed").setValue(true);
-                    SharedPreferences.Editor editor=MatchScreenActivity.this.getSharedPreferences("requestId", Context.MODE_PRIVATE).edit();
-                    editor.putString("requestId",null);
+                    requestsInGroup.removeEventListener(this);
+                    //Too few people, group is closed. Create a new request and go back to searching activity.
+                    Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity.class);
+                    String requestId=ServerUtils.addRequest(currentUserRequest);
+                    searchingIntent.putExtra("requestId",requestId);
+                    editor.putString("requestId",requestId);
                     editor.commit();
-                    startActivity(preferencesIntent);
+                    //searchingIntent.putExtra("request",currentUserRequest);
+                    Toast.makeText(MatchScreenActivity.this, "Someone left the group. Searching again..",
+                            Toast.LENGTH_SHORT).show();
+                    startActivity(searchingIntent);
                     finish();
                 } else {
                     final Request request = dataSnapshot.getValue(Request.class);
@@ -294,7 +303,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        requestsInGroup.addChildEventListener(requestChangeListener);
     }
     private void setUserLayout(final User user, int index) {
         TextView textView = names[index];
@@ -532,26 +542,26 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 Delete the current request and go to Preferences screen
  */
     private void findANewRide() {
+        requestsInGroup.removeEventListener(requestChangeListener);
         final Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
         preferencesIntent.putExtra("User",user);
         if(!groupIsClosed) {
-            database.child("requests").child(currentUserRequestId).setValue(null);
             final DatabaseReference groupRef=database.child("groups").child(groupId);
             groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     int numOfUsers=dataSnapshot.child("numOfUsers").getValue(int.class);
                     int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
-                    if(numOfUsers==1){
+                    if(numOfUsers<=2){
                         //Delete group:
                         groupRef.setValue(null);
                     }else {
                         groupRef.child("numOfUsers").setValue(numOfUsers - 1);
                         groupRef.child("numOfPassengers").setValue(numOfPassengers - 1);
                     }
-                    SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.putString("requestId",null);
                     editor.commit();
+                    database.child("requests").child(currentUserRequestId).setValue(null);
                     startActivity(preferencesIntent);
                     finish();
                 }
