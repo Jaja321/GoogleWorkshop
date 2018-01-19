@@ -11,6 +11,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 /**
  * Created by Benjamin on 25/12/2017.
  */
@@ -36,7 +38,7 @@ public class ServerUtils {
         return requestId;
     }
 
-    public static void rateUser(User user, int rating){
+    public static void rateUser(User user, float rating){
         int num=user.getNumOfRaters();
         double oldRating=user.getRating();
         double newRating=(oldRating*num+rating)/(num+1);
@@ -44,6 +46,12 @@ public class ServerUtils {
         userReference.child("rating").setValue(newRating);
         userReference.child("numOfRaters").setValue(num+1);
 
+    }
+
+    public static void reportUser(User reportedUser, List<String> reportingUsers, boolean isBlocked){
+        DatabaseReference userReference=database.child("users").child(reportedUser.getUserId());
+        userReference.child("reportedIDs").setValue(reportingUsers);
+        userReference.child("isBlocked").setValue(isBlocked);
     }
 
     public static LatLng strToLatlng(String str){

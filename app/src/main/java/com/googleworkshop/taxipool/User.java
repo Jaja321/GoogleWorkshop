@@ -3,6 +3,9 @@ package com.googleworkshop.taxipool;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class User implements Parcelable{
     private String homeId;
     private String profilePicture;
@@ -12,6 +15,8 @@ public class User implements Parcelable{
     private int age;
     private int numOfRaters;
     private double rating;
+    private List<String> reportedIDs;
+    private boolean isBlocked;
 
     User(){
 
@@ -23,14 +28,32 @@ public class User implements Parcelable{
         this.gender = gender;
         this.age = age;
         this.profilePicture = profilePicture;
-        this.rating=0;
-        this.numOfRaters=0;
-        this.homeId=null;
-        this.gender=false;
-        this.age=0;
+        this.rating = 0;
+        this.numOfRaters = 0;
+        this.homeId = null;
+        this.gender = false;
+        this.age = 0;
+        this.isBlocked = false;
+        this.reportedIDs = new LinkedList<>();
     }
 
-    User(String userId,String name,String profilePicture, boolean gender, int age, int rating, int numOfRaters, String homeId){
+    public List<String> getReportedIDs() {
+        return reportedIDs;
+    }
+
+    public void setReportedIDs(List<String> reportedIDs) {
+        this.reportedIDs = reportedIDs;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
+    }
+
+    User(String userId, String name, String profilePicture, boolean gender, int age, int rating, int numOfRaters, String homeId){
         this.userId = userId;
         this.name = name;
         this.gender = gender;
@@ -41,6 +64,8 @@ public class User implements Parcelable{
         this.homeId=homeId;
         this.gender=gender;
         this.age=age;
+        this.isBlocked = false;
+        this.reportedIDs = new LinkedList<>();
     }
 
     @Override

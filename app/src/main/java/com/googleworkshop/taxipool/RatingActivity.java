@@ -55,9 +55,9 @@ public class RatingActivity extends NavDrawerActivity {
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getRating());
+                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getRating());
+                    ServerUtils.rateUser(groupUsers.get(2), ratingBar3.getRating());
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);
                 }
@@ -77,8 +77,8 @@ public class RatingActivity extends NavDrawerActivity {
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
-                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getRating());
+                    ServerUtils.rateUser(groupUsers.get(1), ratingBar2.getRating());
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);
                 }
@@ -99,7 +99,7 @@ public class RatingActivity extends NavDrawerActivity {
                 public void onClick(View v) {
                     double oldRating = groupUsers.get(0).getRating();
                     int numOfStars = ratingBar1.getNumStars();
-                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getNumStars());
+                    ServerUtils.rateUser(groupUsers.get(0), ratingBar1.getRating());
                     double newRating = groupUsers.get(0).getRating();
                     Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
                     startActivity(myIntent);

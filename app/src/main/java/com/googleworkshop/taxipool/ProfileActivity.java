@@ -11,9 +11,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v7.app.AlertDialog;
 
@@ -29,9 +32,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 public class ProfileActivity extends NavDrawerActivity {
     private FirebaseAuth mAuth;
-    private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
+    private static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private String userID;
 
     private TextView userName, rating, report;
@@ -73,16 +78,16 @@ public class ProfileActivity extends NavDrawerActivity {
 
 
     }
-    private void initProfile(User user){
+    private void initProfile(final User user){
         userName.setText(user.getName());
         rating.setText(user.getRating()+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
-        if(!currUser.getUserId().equals(user.getUserId())){ //TODO: this does not work
+        if(!currUser.getUserId().equals(user.getUserId())){
             report.setVisibility(View.VISIBLE);
             report.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileActivity.this);
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileActivity.this);
 
                     // set title
                     alertDialogBuilder.setTitle("Report");
@@ -90,11 +95,44 @@ public class ProfileActivity extends NavDrawerActivity {
                     // set dialog message
                     alertDialogBuilder
                             .setMessage("Would you like to report this user?")
-                            .setCancelable(false)
                             .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
+                                public void onClick(final DialogInterface dialog, int id) {
                                     //TODO: report
-                                    dialog.cancel();
+                                    if (user.getReportedIDs().contains(currUser.getUserId()))
+                                    {
+                                        //if the current user already reported this other user
+                                        //Show dialog with alert and close the dialog..
+
+                                        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(ProfileActivity.this);
+                                        alertDialogBuilder2.setTitle("Alert");
+                                        alertDialogBuilder2.setMessage("You have already reported this user.\nYou can only report a user once");
+                                        alertDialogBuilder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                        AlertDialog alertDialog2 = alertDialogBuilder2.create();
+
+                                        // show it
+                                        alertDialog2.show();
+
+                                    }
+                                    else
+                                    {
+                                        // report this user!
+                                        List<String> reportedUsers = user.getReportedIDs();
+                                        reportedUsers.add(currUser.getUserId());
+                                        boolean isBlocked = false;
+                                        if (reportedUsers.size() >= 1)
+                                        { // block user
+                                            isBlocked = true;
+                                            user.setBlocked(isBlocked);
+                                        }
+
+                                        //set firebase DB
+                                        ServerUtils.reportUser(user, reportedUsers, isBlocked);
+                                    }
                                 }
                             })
                             .setNegativeButton("No",new DialogInterface.OnClickListener() {

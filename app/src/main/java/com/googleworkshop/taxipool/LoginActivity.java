@@ -1,12 +1,14 @@
 package com.googleworkshop.taxipool;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -97,11 +99,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         if (currentUser != null)
             loggedIn(currentUser);
-
-
     }
 
     private void loggedIn(final FirebaseUser firebaseUser) {
@@ -115,7 +114,27 @@ public class LoginActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){ //User already exist
                     Log.d("User already exists","I am here now");
                     User user=dataSnapshot.getValue(User.class);
-                    gotoPreferences(user);
+                    if (!user.isBlocked())
+                    {
+                        gotoPreferences(user);
+                    }
+                    else
+                    {
+                        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(LoginActivity.this);
+                        alertDialogBuilder2.setTitle("Alert");
+                        alertDialogBuilder2.setMessage("You are blocked for being reported too many times");
+                        alertDialogBuilder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                finish();
+                            }
+                        });
+                        AlertDialog alertDialog2 = alertDialogBuilder2.create();
+
+                        // show it
+                        alertDialog2.show();
+                    }
                 }else{
                     Log.d("User doesn't exist","I am here now");
                     User user=ServerUtils.createNewUser(firebaseUser);
