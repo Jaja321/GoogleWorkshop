@@ -51,11 +51,11 @@
     <string name="title_activity_showuseractivity">Map</string>
     <string name="facebook_app_id">1996581547291394</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb1996581547291394</string>
-    <string name="home_check_box_text">Set as home</string>
+    <string name="home_check_box_text">Save destination as home</string>
     <string name="leave_in">Leaving in:</string>
     <string name="group_size">My group size:</string>
     <string name="curr_location">Your current location</string>
-    <string name="destination">Destination</string>
+    <string name="destination">Enter destination</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
@@ -94,5 +94,9 @@
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
     <string name="settings">Settings</string>
+    <string name="title_activity_testdirections">DIRECTIONS</string>
+    <string name="match_found_text">We found you a match!</string>
+    <string name="destination_text">Destination:</string>
+    <string name="origin_text">Origin:</string>
 
 </resources>

@@ -54,9 +54,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class PreferencesActivity extends AppCompatActivity {
     public static int buttonSearch = 0;
-    private String dest = "Destination";
+    private String dest;
     private Place destPlace = null;
-    private String origin = "Your current location";
+    private String origin;
     private Place originPlace = null;
     protected FusedLocationProviderClient mFusedLocationClient;
     private LatLng currLocation;
@@ -108,6 +108,8 @@ public class PreferencesActivity extends AppCompatActivity {
         originButton = findViewById(R.id.origin);
         pBar = findViewById(R.id.gettingLocationProgress);
         allFilter = new AutocompleteFilter.Builder().setCountry(countryISOCode).build();
+        dest = getResources().getString(R.string.destination);
+        origin = getResources().getString(R.string.curr_location);
         database= FirebaseDatabase.getInstance().getReference();
 
 
