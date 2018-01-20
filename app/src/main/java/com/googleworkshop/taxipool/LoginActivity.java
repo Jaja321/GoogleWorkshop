@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -78,6 +79,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
         setContentView(R.layout.activity_login);
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("Login");
         LoginButton fbloginButton = findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 

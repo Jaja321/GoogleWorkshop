@@ -98,6 +98,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
         addDrawer();
+        getSupportActionBar().setTitle("Start a new ride");
 
         //XXX JERAFI ADDED ME FOR LOCATION
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);

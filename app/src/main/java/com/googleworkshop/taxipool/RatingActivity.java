@@ -42,6 +42,7 @@ public class RatingActivity extends NavDrawerActivity {
         if(groupSize == 4){
             setContentView(R.layout.activity_rating3);
             addDrawer();
+            getSupportActionBar().setTitle("Please rate your group");
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar3);
@@ -67,6 +68,7 @@ public class RatingActivity extends NavDrawerActivity {
         else if(groupSize == 3){
             setContentView(R.layout.activity_rating2);
             addDrawer();
+            getSupportActionBar().setTitle("Please rate your group");
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             TextView name1 = (TextView)  findViewById(R.id.name1);
@@ -87,6 +89,7 @@ public class RatingActivity extends NavDrawerActivity {
         else if(groupSize == 2){
             setContentView(R.layout.activity_rating1);
             addDrawer();
+            getSupportActionBar().setTitle("Please rate your group");
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());

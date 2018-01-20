@@ -46,6 +46,7 @@ public class SearchingActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
+        getSupportActionBar().setTitle("Looking for a match");
 
         //ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);

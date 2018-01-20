@@ -67,6 +67,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
         addDrawer();
+        getSupportActionBar().setTitle("Enjoy your ride");
 
         //------------------End Trip-------------------------
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
@@ -102,6 +103,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
             }
         });
 
+        /*
         final Button ratingButton = (Button) findViewById(R.id.ratingButton);
         ratingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +113,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                 myIntent.putExtra("groupUsers", groupUsers);
                 startActivity(myIntent);
             }
-        });
+        });*/
         //---------------------------------------------------
 
         //------------------Geofencing-----------------------
