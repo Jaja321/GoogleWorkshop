@@ -69,6 +69,9 @@ public class ProfileActivity extends NavDrawerActivity {
                 if (user == null) {
                     user = currUser;
                 }
+                if(user.getReportedIDs() == null){
+                    user.setReportedIDs(new ArrayList<String>());
+                }
                 initProfile(user);
             }
             @Override
@@ -103,6 +106,11 @@ public class ProfileActivity extends NavDrawerActivity {
                                     {
                                         //if the current user already reported this other user
                                         //Show dialog with alert and close the dialog..
+                                        /*
+                                        ServerUtils.clearReports(user); //for debugging
+                                        user.setBlocked(false);
+                                        user.setReportedIDs(new ArrayList<String>());
+                                        */
 
                                         AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(ProfileActivity.this);
                                         alertDialogBuilder2.setTitle("Alert");
@@ -123,12 +131,15 @@ public class ProfileActivity extends NavDrawerActivity {
                                     {
                                         // report this user!
                                         List<String> reportedUsers = user.getReportedIDs();
-                                        if(reportedUsers==null)
+                                        if(reportedUsers==null){
                                             reportedUsers=new ArrayList<>();
+                                            user.setReportedIDs(reportedUsers);
+                                        }
+
                                         reportedUsers.add(currUser.getUserId());
 
                                         boolean isBlocked = false;
-                                        if (reportedUsers.size() >= 1)
+                                        if (reportedUsers.size() >= 3)
                                         { // block user
                                             isBlocked = true;
                                             user.setBlocked(isBlocked);
@@ -136,6 +147,20 @@ public class ProfileActivity extends NavDrawerActivity {
 
                                         //set firebase DB
                                         ServerUtils.reportUser(user, reportedUsers, isBlocked);
+
+                                        AlertDialog.Builder alertDialogBuilder3 = new AlertDialog.Builder(ProfileActivity.this);
+                                        alertDialogBuilder3.setTitle("Info");
+                                        alertDialogBuilder3.setMessage("Thank you for reporting");
+                                        alertDialogBuilder3.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                        AlertDialog alertDialog3 = alertDialogBuilder3.create();
+
+                                        // show it
+                                        alertDialog3.show();
                                     }
                                 }
                             })

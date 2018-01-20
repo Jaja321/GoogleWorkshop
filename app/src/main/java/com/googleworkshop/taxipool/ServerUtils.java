@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,6 +53,12 @@ public class ServerUtils {
         DatabaseReference userReference=database.child("users").child(reportedUser.getUserId());
         userReference.child("reportedIDs").setValue(reportingUsers);
         userReference.child("isBlocked").setValue(isBlocked);
+    }
+
+    public static void clearReports(User reportedUser){ //for debugging
+        DatabaseReference userReference=database.child("users").child(reportedUser.getUserId());
+        userReference.child("reportedIDs").setValue(new ArrayList<String>());
+        userReference.child("isBlocked").setValue(false);
     }
 
     public static LatLng strToLatlng(String str){

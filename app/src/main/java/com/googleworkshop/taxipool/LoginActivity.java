@@ -114,7 +114,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){ //User already exist
                     Log.d("User already exists","I am here now");
                     User user=dataSnapshot.getValue(User.class);
-                    if (!user.isBlocked())
+                    //if (!user.isBlocked())
+                    if(user.getReportedIDs() == null || user.getReportedIDs().size() < 3)
                     {
                         gotoPreferences(user);
                     }
