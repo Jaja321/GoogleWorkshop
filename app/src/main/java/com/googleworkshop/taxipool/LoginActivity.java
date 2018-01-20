@@ -22,6 +22,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,6 +48,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class LoginActivity extends AppCompatActivity {
@@ -81,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Login");
+        /*
         LoginButton fbloginButton = findViewById(R.id.fb_login_button);
         fbloginButton.setReadPermissions("email", "public_profile");
 
@@ -101,9 +104,34 @@ public class LoginActivity extends AppCompatActivity {
                 // App code
             }
         });
-
+*/
         if (currentUser != null)
             loggedIn(currentUser);
+    }
+    public void fbLogin(View view)
+    {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList( "email", "public_profile"));
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>()
+                {
+                    @Override
+                    public void onSuccess(LoginResult loginResult)
+                    {
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel()
+                    {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception)
+                    {
+                        // App code
+                    }
+                });
     }
 
     private void loggedIn(final FirebaseUser firebaseUser) {
