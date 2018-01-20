@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -524,6 +525,14 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 "Yes",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        try {
+                            mNotificationManager.cancelAll();//delete all previously sent notifications
+                        }catch (NullPointerException e){
+                            Log.i("null pointer", "NullPointerException in cancelAll()");
+                        }
+
                         findANewRide();
                     }
                 });
