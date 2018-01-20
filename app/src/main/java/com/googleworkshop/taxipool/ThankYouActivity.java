@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.Button;
 
 
-public class ThankYouActivity extends AppCompatActivity {
+public class ThankYouActivity extends NavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addDrawer();
+        toolbar.setTitle("Enjoy your ride");
         setContentView(R.layout.activity_thank_you);
         final Button newTripButton = (Button) findViewById(R.id.find_new_trip);
         newTripButton.setOnClickListener(new View.OnClickListener() {

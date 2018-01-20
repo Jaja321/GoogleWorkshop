@@ -82,6 +82,7 @@ public class ChatActivity extends NavDrawerActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         addDrawer();
+        toolbar.setTitle("Chat");
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if(currentUser!=null)

@@ -87,6 +87,7 @@ public class EndTripActivity extends NavDrawerActivity {
             }
         });
 
+        /*
         final Button ratingButton = (Button) findViewById(R.id.ratingButton);
         ratingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +97,7 @@ public class EndTripActivity extends NavDrawerActivity {
                 myIntent.putExtra("groupUsers", groupUsers);
                 startActivity(myIntent);
             }
-        });
+        });*/
     }
 
     /*

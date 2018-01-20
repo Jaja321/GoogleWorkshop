@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -64,6 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getHashKey();
         callbackManager = CallbackManager.Factory.create();
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("Login");
 
         //lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
         //lastRequestPrefEditor = lastRequestSharedPref.edit();
