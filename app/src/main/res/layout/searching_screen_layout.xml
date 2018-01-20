@@ -16,7 +16,6 @@ android:layout_height="fill_parent">
 
     <!-- The ActionBar displayed at the top -->
     <include
-        android:id="@+id/toolbar"
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

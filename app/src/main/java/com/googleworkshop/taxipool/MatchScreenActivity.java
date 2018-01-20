@@ -102,7 +102,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_screen);
         addDrawer();
-        toolbar.setTitle("Your group");
         database = FirebaseDatabase.getInstance().getReference();
         sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         currentUserRequestId=sharedPreferences.getString("requestId",null);

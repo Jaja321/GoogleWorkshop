@@ -15,7 +15,6 @@
 
         <!-- The ActionBar displayed at the top -->
         <include
-            android:id="@+id/toolbar"
             layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -105,7 +104,7 @@
 
             </LinearLayout>
 
-            <!--<Button
+            <Button
                 android:id="@+id/ratingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +113,7 @@
                 android:textColor="@android:color/white"
                 android:textAllCaps="false"
                 android:layout_gravity="center"
-                android:layout_marginTop="40dp"/>-->
+                android:layout_marginTop="40dp"/>
 
         </LinearLayout>
 

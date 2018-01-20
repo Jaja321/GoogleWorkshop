@@ -51,7 +51,7 @@ public class ProfileActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         addDrawer();
-        toolbar.setTitle("Profile");
+
 
         report = (TextView) findViewById(R.id.report);
         userName = (TextView) findViewById(R.id.user_name);
