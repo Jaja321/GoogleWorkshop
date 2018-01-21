@@ -89,7 +89,7 @@ public class Request implements Parcelable{
         this.groupId = in.readString();
     }
 
-    static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>(){
+    public static final Parcelable.Creator<Request> CREATOR = new Parcelable.Creator<Request>(){
 
         @Override
         public Request createFromParcel(Parcel parcel) {
