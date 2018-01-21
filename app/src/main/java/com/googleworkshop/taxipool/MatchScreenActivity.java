@@ -84,8 +84,11 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private com.google.maps.model.LatLng gWaypoints[] = null;
     private LatLng userDest;
     private com.google.maps.model.LatLng userSrc = null;
-    private Marker meetingMarker;
-    private Polyline currPolyline = null;
+    private Marker meetingMarker=null;
+    private Polyline meetPolyline = null;
+    private Polyline drivePolyline = null;
+    private List<LatLng> meetEncodedPolyline = null;
+    private List<LatLng> driveEncodedPolyline = null;
     private TextView tTime;
     private TextView tDist;
     private View srcCameraButton, destCameraButton;
@@ -93,6 +96,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private Request currentUserRequest;
     ChildEventListener requestChangeListener;
     Query requestsInGroup;
+
 
     //added for navigation drawer
     private User user;
@@ -159,12 +163,16 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
     public void srcCamera(View view){
         fixCamera(builder);
+        drivePolyline.remove();
+        meetPolyline = mMap.addPolyline(new PolylineOptions().addAll(meetEncodedPolyline));
         destCameraButton.setVisibility(View.VISIBLE);
         srcCameraButton.setVisibility(View.GONE);
     }
 
     public void destCamera(View view){
         fixCamera(destBuilder);
+        meetPolyline.remove();
+        drivePolyline = mMap.addPolyline(new PolylineOptions().addAll(driveEncodedPolyline));
         destCameraButton.setVisibility(View.GONE);
         srcCameraButton.setVisibility(View.VISIBLE);
     }
@@ -369,8 +377,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             names[i].setVisibility(View.INVISIBLE);
             photos[i].setVisibility(View.INVISIBLE);
         }
-
-
     }
 
     public void goToChat(View view){
@@ -395,7 +401,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
                         //startActivityForResult(endTripIntent, 13);
                         startActivity(endTripIntent);
-                        goButton.setVisibility(View.INVISIBLE);
+                        goButton.setVisibility(View.GONE);
                     }
                 });
 
@@ -506,10 +512,12 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 break;
             }
         }
+
         tDist.setText("Distance: "+directionsResult.routes[0].legs[0].distance.humanReadable);
         tTime.setText("Duration: "+directionsResult.routes[0].legs[0].duration.humanReadable);
 //        tDist.setText("Total distance: "+String.format("%.1d",routeDist/(long)1000)+ " km");
 //        tTime.setText("Estimated time: "+String.format("%d",TimeUnit.SECONDS.toMinutes(routeTime))+ " mins");
+        driveEncodedPolyline = PolyUtil.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath());
         updated = false;
     }
 
@@ -529,14 +537,14 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             Log.i("Draw Direction Fail",e.getMessage());
             return;
         }
-        if (currPolyline != null){
-            currPolyline.remove();
+        if (meetPolyline != null){
+            meetPolyline.remove();
         }
         meetingMarker.setSnippet("Time :"+ directionsResult.routes[0].legs[0].duration.humanReadable +
                 " Distance :" + directionsResult.routes[0].legs[0].distance.humanReadable);
         meetingMarker.showInfoWindow();
-        List<LatLng> decodedPath = PolyUtil.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath());
-        currPolyline = mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+        meetEncodedPolyline = PolyUtil.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath());
+        meetPolyline = mMap.addPolyline(new PolylineOptions().addAll(meetEncodedPolyline));
     }
 
     @Override

@@ -53,7 +53,7 @@
     <string name="fb_login_protocol_scheme" translatable="false">fb1996581547291394</string>
     <string name="home_check_box_text">Save destination as home</string>
     <string name="leave_in">Leaving in:</string>
-    <string name="group_size">My group size:</string>
+    <string name="group_size">How many are we:</string>
     <string name="curr_location">Your current location</string>
     <string name="destination">Enter destination</string>
     <string name="drawer_open">Open navigation drawer</string>

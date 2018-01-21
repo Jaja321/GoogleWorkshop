@@ -389,7 +389,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         }
         else{
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage("GPS signal is disabled :(");
+            dialog.setMessage("Location is disabled. Please enable location or select an origin.");
             dialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
