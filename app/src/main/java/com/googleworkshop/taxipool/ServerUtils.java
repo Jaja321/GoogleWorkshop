@@ -49,16 +49,16 @@ public class ServerUtils {
 
     }
 
-    public static void reportUser(User reportedUser, List<String> reportingUsers, boolean isBlocked){
+    public static void reportUser(User reportedUser, List<String> reportingUsers, boolean blocked){
         DatabaseReference userReference=database.child("users").child(reportedUser.getUserId());
         userReference.child("reportedIDs").setValue(reportingUsers);
-        userReference.child("isBlocked").setValue(isBlocked);
+        userReference.child("blocked").setValue(blocked);
     }
 
     public static void clearReports(User reportedUser){ //for debugging
         DatabaseReference userReference=database.child("users").child(reportedUser.getUserId());
         userReference.child("reportedIDs").setValue(new ArrayList<String>());
-        userReference.child("isBlocked").setValue(false);
+        userReference.child("blocked").setValue(false);
     }
 
     public static LatLng strToLatlng(String str){

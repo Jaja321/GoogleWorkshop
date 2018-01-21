@@ -14,50 +14,36 @@ public class User implements Parcelable{
     private int numOfRaters;
     private double rating;
     private List<String> reportedIDs;
-    private boolean isBlocked;
+    private boolean blocked;
+
 
     User(){
 
     }
 
-    User(String userId,String name,String profilePicture){
+
+    User(String userId, String name, String profilePicture){
         this.userId = userId;
         this.name = name;
         this.profilePicture = profilePicture;
         this.rating = 0;
         this.numOfRaters = 0;
         this.homeId = null;
-        this.isBlocked = false;
+        this.blocked = false;
         this.reportedIDs = new ArrayList<>();
     }
-
-    public List<String> getReportedIDs() {
-        return reportedIDs;
-    }
-
-    public void setReportedIDs(List<String> reportedIDs) {
-        this.reportedIDs = reportedIDs;
-    }
-
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
-
-    User(String userId, String name, String profilePicture, int rating, int numOfRaters, String homeId){
+/*
+    User(String userId, String name, String profilePicture, double rating, int numOfRaters, String homeId){
         this.userId = userId;
         this.name = name;
         this.profilePicture = profilePicture;
         this.rating=rating;
         this.numOfRaters=numOfRaters;
         this.homeId=homeId;
-        this.isBlocked = false;
+        this.blocked = false;
         this.reportedIDs = new ArrayList<>();
     }
-
+*/
     @Override
     public int describeContents() {
         return 0;
@@ -71,7 +57,7 @@ public class User implements Parcelable{
         parcel.writeString(userId);
         parcel.writeInt(numOfRaters);
         parcel.writeDouble(rating);
-        parcel.writeByte((byte) (isBlocked ? 1 : 0));
+        parcel.writeByte((byte) (blocked ? 1 : 0));
         parcel.writeList(reportedIDs);
     }
 
@@ -95,7 +81,7 @@ public class User implements Parcelable{
         this.userId = in.readString();
         this.numOfRaters = in.readInt();
         this.rating = in.readDouble();
-        this.isBlocked = in.readByte() != 0;
+        this.blocked = in.readByte() != 0;
         this.reportedIDs=in.readArrayList(null);
     }
 
@@ -115,35 +101,34 @@ public class User implements Parcelable{
         return name;
     }
 
-    String getUserId() {return userId; }
+    public String getUserId() {return userId; }
 
 
     public double getRating() {
         return rating;
     }
-
+/*
     public void setRating(double rating) {
         this.rating = rating;
     }
+    */
+    public List<String> getReportedIDs() {
+        return reportedIDs;
+    }
 
+    public boolean getBlocked() {
+        return blocked;
+    }
     public int getNumOfRaters() {
         return numOfRaters;
     }
 
-    public void setNumOfRaters(int numOfRaters) {
-        this.numOfRaters = numOfRaters;
-    }
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setReportedIDs(List<String> reportedIDs) {
+        this.reportedIDs = reportedIDs;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
 
 }
