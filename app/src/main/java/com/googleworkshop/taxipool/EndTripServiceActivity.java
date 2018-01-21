@@ -127,7 +127,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                 .setCircularRegion(
                         destLatLng.latitude,
                         destLatLng.longitude,
-                        3000//Radius in meters
+                        500//Radius in meters
                 )
                 //Duration in milliseconds,
                 .setExpirationDuration(300000)//50 min

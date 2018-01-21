@@ -180,6 +180,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 if(!dataSnapshot.exists())
                     return;
                 meetingPoint=ServerUtils.strToLatlng(dataSnapshot.getValue(String.class));
+                if(meetingMarker != null){
+                    meetingMarker.remove();
+                }
                 meetingMarker = mMap.addMarker(new MarkerOptions().position(meetingPoint).title("Meeting Point").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
                 if (updated&&userSrc != null){
                     handleDirections();
