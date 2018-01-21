@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -65,7 +66,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private float distance[] = new float[1];
     private String groupId,currentUserRequestId;
     private DatabaseReference database;
-    LatLngBounds.Builder builder;
+    LatLngBounds.Builder builder, destBuilder;
     private float hue=30;
     private int buddyCount=0;
     private Intent endTripIntent;
@@ -87,6 +88,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private Polyline currPolyline = null;
     private TextView tTime;
     private TextView tDist;
+    private View srcCameraButton, destCameraButton;
     private boolean updated=false;
     private Request currentUserRequest;
     ChildEventListener requestChangeListener;
@@ -118,11 +120,14 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         endTripIntent.putExtra("groupId", groupId);
         tTime = findViewById(R.id.totalTime);
         tDist = findViewById(R.id.totalDist);
+        srcCameraButton=findViewById(R.id.srcButton);
+        destCameraButton=findViewById(R.id.destButton);
 
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         builder = new LatLngBounds.Builder();
+        destBuilder = new LatLngBounds.Builder();
         mMap = googleMap;
         handleMeetingPoint(); //Get the group's meeting point and put it on the map
         handleRequests(); //Get the group's requests and deal with them
@@ -147,10 +152,24 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     }
 
 
-    private void fixCamera(){
-        LatLngBounds bounds = builder.build();
+    private void fixCamera(LatLngBounds.Builder boundsBuilder){
+        LatLngBounds bounds = boundsBuilder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
     }
+
+    public void srcCamera(View view){
+        fixCamera(builder);
+        destCameraButton.setVisibility(View.VISIBLE);
+        srcCameraButton.setVisibility(View.GONE);
+    }
+
+    public void destCamera(View view){
+        fixCamera(destBuilder);
+        destCameraButton.setVisibility(View.GONE);
+        srcCameraButton.setVisibility(View.VISIBLE);
+    }
+
+
 
     private void handleMeetingPoint(){
         DatabaseReference groupRef=database.child("groups").child(groupId);
@@ -229,8 +248,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         final User requester=dataSnapshot.getValue(User.class);
                         String firstName=requester.getName().split(" ")[0];
 //                        Not adding the markers because we only display directions to meeting point
-//                        mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(requester.getName() + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                        mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(firstName + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                         destinations.add(request.destLatLng());
+                        destBuilder.include(request.destLatLng());
                         if (destinations.size()>1&&userSrc!=null){
                             if (updated){
                                 handleDirections();
@@ -251,6 +271,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                             userSrc = new com.google.maps.model.LatLng(request.srcLatLng().latitude,request.srcLatLng().longitude);
                             mMap.addMarker(new MarkerOptions().position(request.srcLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                             builder.include(request.srcLatLng());
+
 //                            fixCamera();
                         }
                         buddyCount++;
@@ -338,9 +359,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     }
 
     private void updateLayout(){
-        setUserLayout(user, 0);
-        for(int i=1;i<buddyCount;i++)
-            setUserLayout(groupUsers.get(i-1), i);
+        //setUserLayout(user, 0);
+        for(int i=0;i<buddyCount-1;i++)
+            setUserLayout(groupUsers.get(i), i);
         for(int i=buddyCount;i<4;i++) {
             names[i].setVisibility(View.INVISIBLE);
             photos[i].setVisibility(View.INVISIBLE);
@@ -438,7 +459,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         getRouteInfo();
         destinations.add(furthest);
         showDirectionsOnMap();
-        fixCamera();
+        fixCamera(builder);
         updated=false;
     }
 

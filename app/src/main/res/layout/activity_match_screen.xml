@@ -148,6 +148,37 @@
                     android:layout_weight="1">
 
                     <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/srcButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|right"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:onClick="srcCamera"
+                        android:tint="@android:color/white"
+                        android:tooltipText="Navigate to meeting point"
+                        android:visibility="gone"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:srcCompat="@drawable/ic_my_location_black_24dp" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/destButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|right"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:onClick="destCamera"
+                        android:tint="@android:color/white"
+                        android:tooltipText="Navigate to meeting point"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:srcCompat="@drawable/ic_person_pin_circle_black_24dp" />
+
+                    <android.support.design.widget.FloatingActionButton
                         android:id="@+id/goButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
