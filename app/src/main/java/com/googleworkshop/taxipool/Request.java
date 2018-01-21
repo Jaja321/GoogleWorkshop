@@ -39,7 +39,7 @@ public class Request implements Parcelable{
         return ServerUtils.strToLatlng(dest);
     }
 
-    String getRequesterId() {
+    public String getRequesterId() {
         return requesterId;
     }
 
