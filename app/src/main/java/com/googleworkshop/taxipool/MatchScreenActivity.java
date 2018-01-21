@@ -157,6 +157,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
 
     private void fixCamera(LatLngBounds.Builder boundsBuilder){
+        boundsBuilder.include(meetingPoint);
         LatLngBounds bounds = boundsBuilder.build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,100));
     }
@@ -517,6 +518,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         tTime.setText("Duration: "+directionsResult.routes[0].legs[0].duration.humanReadable);
 //        tDist.setText("Total distance: "+String.format("%.1d",routeDist/(long)1000)+ " km");
 //        tTime.setText("Estimated time: "+String.format("%d",TimeUnit.SECONDS.toMinutes(routeTime))+ " mins");
+        if (drivePolyline != null){
+            drivePolyline.remove();
+        }
         driveEncodedPolyline = PolyUtil.decode(directionsResult.routes[0].overviewPolyline.getEncodedPath());
         updated = false;
     }
