@@ -101,7 +101,6 @@ public class ProfileActivity extends NavDrawerActivity {
                             .setMessage("Would you like to report this user?")
                             .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                                 public void onClick(final DialogInterface dialog, int id) {
-                                    //TODO: report
                                     if (user.getReportedIDs()!=null && user.getReportedIDs().contains(currUser.getUserId()))
                                     {
                                         //if the current user already reported this other user

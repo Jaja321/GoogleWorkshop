@@ -65,6 +65,7 @@
                     android:progressTint="@color/colorPrimary"
                     android:numStars="5"
                     android:stepSize="1"
+                    android:rating="0.0"
                     android:max="5"
                     />
 
