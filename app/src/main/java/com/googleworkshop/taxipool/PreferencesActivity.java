@@ -325,6 +325,8 @@ public class PreferencesActivity extends NavDrawerActivity {
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
+        intent.putExtra("destination", destPlace.getName());
+        intent.putExtra("origin", originPlace.getName());
         startActivity(intent);
         finish();
     }

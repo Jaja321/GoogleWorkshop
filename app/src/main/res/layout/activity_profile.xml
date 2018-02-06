@@ -86,6 +86,16 @@
                         android:src="@drawable/rating_icon"/>
 
                     <TextView
+                        android:id="@+id/your_rating"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:text="rating:"
+                        android:textStyle="bold" />
+
+                    <TextView
                         android:id="@+id/rating"
 
                         android:layout_width="wrap_content"

@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,7 +52,20 @@ public class SearchingActivity extends NavDrawerActivity {
 
         //ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);
+        TextView origin = (TextView)findViewById(R.id.real_origin);
+        TextView destination = (TextView)findViewById(R.id.real_dest);
+        Button findNewTrip = (Button)findViewById(R.id.find_new_trip);
+        findNewTrip.setOnClickListener(new View.OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                                Intent intent = new Intent(SearchingActivity.this, PreferencesActivity.class);
+                                                startActivity(intent);
+                                           }
+                                       });
+        origin.setText(getIntent().getStringExtra("origin"));
+        destination.setText(getIntent().getStringExtra("destination"));
         //TODO CHANGE DEFAULT
+
         numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
         countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
             public void onTick(long millisUntilFinished) {
