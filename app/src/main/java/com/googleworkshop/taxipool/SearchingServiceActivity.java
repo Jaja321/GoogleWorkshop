@@ -82,16 +82,16 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
         nextIntent = new Intent(this,MatchScreenActivity.class);
         requestId = getIntent().getStringExtra("requestId");
-        setupServiceReceiver();
+        //setupServiceReceiver();
         onStartService();
     }
 
     // Starts the IntentService
     public void onStartService() {
-        i = new Intent(this, TaxiPoolService.class);
+        i = new Intent(this, SearchingService.class);
         i.putExtra("requestId", requestId);
-        i.putExtra("receiver", receiver);
-        //i.putExtra("numOfSeconds", numOfSeconds);
+        //i.putExtra("receiver", receiver);
+        i.putExtra("numOfSeconds", numOfSeconds);
         startService(i);
         //finish();
     }

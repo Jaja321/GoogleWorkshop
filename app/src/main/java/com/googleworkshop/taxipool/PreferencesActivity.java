@@ -320,7 +320,8 @@ public class PreferencesActivity extends NavDrawerActivity {
             homePrefEditor.apply();
         }
         String requestId=ServerUtils.addRequest(userRequest);
-        Intent intent = new Intent(this, SearchingActivity.class);
+        //Intent intent = new Intent(this, SearchingActivity.class);
+        Intent intent = new Intent(this, SearchingActivity2.class);
         //Intent intent = new Intent(this, SearchingServiceActivity.class);
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
@@ -467,34 +468,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         lastRequestPrefEditor.commit();//Should I use apply or commit?
     }
 
-    /*
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
-            case R.id.nav_preferences:
-                break;//do nothing, already in preferences
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }*/
 
     @Override
     public void selectDrawerItem(MenuItem menuItem) {

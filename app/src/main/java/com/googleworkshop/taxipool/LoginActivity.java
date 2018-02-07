@@ -193,7 +193,7 @@ public class LoginActivity extends AppCompatActivity {
             intent = new Intent(this, PreferencesActivity.class);
             intent.putExtra("User", user);
         }else{
-            intent = new Intent(this, SearchingActivity.class);
+            intent = new Intent(this, SearchingActivity2.class);
             intent.putExtra("requestId", requestId);
             intent.putExtra("numOfSeconds", timeLeft);
         }

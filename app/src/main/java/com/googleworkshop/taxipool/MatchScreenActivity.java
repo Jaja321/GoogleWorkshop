@@ -127,6 +127,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         srcCameraButton=findViewById(R.id.srcButton);
         destCameraButton=findViewById(R.id.destButton);
 
+
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -217,6 +218,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 groupIsClosed=dataSnapshot.getValue(boolean.class);
                 if(groupIsClosed){
                     goButton.setVisibility(View.INVISIBLE);
+                    stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                 }
             }
 
@@ -401,6 +403,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         //chatIntent.putExtra("groupId",groupId);
                         endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
                         //startActivityForResult(endTripIntent, 13);
+                        stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);
                     }

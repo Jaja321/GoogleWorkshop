@@ -1,17 +1,14 @@
 package com.googleworkshop.taxipool;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
+import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Parcelable;
+import android.os.IBinder;
 import android.os.ResultReceiver;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,18 +16,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Created by Gal Ze'evi on 1/3/2018.
  */
 
-public class TaxiPoolService extends IntentService {
+public class SearchingService extends Service {
     protected String groupId = null;
     protected String requestId = null;
     protected int groupSize = 0;
-    protected int numOfSeconds = 0;
-    //ResultReceiver rec;
+    protected long numOfSeconds = 0;
+    protected ResultReceiver rec;
+    protected String origin = null;
+    protected String destination = null;
     private DatabaseReference database;
     private int FOREGROUND_ID = 111;//TODO
     private boolean isActive;
@@ -38,17 +35,19 @@ public class TaxiPoolService extends IntentService {
     final Runnable r = new Runnable() {
         public void run() {
             stopForeground(true);
-            finishService();
+            //finishService();
+            startActivity(new Intent(SearchingService.this, PreferencesActivity.class));
             stopSelf();
         }
     };
     protected Notification notification;
+    protected Intent serviceIntent;
 
 
     // Must create a default constructor
-    public TaxiPoolService() {
+    public SearchingService() {
         // Used to name the worker thread, important only for debugging.
-        super("TaxiPoolService");
+        super();
     }
 
     @Override
@@ -62,20 +61,30 @@ public class TaxiPoolService extends IntentService {
         super.onDestroy();
     }
 
+    @Nullable
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId){
         //Get requestId
-        requestId = intent.getStringExtra("requestId");
-        numOfSeconds = intent.getIntExtra("numOfSeconds", 0);
+        serviceIntent = intent;
+        Bundle b = intent.getBundleExtra("bundle");
+        requestId = b.getString("requestId");
+        numOfSeconds = b.getLong("numOfSeconds", 0);
+        rec = b.getParcelable("receiver");
+        origin = b.getString("origin");
+        destination = b.getString("destination");
 
         startForeground(FOREGROUND_ID,getSearchingNotification());
 
         waitForGroup();
 
-        handler.postDelayed(r, numOfSeconds*1000);
+        handler.postDelayed(r, numOfSeconds*1000);//service will stop itself when time's up
 
-        //Bundle bundle = new Bundle();
-        //bundle.putString("groupId", groupId);
+        return START_STICKY;//TODO ??
     }
 
 
@@ -98,7 +107,7 @@ public class TaxiPoolService extends IntentService {
 
     private void waitForGroup(){
         database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference groupIdRef=database.child("requests").child(requestId);
+        final DatabaseReference groupIdRef=database.child("requests").child(requestId);
 
         groupIdRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,33 +128,31 @@ public class TaxiPoolService extends IntentService {
                                 return;
                             isActive=dataSnapshot.getValue(boolean.class);
                             if(isActive) {
+                                //the group is still active
+
+
 
                                 String title = "We've found a match!";
-                                String body = "Your group has 10 people.";//TODO
+                                String body = String.format("We've found a group of %d people", request.getNumOfPassengers());
+                                //String body = "Your group has 10 people.";//TODO
 
-                                Intent intent = new Intent(getApplicationContext(), SearchingActivity.class);//TODO
-                                intent.putExtra("groupSize", groupSize);
+                                Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);//TODO
+                                //intent.putExtra("groupSize", groupSize);
+                                intent.putExtra("destLatLng", request.destLatLng());
+                                intent.putExtra("currentRequest",request);
+                                intent.putExtra("groupId", groupId);
+                                intent.putExtra("serviceIntent", serviceIntent);
 
                                 notification = NotificationUtils.getOngoingNotification(title, body, intent, getApplicationContext());
 
                                 startForeground(FOREGROUND_ID, notification);
 
-                                /*
-                                NotificationManager mNotificationManager =
-                                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                try {
-                                    mNotificationManager.cancelAll();//delete all previously sent notifications
-                                }catch (NullPointerException e){
-                                    Log.i("null pointer", "NullPointerException in cancelAll()");
-                                }
-                                nextIntent.putExtra("groupId", groupId);
-                                NotificationUtils.sendNotification("We've found a match!",
-                                        "Click to see your travel buddies", nextIntent, getApplicationContext());
-                                nextIntent.putExtra("destLatLng", request.destLatLng());
-                                nextIntent.putExtra("currentRequest",request);
-                                startActivity(nextIntent);
-                                finish();
-                                */
+                                Bundle b = new Bundle();
+                                b.putParcelable("destLatLng", request.destLatLng());
+                                b.putParcelable("currentRequest", request);
+                                b.putString("groupId", groupId);
+
+                                rec.send(1, b);
                             }
                         }
 
@@ -169,13 +176,22 @@ public class TaxiPoolService extends IntentService {
         String title = "Looking for a match...";
         String body = "We'll let you know if anything changes";
 
-        Intent intent = new Intent(getApplicationContext(), SearchingServiceActivity.class);//TODO
-        intent.putExtra("groupSize", groupSize);
+        //Intent intent = new Intent(getApplicationContext(), SearchingActivity2.class);
+        Intent intent = new Intent(getApplicationContext(), PreferencesActivity.class);//TODO this is for now
+        //TODO I can't figure out how to get back to the same SearchingActivity2 instance that called the service
+        //intent.putExtra("origin", origin);
+        //intent.putExtra("destination", destination);
+        //intent.putExtra("numOfSeconds", numOfSeconds);
+        //intent.putExtra("serviceStartTime", System.currentTimeMillis());
+        //intent.putExtra("rec", rec);
 
         return NotificationUtils.getOngoingNotification(title, body, intent, getApplicationContext());
     }
 
     public void finishService(){
+        //TODO this is called before service stops
+        //TODO
+        //NotificationUtils.sendNotification("hello", "hello", new Intent(getApplicationContext(), SearchingServiceActivity.class), getApplicationContext());
 
     }
 
