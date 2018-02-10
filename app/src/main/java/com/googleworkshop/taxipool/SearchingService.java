@@ -36,7 +36,7 @@ public class SearchingService extends Service {
         public void run() {
             stopForeground(true);
             //finishService();
-            startActivity(new Intent(SearchingService.this, PreferencesActivity.class));
+            //startActivity(new Intent(SearchingService.this, PreferencesActivity.class));
             stopSelf();
         }
     };

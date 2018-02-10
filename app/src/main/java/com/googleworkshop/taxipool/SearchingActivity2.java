@@ -52,6 +52,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
                                            public void onClick(View v) {
                                                Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                                                startActivity(intent);
+                                               //stop searching screen and service
+                                               stopService(new Intent(SearchingActivity2.this, SearchingService.class));
+                                               finish();
                                            }
                                        });
         origin.setText(getIntent().getStringExtra("origin"));
@@ -60,7 +63,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
         numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
         countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
             public void onTick(long millisUntilFinished) {
-                //check for a match?
                 if(millisUntilFinished >= 60*60*1000) {//over an hour left
                     timer.setText(String.format(FORMAT1,
                             TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
@@ -80,8 +82,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
             }
 
             public void onFinish() {
-                timer.setText("done!");//for now
                 if(groupId!=null &&!isActive) {
+                //if(groupId==null ||!isActive) {
+                    timer.setText("Sorry, We could not find a match");
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     database.child("groups").child(groupId).child("closed").setValue(true);
                     NotificationManager mNotificationManager =
@@ -91,8 +94,13 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     }catch (NullPointerException e){
                         Log.i("null pointer", "NullPointerException in cancelAll()");
                     }
-                    NotificationUtils.sendNotification("Sorry, We could not find a match",
-                            "you are welcome to try again soon", intent, getApplicationContext());
+                    if(!isInFront) {
+                        NotificationUtils.sendNotification("Sorry, We could not find a match",
+                                "you are welcome to try again soon", intent, getApplicationContext());
+                    }
+                    else{
+                        startActivity(intent);
+                    }
                 }
             }
         };
@@ -114,10 +122,12 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
     @Override
     public void gotoPreferences(){
+        /*
         long serviceStartTime = getIntent().getLongExtra("serviceStartTime", 0);
         if(serviceStartTime == 0) {
             countDownTimer.cancel();
-        }
+        }*/
+        countDownTimer.cancel();
         if(groupId!=null &&!isActive)
             database.child("groups").child(groupId).child("closed").setValue(true);
         editor.putString("requestId",null);
@@ -155,7 +165,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     nextIntent.putExtra("destLatLng", currentRequest.destLatLng());
                     nextIntent.putExtra("currentRequest", currentRequest);
                     nextIntent.putExtra("groupId", groupId);
-
+                    countDownTimer.cancel();
                     if(isInFront) {
                         startActivity(nextIntent);
                     }
