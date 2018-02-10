@@ -220,6 +220,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         if (!checkPermissions()) {
             getPermissions();
             Log.i("hello hello", "hello hello");
+            return;
         }
 
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
@@ -247,7 +248,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
-            addGeofences();
+            //addGeofences();
             return;
         }
     }
@@ -279,6 +280,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Log.i("IN HERE", "IN HERE");
+                    addGeofences();
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
