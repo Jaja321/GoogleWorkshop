@@ -12,6 +12,8 @@ public class Request implements Parcelable{
     private long timePrefs;
     private int numOfPassengers;
     private String groupId;
+    protected String origin;
+    protected String destination;
     public Request(){}
 
     Request(String requesterId,LatLng src,LatLng dest,long timePrefs,int numOfPassengers){

@@ -142,6 +142,10 @@ public class SearchingActivity2 extends NavDrawerActivity {
         if(requestId!=null){
            editor = sharedPref.edit();
             editor.putString("requestId",requestId);
+            if(getIntent().getStringExtra("origin") != null){
+                editor.putString("origin", getIntent().getStringExtra("origin"));
+                editor.putString("destination", getIntent().getStringExtra("destination"));
+            }
             editor.commit();
         }
 
@@ -196,6 +200,8 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     nextIntent.putExtra("destLatLng", currentRequest.destLatLng());
                     nextIntent.putExtra("currentRequest", currentRequest);
                     nextIntent.putExtra("groupId", groupId);
+                    nextIntent.putExtra("origin", getIntent().getStringExtra("origin"));
+                    nextIntent.putExtra("destination", getIntent().getStringExtra("destination"));
                     countDownTimer.cancel();
                     if(isInFront) {
                         startActivity(nextIntent);

@@ -319,6 +319,9 @@ public class PreferencesActivity extends NavDrawerActivity {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
             homePrefEditor.apply();
         }
+        userRequest.origin = originPlace.getName().toString();
+        userRequest.destination = destPlace.getName().toString();
+
         String requestId=ServerUtils.addRequest(userRequest);
         //Intent intent = new Intent(this, SearchingActivity.class);
         Intent intent = new Intent(this, SearchingActivity2.class);
@@ -328,6 +331,10 @@ public class PreferencesActivity extends NavDrawerActivity {
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         intent.putExtra("destination", destPlace.getName());
         intent.putExtra("origin", originPlace.getName());
+        Bundle b = new Bundle();
+        //b.putParcelable("request", userRequest);
+        intent.putExtra("bundle", b);
+
 
         stopService(new Intent(this, SearchingService.class));//Do we need this? just in case?
 

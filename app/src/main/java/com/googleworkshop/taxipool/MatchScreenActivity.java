@@ -307,19 +307,25 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getKey().equals(currentUserRequestId))
+                if(dataSnapshot.getKey().equals(currentUserRequestId)) {
                     return;
+                }
                 buddyCount--;
                 if (buddyCount == 1 && !groupIsClosed) {
+                    database.child("groups").child(groupId).child("closed").setValue(true);
                     requestsInGroup.removeEventListener(this);
                     //Too few people, group is closed. Create a new request and go back to searching activity.
                     Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity2.class);
                     String requestId=ServerUtils.addRequest(currentUserRequest);
                     searchingIntent.putExtra("requestId",requestId);
+                    searchingIntent.putExtra("origin", currentUserRequest.origin);
+                    searchingIntent.putExtra("destination", currentUserRequest.destination);
                     editor.putString("requestId",requestId);
+                    editor.putString("origin", currentUserRequest.origin);
+                    editor.putString("destination", currentUserRequest.destination);//do we need both?
                     editor.commit();
                     //searchingIntent.putExtra("request",currentUserRequest);
-                    Toast.makeText(MatchScreenActivity.this, "Someone left the group. Searching again..",
+                    Toast.makeText(MatchScreenActivity.this, "You were left Alone in the group. Searching again..",
                             Toast.LENGTH_SHORT).show();
                     startActivity(searchingIntent);
                     finish();
@@ -605,12 +611,14 @@ Delete the current request and go to Preferences screen
                     int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
                     if(numOfUsers<=2){
                         //Delete group:
-                        groupRef.setValue(null);
+                        groupRef.removeValue();
                     }else {
                         groupRef.child("numOfUsers").setValue(numOfUsers - 1);
                         groupRef.child("numOfPassengers").setValue(numOfPassengers - 1);
                     }
                     editor.putString("requestId",null);
+                    editor.putString("origin",null);
+                    editor.putString("destination",null);
                     editor.commit();
                     database.child("requests").child(currentUserRequestId).setValue(null);
                     stopService(new Intent(MatchScreenActivity.this, SearchingService.class));

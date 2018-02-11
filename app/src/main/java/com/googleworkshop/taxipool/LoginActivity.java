@@ -209,6 +209,8 @@ public class LoginActivity extends AppCompatActivity {
         }else{
             //TODO can we know here if he is still part of a group
             intent = new Intent(this, SearchingActivity2.class);
+            intent.putExtra("origin", sharedPreferences.getString("origin", null));
+            intent.putExtra("destination", sharedPreferences.getString("destination", null));
             intent.putExtra("requestId", requestId);
             intent.putExtra("numOfSeconds", timeLeft);
             startActivity(intent);

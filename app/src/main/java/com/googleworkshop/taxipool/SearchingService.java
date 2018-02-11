@@ -124,24 +124,26 @@ public class SearchingService extends Service {
                 if(groupId!=null){
                     //Found a group
 
-                    DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
-                    isActiveRef.addValueEventListener(new ValueEventListener() {
+                    //DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
+                    final DatabaseReference groupRef=database.child("groups").child(groupId);
+                    groupRef.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(final DataSnapshot dataSnapshot) {
 
-                            if(!dataSnapshot.exists())
-                                return;
-                            isActive=dataSnapshot.getValue(boolean.class);
+                            if(!dataSnapshot.exists()) {
+                                return;//TODO try again?
+                            }
+                            DatabaseReference isActiveRef = groupRef.child("active");
+                            isActive=dataSnapshot.child("active").getValue(boolean.class);
                             if(isActive) {
                                 //the group is still active
-
-
-
                                 String title = "We've found a match!";
-                                String body = String.format("We've found a group of %d people", request.getNumOfPassengers());
+                                int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
+
+                                String body = String.format("We've found a group of %d people", numOfPassengers);
                                 //String body = "Your group has 10 people.";//TODO
 
-                                Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);//TODO
+                                Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);
                                 //intent.putExtra("groupSize", groupSize);
                                 intent.putExtra("destLatLng", request.destLatLng());
                                 intent.putExtra("currentRequest",request);
