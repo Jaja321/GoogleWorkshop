@@ -79,8 +79,6 @@ public class ProfileActivity extends NavDrawerActivity {
             }
         });
 
-
-
     }
     private void initProfile(final User user){
         userName.setText(user.getName());
@@ -182,37 +180,6 @@ public class ProfileActivity extends NavDrawerActivity {
 
         }
     }
-
-    /*
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                break;//do nothing, already in profile
-            case R.id.nav_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }*/
 
     @Override
     public void selectDrawerItem(MenuItem menuItem) {

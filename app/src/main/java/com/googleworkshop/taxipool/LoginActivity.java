@@ -146,9 +146,10 @@ public class LoginActivity extends AppCompatActivity {
     private void loggedIn(final FirebaseUser firebaseUser) {
         Log.d("LoggedIn","I am here now");
         Toast.makeText(getApplicationContext(), "Welcome, " + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-        DatabaseReference userReference=database.child("users").child(firebaseUser.getUid());
+        final DatabaseReference userReference=database.child("users").child(firebaseUser.getUid());
 
-        userReference.addValueEventListener(new ValueEventListener() {
+        //userReference.addValueEventListener(new ValueEventListener() {
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){ //User already exist
@@ -158,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getReportedIDs() == null || user.getReportedIDs().size() < 3)
                     {
                         gotoPreferences(user);
+
                     }
                     else
                     {
