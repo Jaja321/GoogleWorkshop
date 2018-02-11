@@ -2,11 +2,13 @@ package com.googleworkshop.taxipool;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,11 +39,12 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
         getSupportActionBar().setTitle("Looking for a match");
+
+        isInFront = true;
 
         final TextView timer = (TextView)findViewById(R.id.timer);
         TextView origin = (TextView)findViewById(R.id.real_origin);
@@ -82,11 +85,13 @@ public class SearchingActivity2 extends NavDrawerActivity {
             }
 
             public void onFinish() {
-                if(groupId!=null &&!isActive) {
-                //if(groupId==null ||!isActive) {
-                    timer.setText("Sorry, We could not find a match");
+                //if(groupId !=null &&!isActive) {//This did not work, do we even need to check anything here?
+                if(groupId==null ||!isActive) {
+                    //timer.setText("Sorry, We could not find a match");
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
-                    database.child("groups").child(groupId).child("closed").setValue(true);
+                    if(groupId !=null) {
+                        database.child("groups").child(groupId).child("closed").setValue(true);//Why are we doing this?
+                    }
                     NotificationManager mNotificationManager =
                             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     try {
@@ -97,9 +102,34 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     if(!isInFront) {
                         NotificationUtils.sendNotification("Sorry, We could not find a match",
                                 "you are welcome to try again soon", intent, getApplicationContext());
+                        finish();
                     }
                     else{
-                        startActivity(intent);
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(SearchingActivity2.this);
+                        builder1.setMessage("Sorry, we could not find you a match. Would you like to try again?"); //TODO word it better..
+                        builder1.setCancelable(false);
+
+                        builder1.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        gotoPreferences();
+                                    }
+                                });
+
+                        builder1.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        finish();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+
+                        //startActivity(intent);
+                        //finish();
                     }
                 }
             }
@@ -128,13 +158,14 @@ public class SearchingActivity2 extends NavDrawerActivity {
             countDownTimer.cancel();
         }*/
         countDownTimer.cancel();
-        if(groupId!=null &&!isActive)
+        if(groupId !=null &&!isActive)
             database.child("groups").child(groupId).child("closed").setValue(true);
         editor.putString("requestId",null);
         editor.commit();
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
         //intent.putExtra("User", user);
+        stopService(new Intent(SearchingActivity2.this, SearchingService.class));
         startActivity(intent);
         finish();
     }

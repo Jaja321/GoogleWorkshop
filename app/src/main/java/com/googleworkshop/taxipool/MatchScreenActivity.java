@@ -613,6 +613,7 @@ Delete the current request and go to Preferences screen
                     editor.putString("requestId",null);
                     editor.commit();
                     database.child("requests").child(currentUserRequestId).setValue(null);
+                    stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                     startActivity(preferencesIntent);
                     finish();
                 }
@@ -622,6 +623,7 @@ Delete the current request and go to Preferences screen
             });
 
         }else {
+            stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
             startActivity(preferencesIntent);
             finish();
         }

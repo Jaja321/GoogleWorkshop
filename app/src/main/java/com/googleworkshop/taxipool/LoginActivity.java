@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,6 +68,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getHashKey();
         callbackManager = CallbackManager.Factory.create();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        try {
+            mNotificationManager.cancelAll();//delete all previously sent notifications
+        }catch (NullPointerException e){
+            Log.i("null pointer", "NullPointerException in cancelAll()");
+        }
 
         //lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
         //lastRequestPrefEditor = lastRequestSharedPref.edit();
@@ -192,13 +201,19 @@ public class LoginActivity extends AppCompatActivity {
             ServerUtils.updateToken(token);
             intent = new Intent(this, PreferencesActivity.class);
             intent.putExtra("User", user);
+            startActivity(intent);
+            finish();
+
         }else{
+            //TODO can we know here if he is still part of a group
             intent = new Intent(this, SearchingActivity2.class);
             intent.putExtra("requestId", requestId);
             intent.putExtra("numOfSeconds", timeLeft);
+            startActivity(intent);
+            finish();
         }
-        startActivity(intent);
-        finish();
+        //startActivity(intent);
+        //finish();
     }
 
     public void signInWithGoogle(View view) {

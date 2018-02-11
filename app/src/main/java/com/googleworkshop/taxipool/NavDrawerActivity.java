@@ -182,6 +182,7 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
         //intent.putExtra("User", user);
+        stopService(new Intent(this, SearchingService.class));
         startActivity(intent);
         finish();
     }

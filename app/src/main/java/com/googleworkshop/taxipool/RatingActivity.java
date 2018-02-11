@@ -152,6 +152,7 @@ public class RatingActivity extends NavDrawerActivity {
         alertDialogBuilder.setTitle("Thank you");
 
         // set dialog message
+        /*
         alertDialogBuilder
                 .setMessage("Thank you for rating your group!")
                 .setPositiveButton("Find a new ride",new DialogInterface.OnClickListener() {
@@ -160,6 +161,18 @@ public class RatingActivity extends NavDrawerActivity {
                         startActivity(myIntent);
                     }
                 });
+                */
+
+        alertDialogBuilder
+                .setMessage("Thank you for rating your group!")
+                .setPositiveButton("finish",new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, int id) {
+                        //Intent myIntent = new Intent(RatingActivity.this, PreferencesActivity.class);
+                        //startActivity(myIntent);
+                        finish();
+                    }
+                });
+
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -168,6 +181,8 @@ public class RatingActivity extends NavDrawerActivity {
         alertDialog.show();
     }
 
+    /*
+    //TODO why do we need this? check
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         //Fragment fragment = null;
@@ -198,6 +213,6 @@ public class RatingActivity extends NavDrawerActivity {
         mDrawer.closeDrawers();
     }
     //------
-
+    */
 
 }

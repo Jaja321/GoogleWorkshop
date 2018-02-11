@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,6 +61,9 @@ public class SearchingService extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        //for debugging
+        //Toast.makeText(this, "My Service Stopped", Toast.LENGTH_LONG).show();
+        Log.d("SearchingService", "onDestroy");
     }
 
     @Nullable
