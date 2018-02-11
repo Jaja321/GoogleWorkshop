@@ -313,7 +313,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 if (buddyCount == 1 && !groupIsClosed) {
                     requestsInGroup.removeEventListener(this);
                     //Too few people, group is closed. Create a new request and go back to searching activity.
-                    Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity.class);
+                    Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity2.class);
                     String requestId=ServerUtils.addRequest(currentUserRequest);
                     searchingIntent.putExtra("requestId",requestId);
                     editor.putString("requestId",requestId);
