@@ -34,8 +34,9 @@ android:layout_height="fill_parent">
             android:stackFromBottom="true"
             android:divider="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
-            tools:listitem="@layout/item_message"
-            android:padding="16dp"/>
+            android:padding="16dp"
+            />
+        <!--tools:listitem="@layout/item_message"-->
 
         <LinearLayout
             android:id="@+id/linearLayout"

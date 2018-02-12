@@ -19,7 +19,7 @@ public class ChatMessage {
 
     private String text;
     private String name;
-    private String userId;
+    private String authorId;
     private String photoUrl;
 
     public ChatMessage() {
@@ -28,7 +28,7 @@ public class ChatMessage {
     public ChatMessage(String text, String name, String userId, String photoUrl) {
         this.text = text;
         this.name = name;
-        this.userId=userId;
+        this.authorId=userId;
         this.photoUrl = photoUrl;
     }
 
@@ -36,8 +36,8 @@ public class ChatMessage {
         return text;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getAuthorId() {
+        return authorId;
     }
 
     public void setText(String text) {

@@ -105,7 +105,8 @@ public class ChatActivity extends NavDrawerActivity{
 
         // Initialize message ListView and its adapter
         List<ChatMessage> chatMessages = new ArrayList<>();
-        mMessageAdapter = new MessageAdapter(this, R.layout.item_message, chatMessages);
+        mMessageAdapter = new MessageAdapter(this, R.layout.item_message_sent, chatMessages, userId);
+        //mMessageAdapter = new MessageAdapter(this, R.layout.item_message, chatMessages);
         mMessageListView.setAdapter(mMessageAdapter);
 
         // Initialize progress bar
