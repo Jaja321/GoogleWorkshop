@@ -325,7 +325,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     editor.putString("destination", currentUserRequest.destination);//do we need both?
                     editor.commit();
                     //searchingIntent.putExtra("request",currentUserRequest);
-                    Toast.makeText(MatchScreenActivity.this, "You were left Alone in the group. Searching again..",
+                    Toast.makeText(MatchScreenActivity.this, "You were left Alone in the group. Searching again...",
                             Toast.LENGTH_SHORT).show();
                     startActivity(searchingIntent);
                     finish();
@@ -570,6 +570,11 @@ Delete the current request and go to Preferences screen
         requestsInGroup.removeEventListener(requestChangeListener);
         final Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
         preferencesIntent.putExtra("User",user);
+        //TODO I moved this here b/c if someone already pressed GO and the user clicks "find a new ride" this should still happen
+        editor.putString("requestId",null);
+        editor.putString("origin",null);
+        editor.putString("destination",null);
+        editor.commit();
         if(!groupIsClosed) {
             final DatabaseReference groupRef=database.child("groups").child(groupId);
             groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -582,12 +587,12 @@ Delete the current request and go to Preferences screen
                         groupRef.removeValue();
                     }else {
                         groupRef.child("numOfUsers").setValue(numOfUsers - 1);
-                        groupRef.child("numOfPassengers").setValue(numOfPassengers - 1);
+                        groupRef.child("numOfPassengers").setValue(numOfPassengers - currentUserRequest.getNumOfPassengers());
                     }
-                    editor.putString("requestId",null);
-                    editor.putString("origin",null);
-                    editor.putString("destination",null);
-                    editor.commit();
+                    //editor.putString("requestId",null);
+                    //editor.putString("origin",null);
+                    //editor.putString("destination",null);
+                    //editor.commit();
                     database.child("requests").child(currentUserRequestId).setValue(null);
                     stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                     startActivity(preferencesIntent);
@@ -603,6 +608,7 @@ Delete the current request and go to Preferences screen
             startActivity(preferencesIntent);
             finish();
         }
+
     }
 
 }

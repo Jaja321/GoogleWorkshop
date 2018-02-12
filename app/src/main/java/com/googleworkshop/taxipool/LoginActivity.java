@@ -62,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
     public final String lastRequest = "lastRequest";
     protected SharedPreferences lastRequestSharedPref;
     //protected SharedPreferences.Editor lastRequestPrefEditor;
+    protected String currentRequestOrigin = null;
+    protected String currentRequestDestination = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){ //User already exist
                     Log.d("User already exists","I am here now");
-                    User user=dataSnapshot.getValue(User.class);
+                    final User user=dataSnapshot.getValue(User.class);
                     //if (!user.isBlocked())
                     if(user.getReportedIDs() == null || user.getReportedIDs().size() < 3)
                     {
@@ -193,11 +195,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void gotoPreferences(User user){
+    private void gotoPreferences(final User user){
         Intent intent;
         SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
-        String requestId=sharedPreferences.getString("requestId",null);
-        long timeLeft = getTimeLeftForRequest();
+        final String requestId=sharedPreferences.getString("requestId",null);
+        final long timeLeft = getTimeLeftForRequest();
         if(requestId==null || timeLeft <= 0) {
             String token = FirebaseInstanceId.getInstance().getToken();
             ServerUtils.updateToken(token);
@@ -205,19 +207,69 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra("User", user);
             startActivity(intent);
             finish();
-
-        }else{
-            //TODO can we know here if he is still part of a group
-            intent = new Intent(this, SearchingActivity2.class);
-            intent.putExtra("origin", sharedPreferences.getString("origin", null));
-            intent.putExtra("destination", sharedPreferences.getString("destination", null));
-            intent.putExtra("requestId", requestId);
-            intent.putExtra("numOfSeconds", timeLeft);
-            startActivity(intent);
-            finish();
         }
-        //startActivity(intent);
-        //finish();
+        else{
+            //TODO can we know here if he is still part of a group
+            currentRequestOrigin = sharedPreferences.getString("origin", null);
+            currentRequestDestination = sharedPreferences.getString("destination", null);
+
+            if(currentRequestOrigin != null && currentRequestDestination != null) {//just to be safe
+
+                DatabaseReference ref = database.child("requests").child(requestId);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final Request currRequest = dataSnapshot.getValue(Request.class);
+                        if (currRequest != null && currRequest.getGroupId() != null) {
+                            //User is in a group
+                            String groupId = currRequest.getGroupId();
+
+                            final Intent intent = new Intent(LoginActivity.this, MatchScreenActivity.class);
+                            intent.putExtra("origin", currentRequestOrigin);
+                            intent.putExtra("destination", currentRequestDestination);
+                            intent.putExtra("groupId", groupId);
+                            intent.putExtra("destLatLng", currRequest.destLatLng());//TODO why send this? we're sending the request
+                            intent.putExtra("currentRequest", currRequest);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else{
+                            //TODO When will we be here? can we have currRequest == null?
+                            //TODO can we have currRequest != null && currRequest.getGroupId() == null?
+                            if(currRequest == null){
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                ServerUtils.updateToken(token);
+                                final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
+                                intent.putExtra("User", user);
+                                startActivity(intent);
+                                finish();
+                            }
+                            final Intent intent = new Intent(LoginActivity.this, SearchingActivity2.class);
+                            intent.putExtra("origin", currentRequestOrigin);
+                            intent.putExtra("destination", currentRequestDestination);
+                            intent.putExtra("requestId", requestId);
+                            intent.putExtra("numOfSeconds", timeLeft);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            else {
+                intent = new Intent(this, SearchingActivity2.class);
+                intent.putExtra("origin", sharedPreferences.getString("origin", null));
+                intent.putExtra("destination", sharedPreferences.getString("destination", null));
+                intent.putExtra("requestId", requestId);
+                intent.putExtra("numOfSeconds", timeLeft);
+                startActivity(intent);
+                finish();
+            }
+        }
     }
 
     public void signInWithGoogle(View view) {

@@ -125,7 +125,8 @@ public class SearchingService extends Service {
                     //Found a group
 
                     //DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
-                    final DatabaseReference groupRef=database.child("groups").child(groupId);
+                    final DatabaseReference groupRef=database.child("groups").child(groupId);//Changes to isActive will also trigger this
+                    //According to FireBase documentation
                     groupRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -133,15 +134,24 @@ public class SearchingService extends Service {
                             if(!dataSnapshot.exists()) {
                                 return;//TODO try again?
                             }
+
                             DatabaseReference isActiveRef = groupRef.child("active");
-                            isActive=dataSnapshot.child("active").getValue(boolean.class);
+                            //TODO this happens after the user clicked on "find a new ride" when group is not closed
+                            //TODO the group was removed so the value of "isActive" is null
+                            //TODO Therefore, the unboxing in Boolean.valueOf() throws an exception
+                            try {
+                                isActive = dataSnapshot.child("active").getValue(boolean.class);
+                            }
+                            catch (NullPointerException e){
+                                return;
+                            }
                             if(isActive) {
                                 //the group is still active
                                 String title = "We've found a match!";
                                 int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
 
                                 String body = String.format("We've found a group of %d people", numOfPassengers);
-                                //String body = "Your group has 10 people.";//TODO
+
 
                                 Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);
                                 //intent.putExtra("groupSize", groupSize);
@@ -155,7 +165,7 @@ public class SearchingService extends Service {
                                 startForeground(FOREGROUND_ID, notification);
 
                                 Bundle b = new Bundle();
-                                b.putParcelable("destLatLng", request.destLatLng());
+                                b.putParcelable("destLatLng", request.destLatLng());//TODO why send this if we're sending the request?
                                 b.putParcelable("currentRequest", request);
                                 b.putString("groupId", groupId);//TODO Isn't this already in request?
                                 b.putBoolean("isActive", isActive);

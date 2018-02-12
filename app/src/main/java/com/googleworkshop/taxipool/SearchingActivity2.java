@@ -31,14 +31,14 @@ public class SearchingActivity2 extends NavDrawerActivity {
     protected long numOfSeconds;
     private DatabaseReference database;
     private String requestId, groupId;
-    Intent nextIntent;
+    Intent nextIntent;//TODO why is this declared here?
     private boolean isActive;
     private SharedPreferences.Editor editor;
     private CountDownTimer countDownTimer;
     protected Intent i;
     private boolean isInFront;
     protected SharedPreferences lastRequestSharedPref;
-    protected SharedPreferences.Editor lastRequestPrefEditor;
+    //protected SharedPreferences.Editor lastRequestPrefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +70,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
                                            @Override
                                            public void onClick(View v) {
                                                Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
-                                               startActivity(intent);
                                                //stop searching screen and service
                                                stopService(new Intent(SearchingActivity2.this, SearchingService.class));
+                                               startActivity(intent);
                                                finish();
                                            }
                                        });
@@ -106,7 +106,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
                 //if(groupId !=null &&!isActive) {//This did not work, do we even need to check anything here?
                 if(groupId==null ||!isActive) {
                     //TODO I don't understand why we need isActive
-                    //TODO Also, are we sure it's value is correct at this point? should we ask the server?
                     //timer.setText("Sorry, We could not find a match");
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     if(groupId !=null) {
@@ -202,7 +201,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         bundle.putLong("numOfSeconds", numOfSeconds);
         bundle.putString("requestId", requestId);
         bundle.putParcelable("receiver", receiver);
-        bundle.putLong("serviceStartTime", System.currentTimeMillis());
+        bundle.putLong("serviceStartTime", System.currentTimeMillis());//Am I using this?
         bundle.putString("destination", getIntent().getStringExtra("destination"));
         bundle.putString("origin", getIntent().getStringExtra("origin"));
         i.putExtra("bundle", bundle);
@@ -220,11 +219,11 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     String groupId = resultData.getString("groupId");
                     isActive = resultData.getBoolean("isActive");
                     Request currentRequest = resultData.getParcelable("currentRequest");
-                    nextIntent.putExtra("destLatLng", currentRequest.destLatLng());
+                    nextIntent.putExtra("destLatLng", currentRequest.destLatLng());//TODO why send this? we're sending the request
                     nextIntent.putExtra("currentRequest", currentRequest);
-                    nextIntent.putExtra("groupId", groupId);
-                    nextIntent.putExtra("origin", getIntent().getStringExtra("origin"));
-                    nextIntent.putExtra("destination", getIntent().getStringExtra("destination"));
+                    nextIntent.putExtra("groupId", groupId);//TODO why send this? we're sending the request
+                    nextIntent.putExtra("origin", getIntent().getStringExtra("origin"));//TODO why send this? we're sending the request
+                    nextIntent.putExtra("destination", getIntent().getStringExtra("destination"));//TODO why send this? we're sending the request
                     countDownTimer.cancel();
                     if(isInFront) {
                         startActivity(nextIntent);

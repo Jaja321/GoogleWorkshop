@@ -75,6 +75,7 @@ public class ServerUtils {
 
     }
 
+    /*
     public static Request findRequestByUserId(String userId){
         final Request[] request = new Request[1];
         DatabaseReference ref = database.child("requests");
@@ -93,11 +94,10 @@ public class ServerUtils {
         ref.orderByChild("requesterId").equalTo("userId").addListenerForSingleValueEvent(requestByUserIdListener);
         return request[0];
     }
+    */
 
     public static void removeRequest(String requestId){
         //TODO Gal: I think it would be a good idea to implement this
     }
-
-
 
 }

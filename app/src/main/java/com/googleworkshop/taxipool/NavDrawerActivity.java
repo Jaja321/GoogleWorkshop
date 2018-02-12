@@ -178,7 +178,7 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
         finish();
     }
 
-    public void gotoPreferences(){
+    public void gotoPreferences(){//TODO Clear requests and group and such
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
         //intent.putExtra("User", user);

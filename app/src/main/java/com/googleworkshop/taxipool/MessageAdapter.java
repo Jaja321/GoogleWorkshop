@@ -46,6 +46,7 @@ public class MessageAdapter extends ArrayAdapter<ChatMessage> {
     }
     */
 
+    //TODO Should I use convertView differently?
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {

@@ -326,6 +326,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         //Intent intent = new Intent(this, SearchingActivity.class);
         Intent intent = new Intent(this, SearchingActivity2.class);
         //Intent intent = new Intent(this, SearchingServiceActivity.class);
+        //TODO Can't we just send the request and be done with it?
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
@@ -477,6 +478,7 @@ public class PreferencesActivity extends NavDrawerActivity {
 
         lastRequestPrefEditor.commit();//Should I use apply or commit?
     }
+
 
 
     @Override
