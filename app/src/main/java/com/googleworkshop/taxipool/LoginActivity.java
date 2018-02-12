@@ -323,7 +323,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    protected long getTimeLeftForRequest(){
+    protected long getTimeLeftForRequest(){//In seconds
         lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
 
         if(!lastRequestSharedPref.contains("lastRequestTimeStamp") || !lastRequestSharedPref.contains("lastRequestDuration")){

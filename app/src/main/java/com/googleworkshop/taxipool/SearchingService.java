@@ -157,7 +157,8 @@ public class SearchingService extends Service {
                                 Bundle b = new Bundle();
                                 b.putParcelable("destLatLng", request.destLatLng());
                                 b.putParcelable("currentRequest", request);
-                                b.putString("groupId", groupId);
+                                b.putString("groupId", groupId);//TODO Isn't this already in request?
+                                b.putBoolean("isActive", isActive);
 
                                 rec.send(1, b);
                             }
@@ -183,11 +184,12 @@ public class SearchingService extends Service {
         String title = "Looking for a match...";
         String body = "We'll let you know if anything changes";
 
-        //Intent intent = new Intent(getApplicationContext(), SearchingActivity2.class);
-        Intent intent = new Intent(getApplicationContext(), PreferencesActivity.class);//TODO this is for now
+        Intent intent = new Intent(getApplicationContext(), SearchingActivity2.class);
+        //Intent intent = new Intent(getApplicationContext(), PreferencesActivity.class);//TODO this is for now
         //TODO I can't figure out how to get back to the same SearchingActivity2 instance that called the service
-        //intent.putExtra("origin", origin);
-        //intent.putExtra("destination", destination);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        intent.putExtra("origin", origin);
+        intent.putExtra("destination", destination);
         //intent.putExtra("numOfSeconds", numOfSeconds);
         //intent.putExtra("serviceStartTime", System.currentTimeMillis());
         //intent.putExtra("rec", rec);

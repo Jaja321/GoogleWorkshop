@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.TimeUnit;
 
 public class SearchingActivity2 extends NavDrawerActivity {
-    protected MyReceiver receiver;
+    protected static MyReceiver receiver;
     protected static final String FORMAT = "%02d:%02d";
     protected static final String FORMAT1 = "%2d:%02d:%02d";
     //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
@@ -36,10 +37,25 @@ public class SearchingActivity2 extends NavDrawerActivity {
     private CountDownTimer countDownTimer;
     protected Intent i;
     private boolean isInFront;
+    protected SharedPreferences lastRequestSharedPref;
+    protected SharedPreferences.Editor lastRequestPrefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        boolean startedFromNotificationAfterDestroy = false;//TODO Change name
+        requestId=getIntent().getStringExtra("requestId");
+        if(requestId == null){//activity was started from notification after being destroyed
+            startedFromNotificationAfterDestroy = true;
+            Long timeLeft = getTimeLeftForRequest();
+            if(timeLeft < 0){
+                gotoPreferences();
+            }
+            numOfSeconds = timeLeft;
+        }
+
+
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
         getSupportActionBar().setTitle("Looking for a match");
@@ -63,7 +79,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
         origin.setText(getIntent().getStringExtra("origin"));
         destination.setText(getIntent().getStringExtra("destination"));
 
-        numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
+        if(!startedFromNotificationAfterDestroy) {
+            numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
+        }
         countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 if(millisUntilFinished >= 60*60*1000) {//over an hour left
@@ -138,7 +156,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         SharedPreferences sharedPref = this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
         //TODO should I check if null?
-        requestId=getIntent().getStringExtra("requestId");
+
         if(requestId!=null){
            editor = sharedPref.edit();
             editor.putString("requestId",requestId);
@@ -150,7 +168,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
         }
 
         setupServiceReceiver();
-        startSearchingService();
+        if(!startedFromNotificationAfterDestroy) {
+            startSearchingService();
+        }
     }
 
 
@@ -162,13 +182,13 @@ public class SearchingActivity2 extends NavDrawerActivity {
             countDownTimer.cancel();
         }*/
         countDownTimer.cancel();
-        if(groupId !=null &&!isActive)
+        if(groupId !=null &&!isActive) {
             database.child("groups").child(groupId).child("closed").setValue(true);
+        }
         editor.putString("requestId",null);
         editor.commit();
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
-        //intent.putExtra("User", user);
         stopService(new Intent(SearchingActivity2.this, SearchingService.class));
         startActivity(intent);
         finish();
@@ -189,6 +209,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
     // Setup the callback for when data is received from the service
     public void setupServiceReceiver() {
+        if(receiver != null){
+            return;
+        }
         receiver = new MyReceiver(new Handler());
         // onReceiveResult is called when data is received from the service
         receiver.setReceiver(new MyReceiver.Receiver() {
@@ -196,6 +219,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             public void onReceiveResult(int resultCode, Bundle resultData) {
                 if (resultCode == 1) {//group found
                     String groupId = resultData.getString("groupId");
+                    isActive = resultData.getBoolean("isActive");
                     Request currentRequest = resultData.getParcelable("currentRequest");
                     nextIntent.putExtra("destLatLng", currentRequest.destLatLng());
                     nextIntent.putExtra("currentRequest", currentRequest);
@@ -213,18 +237,43 @@ public class SearchingActivity2 extends NavDrawerActivity {
                 }
             }
         });
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        //Toast.makeText(this, "Searching activity resumed", Toast.LENGTH_LONG).show();
         isInFront = true;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        //Toast.makeText(this, "Searching activity destroyed", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         isInFront = false;
+    }
+
+    protected long getTimeLeftForRequest(){//TODO Duplicate of method in LoginActivity. find a way to use the same one twice
+        lastRequestSharedPref = getSharedPreferences("lastRequest", 0);
+
+        if(!lastRequestSharedPref.contains("lastRequestTimeStamp") || !lastRequestSharedPref.contains("lastRequestDuration")){
+            //no valid last request exists
+            return -1;
+        }
+        long timeStamp = lastRequestSharedPref.getLong("lastRequestTimeStamp", 0);
+        long duration = lastRequestSharedPref.getLong("lastRequestDuration", 0);
+        long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+
+        if(currentTime > timeStamp + duration){//last request has expired
+            return -1;
+        }
+        return duration - (currentTime - timeStamp);
     }
 
 

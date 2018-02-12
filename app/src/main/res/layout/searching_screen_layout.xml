@@ -264,11 +264,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/button_round_rect"
-                        android:onClick="goToRoute"
                         android:text=" Find a new ride "
                         android:textAllCaps="false"
                         android:textColor="#191919"
                         android:textSize="20sp" />
+                    <!-- android:onClick="goToRoute" -->
 
 
                 </LinearLayout>
