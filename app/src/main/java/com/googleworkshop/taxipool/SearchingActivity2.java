@@ -105,6 +105,8 @@ public class SearchingActivity2 extends NavDrawerActivity {
             public void onFinish() {
                 //if(groupId !=null &&!isActive) {//This did not work, do we even need to check anything here?
                 if(groupId==null ||!isActive) {
+                    //TODO I don't understand why we need isActive
+                    //TODO Also, are we sure it's value is correct at this point? should we ask the server?
                     //timer.setText("Sorry, We could not find a match");
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     if(groupId !=null) {
@@ -209,9 +211,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
     // Setup the callback for when data is received from the service
     public void setupServiceReceiver() {
-        if(receiver != null){
-            return;
-        }
         receiver = new MyReceiver(new Handler());
         // onReceiveResult is called when data is received from the service
         receiver.setReceiver(new MyReceiver.Receiver() {
