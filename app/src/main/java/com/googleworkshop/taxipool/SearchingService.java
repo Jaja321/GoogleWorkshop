@@ -135,7 +135,7 @@ public class SearchingService extends Service {
                                 return;//TODO try again?
                             }
 
-                            DatabaseReference isActiveRef = groupRef.child("active");
+                            //DatabaseReference isActiveRef = groupRef.child("active");
                             //TODO this happens after the user clicked on "find a new ride" when group is not closed
                             //TODO the group was removed so the value of "isActive" is null
                             //TODO Therefore, the unboxing in Boolean.valueOf() throws an exception
@@ -147,10 +147,10 @@ public class SearchingService extends Service {
                             }
                             if(isActive) {
                                 //the group is still active
-                                String title = "We've found a match!";
+                                String body = "We'll let you know if we find more.";
                                 int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
 
-                                String body = String.format("We've found a group of %d people", numOfPassengers);
+                                String title = String.format("We've found a match of %d people!", numOfPassengers);
 
 
                                 Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);

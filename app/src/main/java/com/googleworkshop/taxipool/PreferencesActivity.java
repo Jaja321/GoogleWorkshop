@@ -330,14 +330,16 @@ public class PreferencesActivity extends NavDrawerActivity {
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
-        intent.putExtra("destination", destPlace.getName());
-        intent.putExtra("origin", originPlace.getName());
+        intent.putExtra("destination", destPlace.getName().toString());
+        intent.putExtra("origin", originPlace.getName().toString());
         Bundle b = new Bundle();
         //b.putParcelable("request", userRequest);
         intent.putExtra("bundle", b);
 
 
         stopService(new Intent(this, SearchingService.class));//Do we need this? just in case?
+
+        ClientUtils.saveRequest(userRequest, getApplicationContext());
 
         startActivity(intent);
         finish();

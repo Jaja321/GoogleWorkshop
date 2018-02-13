@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity {
     private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
     public final String lastRequest = "lastRequest";
     protected SharedPreferences lastRequestSharedPref;
-    //protected SharedPreferences.Editor lastRequestPrefEditor;
     protected String currentRequestOrigin = null;
     protected String currentRequestDestination = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         }catch (NullPointerException e){
             Log.i("null pointer", "NullPointerException in cancelAll()");
         }
-
-        //lastRequestSharedPref = getSharedPreferences(lastRequest, 0);
-        //lastRequestPrefEditor = lastRequestSharedPref.edit();
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -161,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(user.getReportedIDs() == null || user.getReportedIDs().size() < 3)
                     {
                         gotoPreferences(user);
+                        //goToNextActivity(user);
 
                     }
                     else
@@ -184,6 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("User doesn't exist","I am here now");
                     User user=ServerUtils.createNewUser(firebaseUser);
                     gotoPreferences(user);
+                    //goToNextActivity(user);
                 }
             }
 
@@ -390,5 +389,55 @@ public class LoginActivity extends AppCompatActivity {
             return -1;
         }
         return duration - (currentTime - timeStamp);
+    }
+
+    private void goToMatchScreenActivity(){
+
+    }
+    private void goToSearchingActivity(){
+        Toast.makeText(LoginActivity.this, "going to Searching Activity.",
+                Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void goToPreferences(final User user){
+        ClientUtils.clearRequest(getApplicationContext());//TODO Is this ok?
+        String token = FirebaseInstanceId.getInstance().getToken();
+        ServerUtils.updateToken(token);
+        Intent intent = new Intent(this, PreferencesActivity.class);
+        intent.putExtra("User", user);//TODO this can be replaced by the user ID
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToNextActivity(final User user){
+        Request request = ClientUtils.getRequest(getApplicationContext());
+
+        if(request == null) {//We have no record of previous requests
+            goToPreferences(user);
+        }
+        else if(request.getGroupId() == null){
+            //User is not part of a group
+            if(request.getTimePrefs() <= 0){
+                //User's request has expired
+                //This will probably not happen since the request should be cleared in the searching screen
+                //As soon as time ran out. But, just to be safe.
+                goToPreferences(user);
+            }
+            else{
+                goToSearchingActivity();
+            }
+        }
+        else {
+            if (request.getTimePrefs() >= -3600) {//less than an hour has passed since the request expired
+                //As long as no one pressed GO or the user has not pressed "find a new ride" we will allow
+                //him to go to the match screen
+                goToMatchScreenActivity();
+            } else {
+                //The user is in a group that has been 'stale' for a while
+                //we will redirect him to the preferences screen
+                goToPreferences(user);
+            }
+        }
     }
 }

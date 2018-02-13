@@ -320,6 +320,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     searchingIntent.putExtra("requestId",requestId);
                     searchingIntent.putExtra("origin", currentUserRequest.origin);
                     searchingIntent.putExtra("destination", currentUserRequest.destination);
+                    searchingIntent.putExtra("numOfSeconds", currentUserRequest.getTimePrefs());
                     editor.putString("requestId",requestId);
                     editor.putString("origin", currentUserRequest.origin);
                     editor.putString("destination", currentUserRequest.destination);//do we need both?

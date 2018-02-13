@@ -36,6 +36,7 @@ public class ServerUtils {
         DatabaseReference requestsRef=database.child("requests");
         String requestId= requestsRef.push().getKey();
         requestsRef.child(requestId).setValue(request);
+        request.setRequestId(requestId);
         return requestId;
     }
 
@@ -74,27 +75,6 @@ public class ServerUtils {
         userReference.child("messageToken").setValue(token);
 
     }
-
-    /*
-    public static Request findRequestByUserId(String userId){
-        final Request[] request = new Request[1];
-        DatabaseReference ref = database.child("requests");
-        ValueEventListener requestByUserIdListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                request[0] = dataSnapshot.getValue(Request.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        ref.orderByChild("requesterId").equalTo("userId").addListenerForSingleValueEvent(requestByUserIdListener);
-        return request[0];
-    }
-    */
 
     public static void removeRequest(String requestId){
         //TODO Gal: I think it would be a good idea to implement this

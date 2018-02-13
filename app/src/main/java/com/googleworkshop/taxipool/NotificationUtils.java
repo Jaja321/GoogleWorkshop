@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 /**
  * Created by Gal Ze'evi on 1/16/2018.
@@ -126,5 +127,14 @@ public class NotificationUtils {
         return builder.build();
     }
 
+    public static void clearAllNotfications(Context context){
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        try {
+            mNotificationManager.cancelAll();//delete all previously sent notifications
+        }catch (NullPointerException e){
+            Log.i("ERROR NotificationUtils", "NullPointerException in cancelAll()");
+        }
+    }
 
 }
