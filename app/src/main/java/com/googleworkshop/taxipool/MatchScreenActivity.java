@@ -98,7 +98,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     Query requestsInGroup;
 
 
-    //added for navigation drawer
     private User user;
     private User tmpUser;
     private FirebaseAuth mAuth;
@@ -315,6 +314,21 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     database.child("groups").child(groupId).child("closed").setValue(true);
                     requestsInGroup.removeEventListener(this);
                     //Too few people, group is closed. Create a new request and go back to searching activity.
+                    if(currentUserRequest.timeStamp + currentUserRequest.getTimePrefs()*1000 < System.currentTimeMillis()){
+                        //request expired
+                        Intent preferencesIntent = new Intent(MatchScreenActivity.this, PreferencesActivity.class);
+                        preferencesIntent.putExtra("User", user);
+                        startActivity(preferencesIntent);
+                        finish();
+                    }
+
+                    long timeStamp = currentUserRequest.getTimeStamp();
+                    long timePrefs = currentUserRequest.getTimePrefs();
+                    long currentTime = System.currentTimeMillis();
+                    currentUserRequest.setTimeStamp(currentTime);
+                    long timePassed = TimeUnit.MILLISECONDS.toSeconds(currentTime - timeStamp);
+                    currentUserRequest.setTimePrefs(timePrefs - timePassed);
+                    
                     Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity2.class);
                     String requestId=ServerUtils.addRequest(currentUserRequest);
                     searchingIntent.putExtra("requestId",requestId);

@@ -321,6 +321,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         }
         userRequest.origin = originPlace.getName().toString();
         userRequest.destination = destPlace.getName().toString();
+        userRequest.timeStamp = System.currentTimeMillis();
 
         String requestId=ServerUtils.addRequest(userRequest);
         //Intent intent = new Intent(this, SearchingActivity.class);
