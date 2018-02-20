@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="address"
-                        android:maxLength="55"
+                        android:maxLength="13"
                         android:layout_marginStart="10dp"
                         android:textAlignment="center"
                         android:textColor="#000"

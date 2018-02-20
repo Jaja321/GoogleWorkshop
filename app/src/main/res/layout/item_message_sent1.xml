@@ -60,6 +60,7 @@
             android:paddingStart="15dp"
             android:text="placeholder"
             android:textColor="#fff"
+            android:textSize="16sp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </RelativeLayout>
