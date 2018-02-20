@@ -86,7 +86,7 @@ public class ChatActivity extends NavDrawerActivity{
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if(currentUser!=null)
-            mUsername= currentUser.getDisplayName().split(" ")[0];
+            mUsername= currentUser.getDisplayName();
         else
             mUsername = ANONYMOUS;
 

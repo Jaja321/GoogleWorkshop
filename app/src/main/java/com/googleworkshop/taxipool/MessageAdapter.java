@@ -70,7 +70,7 @@ public class MessageAdapter extends ArrayAdapter<ChatMessage> {
 
         messageTextView.setVisibility(View.VISIBLE);
         messageTextView.setText(message.getText());
-        authorTextView.setText(message.getName());
+        authorTextView.setText(message.getName().split(" ")[0]);
         RequestOptions options = new RequestOptions();
         options.circleCrop();
         Glide.with(context).load(message.getPhotoUrl()).apply(options).into(profileImage);

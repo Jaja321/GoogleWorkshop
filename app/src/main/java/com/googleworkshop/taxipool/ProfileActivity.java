@@ -173,10 +173,11 @@ public class ProfileActivity extends NavDrawerActivity {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
-
+                                    /*
                                     ServerUtils.clearReports(user); //for debugging
                                     user.setBlocked(false);
                                     user.setReportedIDs(new ArrayList<String>());
+                                    */
 
                                     dialog.cancel();
                                 }

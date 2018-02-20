@@ -27,7 +27,7 @@ public class ChatMessage {
 
     public ChatMessage(String text, String name, String userId, String photoUrl) {
         this.text = text;
-        this.name = name;
+        this.name = name.split(" ")[0];
         this.authorId=userId;
         this.photoUrl = photoUrl;
     }
