@@ -62,6 +62,18 @@ public class ProfileActivity extends NavDrawerActivity {
         user = intent.getParcelableExtra("User");
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(user != null){
+            //get the updated version of this user
+            database.child("users").child(user.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    user = dataSnapshot.getValue(User.class);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
         database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,7 +94,7 @@ public class ProfileActivity extends NavDrawerActivity {
     }
     private void initProfile(final User user){
         userName.setText(user.getName());
-        rating.setText(user.getRating()+"/5.0");
+        rating.setText(String.format("%.2f", user.getRating())+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
         if(!currUser.getUserId().equals(user.getUserId())){
             report.setVisibility(View.VISIBLE);
@@ -103,11 +115,7 @@ public class ProfileActivity extends NavDrawerActivity {
                                     {
                                         //if the current user already reported this other user
                                         //Show dialog with alert and close the dialog..
-                                        /*
-                                        ServerUtils.clearReports(user); //for debugging
-                                        user.setBlocked(false);
-                                        user.setReportedIDs(new ArrayList<String>());
-                                        */
+
 
                                         AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(ProfileActivity.this);
                                         alertDialogBuilder2.setTitle("Alert");
@@ -165,6 +173,11 @@ public class ProfileActivity extends NavDrawerActivity {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
+
+                                    ServerUtils.clearReports(user); //for debugging
+                                    user.setBlocked(false);
+                                    user.setReportedIDs(new ArrayList<String>());
+
                                     dialog.cancel();
                                 }
                             });
