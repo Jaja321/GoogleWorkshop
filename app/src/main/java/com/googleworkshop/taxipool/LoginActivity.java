@@ -200,8 +200,8 @@ public class LoginActivity extends AppCompatActivity {
         final String requestId=sharedPreferences.getString("requestId",null);
         final long timeLeft = getTimeLeftForRequest();
         if(requestId==null || timeLeft <= 0) {
-            String token = FirebaseInstanceId.getInstance().getToken();
-            ServerUtils.updateToken(token);
+            //String token = FirebaseInstanceId.getInstance().getToken();
+            //ServerUtils.updateToken(token);
             intent = new Intent(this, PreferencesActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
@@ -236,8 +236,8 @@ public class LoginActivity extends AppCompatActivity {
                             //TODO When will we be here? can we have currRequest == null?
                             //TODO can we have currRequest != null && currRequest.getGroupId() == null?
                             if(currRequest == null){
-                                String token = FirebaseInstanceId.getInstance().getToken();
-                                ServerUtils.updateToken(token);
+                                //String token = FirebaseInstanceId.getInstance().getToken();
+                                //ServerUtils.updateToken(token);
                                 final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
                                 intent.putExtra("User", user);
                                 startActivity(intent);
@@ -402,8 +402,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToPreferences(final User user){
         ClientUtils.clearRequest(getApplicationContext());//TODO Is this ok?
-        String token = FirebaseInstanceId.getInstance().getToken();
-        ServerUtils.updateToken(token);
+        //String token = FirebaseInstanceId.getInstance().getToken();
+        //ServerUtils.updateToken(token);
         Intent intent = new Intent(this, PreferencesActivity.class);
         intent.putExtra("User", user);//TODO this can be replaced by the user ID
         startActivity(intent);
