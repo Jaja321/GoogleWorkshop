@@ -319,7 +319,10 @@ public class PreferencesActivity extends NavDrawerActivity {
             homePrefEditor.putString(HOME_ID, destPlace.getId());
             homePrefEditor.apply();
         }
-        userRequest.origin = originPlace.getName().toString();
+        if(originPlace!=null)
+            userRequest.origin = originPlace.getName().toString();
+        else
+            userRequest.origin=null;
         userRequest.destination = destPlace.getName().toString();
         userRequest.timeStamp = System.currentTimeMillis();
 
@@ -332,7 +335,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         intent.putExtra("destination", destPlace.getName().toString());
-        intent.putExtra("origin", originPlace.getName().toString());
+        intent.putExtra("origin", userRequest.origin);
         Bundle b = new Bundle();
         //b.putParcelable("request", userRequest);
         intent.putExtra("bundle", b);

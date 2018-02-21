@@ -76,7 +76,11 @@ public class SearchingActivity2 extends NavDrawerActivity {
                                                finish();
                                            }
                                        });
-        origin.setText(getIntent().getStringExtra("origin"));
+        String originName=getIntent().getStringExtra("origin");
+        if(originName!=null)
+            origin.setText(originName);
+        else
+            origin.setText("Your location");
         destination.setText(getIntent().getStringExtra("destination"));
 
         if(!startedFromNotificationAfterDestroy) {
