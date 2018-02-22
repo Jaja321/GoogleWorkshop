@@ -158,7 +158,7 @@ public class SearchingService extends Service {
                                 intent.putExtra("destLatLng", request.destLatLng());
                                 intent.putExtra("currentRequest",request);
                                 intent.putExtra("groupId", groupId);
-                                intent.putExtra("serviceIntent", serviceIntent);
+                                intent.putExtra("serviceIntent", serviceIntent);//TODO I don't think anybody is using that...
 
                                 notification = NotificationUtils.getOngoingNotification(title, body, intent, getApplicationContext());
 
