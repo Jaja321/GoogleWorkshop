@@ -195,6 +195,26 @@ public class ChatActivity extends NavDrawerActivity{
         super.selectDrawerItem(menuItem);
     }
 
+    @Override
+    public void gotoPreferences(){
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("newRide",true);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PROFILE_ACTIVITY_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                boolean newRide=data.getBooleanExtra("newRide", false);
+                if(newRide)
+                    gotoPreferences();
+            }
+        }
+    }
+
     /*
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked

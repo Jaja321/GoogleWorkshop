@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -202,4 +203,10 @@ public class ProfileActivity extends NavDrawerActivity {
         }
     }
 
+    public void gotoPreferences(){//TODO Clear requests and group and such
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("newRide",true);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
 }

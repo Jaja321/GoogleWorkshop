@@ -1,5 +1,6 @@
 package com.googleworkshop.taxipool;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -97,11 +98,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     ChildEventListener requestChangeListener;
     Query requestsInGroup;
 
-
     private User user;
-    private User tmpUser;
     private FirebaseAuth mAuth;
-
+    public final static int CHAT_ACTIVITY_CODE = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -407,7 +406,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         Intent chatIntent=new Intent(this,ChatActivity.class);
         chatIntent.putExtra("groupId",groupId);
         //startActivity(chatIntent);
-        startActivityForResult(chatIntent, 12);
+        startActivityForResult(chatIntent, CHAT_ACTIVITY_CODE);
     }
 
     public void closeGroup(View view){
@@ -609,21 +608,30 @@ Delete the current request and go to Preferences screen
                     //editor.putString("destination",null);
                     //editor.commit();
                     database.child("requests").child(currentUserRequestId).setValue(null);
-                    stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
-                    startActivity(preferencesIntent);
-                    finish();
+
                 }
                 @Override
                 public void onCancelled(DatabaseError firebaseError) {
                 }
             });
 
-        }else {
-            stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
-            startActivity(preferencesIntent);
-            finish();
         }
+        stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
+        startActivity(preferencesIntent);
+        finish();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CHAT_ACTIVITY_CODE || requestCode == PROFILE_ACTIVITY_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                boolean newRide=data.getBooleanExtra("newRide", false);
+                if(newRide)
+                    gotoPreferences();
+            }
+        }
     }
 
 }

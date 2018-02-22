@@ -67,16 +67,16 @@ public class SearchingActivity2 extends NavDrawerActivity {
         TextView destination = (TextView)findViewById(R.id.real_dest);
         Button findNewTrip = (Button)findViewById(R.id.find_new_trip);
         findNewTrip.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View v) {
-                                               gotoPreferences();
-                                           }
-                                       });
-        String originName=getIntent().getStringExtra("origin");
+        @Override
+        public void onClick(View v) {
+            gotoPreferences();
+        }
+    });
+    String originName=getIntent().getStringExtra("origin");
         if(originName!=null)
             origin.setText(originName);
         else
-            origin.setText("Your location");
+                origin.setText("Your location");
         destination.setText(getIntent().getStringExtra("destination"));
 
         if(!startedFromNotificationAfterDestroy) {

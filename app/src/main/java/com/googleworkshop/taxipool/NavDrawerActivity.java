@@ -29,6 +29,7 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
     protected Toolbar toolbar;
     protected NavigationView nvDrawer;
     protected ActionBarDrawerToggle drawerToggle;
+    public static final int PROFILE_ACTIVITY_CODE=1337;
 
     /*
     public NavDrawerActivity(AppCompatActivity activity){
@@ -167,9 +168,8 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
     }
 
     public void gotoMyProfile(){
-        Intent intent;
-        intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivityForResult(intent, PROFILE_ACTIVITY_CODE);
     }
 
     public void gotoSignOut(){
