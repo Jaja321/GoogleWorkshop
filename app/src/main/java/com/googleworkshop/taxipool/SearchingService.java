@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 public class SearchingService extends Service {
-    protected String groupId = null;
+    protected static String groupId = null;
     protected String requestId = null;
     protected int groupSize = 0;
     protected long numOfSeconds = 0;

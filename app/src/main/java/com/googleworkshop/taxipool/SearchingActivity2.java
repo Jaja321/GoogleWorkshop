@@ -54,7 +54,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             }
             numOfSeconds = timeLeft;
         }
-
+        database = FirebaseDatabase.getInstance().getReference();
 
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
@@ -69,11 +69,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         findNewTrip.setOnClickListener(new View.OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
-                                               Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
-                                               //stop searching screen and service
-                                               stopService(new Intent(SearchingActivity2.this, SearchingService.class));
-                                               startActivity(intent);
-                                               finish();
+                                               gotoPreferences();
                                            }
                                        });
         String originName=getIntent().getStringExtra("origin");
@@ -187,6 +183,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             countDownTimer.cancel();
         }*/
         countDownTimer.cancel();
+        String groupId=SearchingService.groupId;
         if(groupId !=null &&!isActive) {
             database.child("groups").child(groupId).child("closed").setValue(true);
         }
