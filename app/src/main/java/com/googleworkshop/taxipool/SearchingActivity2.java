@@ -58,7 +58,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
-        getSupportActionBar().setTitle("Looking for a match");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Looking for a match");
+        }
 
         isInFront = true;
 
@@ -220,7 +222,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     String groupId = resultData.getString("groupId");
                     isActive = resultData.getBoolean("isActive");
                     Request currentRequest = resultData.getParcelable("currentRequest");
-                    nextIntent.putExtra("destLatLng", currentRequest.destLatLng());//TODO why send this? we're sending the request
+                    if(currentRequest != null) {
+                        nextIntent.putExtra("destLatLng", currentRequest.destLatLng());//TODO why send this? we're sending the request
+                    }
                     nextIntent.putExtra("currentRequest", currentRequest);
                     nextIntent.putExtra("groupId", groupId);//TODO why send this? we're sending the request
                     nextIntent.putExtra("origin", getIntent().getStringExtra("origin"));//TODO why send this? we're sending the request

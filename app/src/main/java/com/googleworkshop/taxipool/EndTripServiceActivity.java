@@ -53,7 +53,7 @@ import java.util.ArrayList;
 public class EndTripServiceActivity extends NavDrawerActivity {
     private GeofencingClient mGeofencingClient;
     private PendingIntent mGeofencePendingIntent;
-    private Geofence mGeofence;
+    private Geofence mGeofence = null;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private final int ACCESS_FINE_LOCATION_CODE = 17;//TODO I used the same code as PreferencesActivity, is that OK?
     private final int LOCATION_SETTINGS_CODE = 123;
@@ -68,7 +68,9 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
         addDrawer();
-        getSupportActionBar().setTitle("Enjoy your ride");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Enjoy your ride");
+        }
 
         //------------------End Trip-------------------------
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
@@ -108,20 +110,22 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         //------------------Geofencing-----------------------
         destLatLng = getIntent().getParcelableExtra("destLatLng");
 
-        mGeofence = new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("myGeofence")
+        if(destLatLng != null) {
+            mGeofence = new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this
+                    // geofence.
+                    .setRequestId("myGeofence")
 
-                .setCircularRegion(
-                        destLatLng.latitude,
-                        destLatLng.longitude,
-                        500//Radius in meters
-                )
-                //Duration in milliseconds,
-                .setExpirationDuration(300000)//50 min
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .build();
+                    .setCircularRegion(
+                            destLatLng.latitude,
+                            destLatLng.longitude,
+                            500//Radius in meters
+                    )
+                    //Duration in milliseconds,
+                    .setExpirationDuration(300000)//50 min
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                    .build();
+        }
         mGeofenceList.add(mGeofence);
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
@@ -189,25 +193,33 @@ public class EndTripServiceActivity extends NavDrawerActivity {
             return;
         }
 
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Geofences added
-                        Log.i("Added Geofence", "Added Geofence");
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
-                        timerIntent.putExtra("groupSize", groupSize);
-                        timerIntent.putExtra("groupUsers", groupUsers);
-                        startService(timerIntent);
-                        Log.i("Did not add Geofence", "Did not add Geofence");
-
-                    }
-                });
+        if(mGeofenceList.get(0) != null) {
+            mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Geofences added
+                            Log.i("Added Geofence", "Added Geofence");
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                            timerIntent.putExtra("groupSize", groupSize);
+                            timerIntent.putExtra("groupUsers", groupUsers);
+                            startService(timerIntent);
+                            Log.i("Did not add Geofence", "Did not add Geofence");
+                        }
+                    });
+        }
+        else{
+            Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+            timerIntent.putExtra("groupSize", groupSize);
+            timerIntent.putExtra("groupUsers", groupUsers);
+            startService(timerIntent);
+            Log.i("Did not add Geofence", "Did not add Geofence");
+        }
     }
 
     @Override

@@ -12,7 +12,9 @@ public class ThankYouActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thank_you);
         addDrawer();
-        getSupportActionBar().setTitle("Come back soon");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Come back soon");
+        }
         final Button newTripButton = (Button) findViewById(R.id.find_new_trip);
         newTripButton.setOnClickListener(new View.OnClickListener() {
             @Override

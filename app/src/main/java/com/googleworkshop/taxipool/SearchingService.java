@@ -89,7 +89,7 @@ public class SearchingService extends Service {
 
         handler.postDelayed(r, numOfSeconds*1000);//service will stop itself when time's up
 
-        return START_STICKY;//TODO ??
+        return START_STICKY;
     }
 
 
@@ -120,6 +120,13 @@ public class SearchingService extends Service {
                 if(!dataSnapshot.exists())
                     return;
                 final Request request=dataSnapshot.getValue(Request.class);
+                if(request == null){
+                    Log.i("SearchingService Error", "final Request request=dataSnapshot.getValue(Request.class); caused a NullPointerException");
+                    Toast.makeText(SearchingService.this, "We're sorry, an unexpected error occurred",
+                            Toast.LENGTH_SHORT).show();
+                    stopSelf();
+                    return;
+                }
                 groupId=request.getGroupId();
                 if(groupId!=null){
                     //Found a group
@@ -132,7 +139,7 @@ public class SearchingService extends Service {
                         public void onDataChange(final DataSnapshot dataSnapshot) {
 
                             if(!dataSnapshot.exists()) {
-                                return;//TODO try again?
+                                return;
                             }
 
                             //DatabaseReference isActiveRef = groupRef.child("active");
@@ -148,9 +155,16 @@ public class SearchingService extends Service {
                             if(isActive) {
                                 //the group is still active
                                 String body = "We'll let you know if we find more.";
-                                int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
-
-                                String title = String.format("We've found a match of %d people!", numOfPassengers);
+                                String title;
+                                try {
+                                    int numOfPassengers = dataSnapshot.child("numOfPassengers").getValue(int.class);
+                                    title = String.format("We've found a match of %d people!", numOfPassengers);
+                                }
+                                catch (NullPointerException e){
+                                    Log.i("SearchingService Error", "dataSnapshot.child(\"numOfPassengers\").getValue(int.class) caused a NullPointerException");
+                                    Toast.makeText(SearchingService.this, "We're sorry, an unexpected error occured", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
 
 
                                 Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);
@@ -193,23 +207,15 @@ public class SearchingService extends Service {
     public Notification getSearchingNotification(){
         String title = "Looking for a match...";
         String body = "We'll let you know if anything changes";
-
         Intent intent = new Intent(getApplicationContext(), SearchingActivity2.class);
-        //Intent intent = new Intent(getApplicationContext(), PreferencesActivity.class);//TODO this is for now
-        //TODO I can't figure out how to get back to the same SearchingActivity2 instance that called the service
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         intent.putExtra("origin", origin);
         intent.putExtra("destination", destination);
-        //intent.putExtra("numOfSeconds", numOfSeconds);
-        //intent.putExtra("serviceStartTime", System.currentTimeMillis());
-        //intent.putExtra("rec", rec);
-
         return NotificationUtils.getOngoingNotification(title, body, intent, getApplicationContext());
     }
 
     public void finishService(){
         //TODO this is called before service stops
-        //TODO
         //NotificationUtils.sendNotification("hello", "hello", new Intent(getApplicationContext(), SearchingServiceActivity.class), getApplicationContext());
 
     }
