@@ -23,42 +23,12 @@ import com.google.firebase.database.ValueEventListener;
 
 public abstract class NavDrawerActivity extends AppCompatActivity{
 
-    //private AppCompatActivity activity;
-
     protected DrawerLayout mDrawer;
     protected Toolbar toolbar;
     protected NavigationView nvDrawer;
     protected ActionBarDrawerToggle drawerToggle;
     public static final int PROFILE_ACTIVITY_CODE=1337;
 
-    /*
-    public NavDrawerActivity(AppCompatActivity activity){
-        this.activity = activity;
-    }
-
-    public void addDrawer(){
-        toolbar = (Toolbar)activity.findViewById(R.id.toolbar);
-        activity.setSupportActionBar(toolbar);
-
-        // Find our drawer view
-        mDrawer = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-        // Find our drawer view
-        nvDrawer = (NavigationView) activity.findViewById(R.id.nvView);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-
-        // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer.addDrawerListener(drawerToggle);
-    }
-    */
-
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-    */
 
     public void addDrawer(){
         toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -115,37 +85,6 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
                     }
                 });
     }
-
-    /*
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                //TODO sign out
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }*/
 
     public void selectDrawerItem(MenuItem menuItem) {
 

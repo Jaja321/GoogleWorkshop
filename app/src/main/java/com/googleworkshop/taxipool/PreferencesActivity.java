@@ -343,7 +343,7 @@ public class PreferencesActivity extends NavDrawerActivity {
 
         stopService(new Intent(this, SearchingService.class));//Do we need this? just in case?
 
-        ClientUtils.saveRequest(userRequest, getApplicationContext());
+        //ClientUtils.saveRequest(userRequest, getApplicationContext());
 
         startActivity(intent);
         finish();

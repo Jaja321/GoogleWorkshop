@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,7 +36,12 @@ public class EndTripActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
         addDrawer();
-        getSupportActionBar().setTitle("Enjoy your ride");
+        try {
+            getSupportActionBar().setTitle("Enjoy your ride");
+        }
+        catch(NullPointerException e){//I don't think we need to stop the app b/c of this
+            Log.i("endTripActivity error", "null pointer execption in setTitle");
+        }
 
         database = FirebaseDatabase.getInstance().getReference();
 
