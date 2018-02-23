@@ -85,7 +85,7 @@ public class ClientUtils {
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("request", Context.MODE_PRIVATE);
         Request request = null;
-        if(sharedPreferences.getString("requestId", null) != null) {
+        if(sharedPreferences.getString("requesterId", null) != null) {
             request = new Request(sharedPreferences.getString("requesterId", null),
                     sharedPreferences.getString("src", null),//Are all these necessary?
                     sharedPreferences.getString("dest", null),

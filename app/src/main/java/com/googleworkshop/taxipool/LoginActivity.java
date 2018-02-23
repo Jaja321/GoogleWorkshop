@@ -23,6 +23,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -200,8 +201,8 @@ public class LoginActivity extends AppCompatActivity {
         final String requestId=sharedPreferences.getString("requestId",null);
         final long timeLeft = getTimeLeftForRequest();
         if(requestId==null || timeLeft <= 0) {
-            //String token = FirebaseInstanceId.getInstance().getToken();
-            //ServerUtils.updateToken(token);
+            String token = FirebaseInstanceId.getInstance().getToken();
+            ServerUtils.updateToken(token);
             intent = new Intent(this, PreferencesActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
@@ -221,14 +222,8 @@ public class LoginActivity extends AppCompatActivity {
                         final Request currRequest = dataSnapshot.getValue(Request.class);
                         if (currRequest != null && currRequest.getGroupId() != null) {
                             //User is in a group
-                            String groupId = currRequest.getGroupId();
-
                             final Intent intent = new Intent(LoginActivity.this, MatchScreenActivity.class);
-                            intent.putExtra("origin", currentRequestOrigin);
-                            intent.putExtra("destination", currentRequestDestination);
-                            intent.putExtra("groupId", groupId);
-                            intent.putExtra("destLatLng", currRequest.destLatLng());//TODO why send this? we're sending the request
-                            intent.putExtra("currentRequest", currRequest);
+                            ClientUtils.saveRequest(currRequest, getApplicationContext());
                             startActivity(intent);
                             finish();
                         }
@@ -236,8 +231,8 @@ public class LoginActivity extends AppCompatActivity {
                             //TODO When will we be here? can we have currRequest == null?
                             //TODO can we have currRequest != null && currRequest.getGroupId() == null?
                             if(currRequest == null){
-                                //String token = FirebaseInstanceId.getInstance().getToken();
-                                //ServerUtils.updateToken(token);
+                                String token = FirebaseInstanceId.getInstance().getToken();
+                                ServerUtils.updateToken(token);
                                 final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
                                 intent.putExtra("User", user);
                                 startActivity(intent);
@@ -394,6 +389,7 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMatchScreenActivity(){
 
     }
+
     private void goToSearchingActivity(){
         Toast.makeText(LoginActivity.this, "going to Searching Activity.",
                 Toast.LENGTH_SHORT).show();
@@ -402,8 +398,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToPreferences(final User user){
         ClientUtils.clearRequest(getApplicationContext());//TODO Is this ok?
-        //String token = FirebaseInstanceId.getInstance().getToken();
-        //ServerUtils.updateToken(token);
+        String token = FirebaseInstanceId.getInstance().getToken();
+        ServerUtils.updateToken(token);
         Intent intent = new Intent(this, PreferencesActivity.class);
         intent.putExtra("User", user);//TODO this can be replaced by the user ID
         startActivity(intent);

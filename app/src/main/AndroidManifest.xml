@@ -31,9 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".MatchScreenActivity">
-        </activity>
+        <activity
+            android:name=".ChatActivity"
+            android:parentActivityName=".MatchScreenActivity" />
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".AutocompleteActivity" />
         <activity android:name=".ProfileActivity">
@@ -49,8 +49,9 @@
         <!-- android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="AIzaSyA1d79ZNB_YeQKNQ5oRszSHUXfaHJ6GHcM" /> -->
 
-        <activity android:name=".MatchScreenActivity"
-            android:launchMode="singleTop"/>
+        <activity
+            android:name=".MatchScreenActivity"
+            android:launchMode="singleTop" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -63,12 +64,14 @@
         <activity android:name=".SearchingActivity">
             <intent-filter>
                 <action android:name="foundGroup" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".MockServerCommunicationActivity" />
         <activity android:name=".RatingActivity" />
-        <activity android:name=".EndTripActivity"
+        <activity
+            android:name=".EndTripActivity"
             android:parentActivityName=".MatchScreenActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -81,11 +84,12 @@
         </activity>
         <activity android:name=".SearchingServiceActivity" />
         <activity android:name=".GeofenceTestActivity">
-        <intent-filter>
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".EndTripServiceActivity"
+        <activity
+            android:name=".EndTripServiceActivity"
             android:parentActivityName=".MatchScreenActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -99,10 +103,23 @@
             android:exported="false" />
         <service android:name=".TaxiPoolService" />
         <service android:name=".GeofenceTransitionsIntentService" />
-        <service android:name=".GeofenceRatingIntentService"
-            android:exported="true"/>
+        <service
+            android:name=".GeofenceRatingIntentService"
+            android:exported="true" />
         <service android:name=".RatingTimerService" />
         <service android:name=".SearchingService" />
+        <service
+            android:name=".MyFirebaeInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".ChatNotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -111,19 +111,22 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         database = FirebaseDatabase.getInstance().getReference();
         sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         currentUserRequestId=sharedPreferences.getString("requestId",null);
-        currentUserRequest =getIntent().getParcelableExtra("currentRequest");
+        currentUserRequest =ClientUtils.getRequest(getApplicationContext());
         editor=sharedPreferences.edit();
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
         mapFragment.getMapAsync(this);
-        groupId=getIntent().getStringExtra("groupId");
+        groupId=currentUserRequest.getGroupId();
         initViews();
         endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);
         //endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
+        boolean chat=getIntent().getBooleanExtra("chat", false);
         tTime = findViewById(R.id.totalTime);
         tDist = findViewById(R.id.totalDist);
         srcCameraButton=findViewById(R.id.srcButton);
         destCameraButton=findViewById(R.id.destButton);
+        if(chat)
+            goToChat(null);
 
 
     }
@@ -412,7 +415,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     public void closeGroup(View view){
         //Show "are you sure?" dialog
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage("Ready to go? People won't be able to join the group anymore."); //TODO word it better..
+        builder1.setMessage("Ready to go? No more users will join the group."); //TODO word it better..
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(

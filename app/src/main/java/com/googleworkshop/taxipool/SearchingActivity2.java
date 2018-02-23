@@ -220,11 +220,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     String groupId = resultData.getString("groupId");
                     isActive = resultData.getBoolean("isActive");
                     Request currentRequest = resultData.getParcelable("currentRequest");
-                    nextIntent.putExtra("destLatLng", currentRequest.destLatLng());//TODO why send this? we're sending the request
-                    nextIntent.putExtra("currentRequest", currentRequest);
-                    nextIntent.putExtra("groupId", groupId);//TODO why send this? we're sending the request
-                    nextIntent.putExtra("origin", getIntent().getStringExtra("origin"));//TODO why send this? we're sending the request
-                    nextIntent.putExtra("destination", getIntent().getStringExtra("destination"));//TODO why send this? we're sending the request
+                    ClientUtils.saveRequest(currentRequest, getApplicationContext());
                     countDownTimer.cancel();
                     if(isInFront) {
                         startActivity(nextIntent);

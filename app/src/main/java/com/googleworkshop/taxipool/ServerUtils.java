@@ -69,14 +69,14 @@ public class ServerUtils {
         return new LatLng(latitude,longitude);
     }
 
-    /*
+
     public static void updateToken(String token){
         FirebaseUser currentUser=mAuth.getCurrentUser();
         DatabaseReference userReference=database.child("users").child(currentUser.getUid());
         userReference.child("messageToken").setValue(token);
 
     }
-    */
+
 
     public static void removeRequest(String requestId){
         //TODO Gal: I think it would be a good idea to implement this
