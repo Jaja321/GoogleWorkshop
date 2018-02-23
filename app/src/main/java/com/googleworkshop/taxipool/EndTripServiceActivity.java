@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
@@ -52,7 +53,7 @@ import java.util.ArrayList;
 public class EndTripServiceActivity extends NavDrawerActivity {
     private GeofencingClient mGeofencingClient;
     private PendingIntent mGeofencePendingIntent;
-    private Geofence mGeofence;
+    private Geofence mGeofence = null;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
     private final int ACCESS_FINE_LOCATION_CODE = 17;//TODO I used the same code as PreferencesActivity, is that OK?
     private final int LOCATION_SETTINGS_CODE = 123;
@@ -67,7 +68,9 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_end);
         addDrawer();
-        getSupportActionBar().setTitle("Enjoy your ride");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Enjoy your ride");
+        }
 
         //------------------End Trip-------------------------
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
@@ -102,37 +105,27 @@ public class EndTripServiceActivity extends NavDrawerActivity {
 
             }
         });
-
-        /*
-        final Button ratingButton = (Button) findViewById(R.id.ratingButton);
-        ratingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent( EndTripServiceActivity.this, RatingActivity.class);
-                myIntent.putExtra("groupSize", groupSize);
-                myIntent.putExtra("groupUsers", groupUsers);
-                startActivity(myIntent);
-            }
-        });*/
         //---------------------------------------------------
 
         //------------------Geofencing-----------------------
-        destLatLng = getIntent().getParcelableExtra("destLatLng");//TODO make sure is sent from matchScreen
+        destLatLng = getIntent().getParcelableExtra("destLatLng");
 
-        mGeofence = new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("myGeofence")
+        if(destLatLng != null) {
+            mGeofence = new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this
+                    // geofence.
+                    .setRequestId("myGeofence")
 
-                .setCircularRegion(
-                        destLatLng.latitude,
-                        destLatLng.longitude,
-                        500//Radius in meters
-                )
-                //Duration in milliseconds,
-                .setExpirationDuration(300000)//50 min
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .build();
+                    .setCircularRegion(
+                            destLatLng.latitude,
+                            destLatLng.longitude,
+                            500//Radius in meters
+                    )
+                    //Duration in milliseconds,
+                    .setExpirationDuration(300000)//50 min
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                    .build();
+        }
         mGeofenceList.add(mGeofence);
 
         mGeofencingClient = LocationServices.getGeofencingClient(this);
@@ -147,7 +140,15 @@ public class EndTripServiceActivity extends NavDrawerActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue(int.class) != null){
-                    groupSize = dataSnapshot.getValue(int.class);
+                    try {
+                        groupSize = dataSnapshot.getValue(int.class);
+                    }
+                    catch (NullPointerException e){
+                        Log.i("Error in EndTripService", "groupSize = dataSnapshot.getValue(int.class); caused a NullPointerException");
+                        Toast.makeText(EndTripServiceActivity.this, "We're sorry, an unexpected error occurred",
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                     addGeofences();
                 }
 
@@ -184,37 +185,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         return builder.build();
     }
 
-    private void checkGPSOn(){
-        if (!PreferencesUtils.isLocationEnabled(EndTripServiceActivity.this)){
-            AlertDialog.Builder dialog = new AlertDialog.Builder(EndTripServiceActivity.this);
-            dialog.setMessage("GPS signal is disabled :(");
-
-            dialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-
-                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    EndTripServiceActivity.this.startActivityForResult(myIntent,LOCATION_SETTINGS_CODE);
-                    //get gps
-                }
-            });
-            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    //TODO start timer
-                    Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
-                    timerIntent.putExtra("groupSize", groupSize);
-                    timerIntent.putExtra("groupUsers", groupUsers);
-                    startService(timerIntent);
-                    //finish();
-                }
-            });
-            dialog.show();
-            return;
-        }
-
-    }
-
     @SuppressWarnings("MissingPermission")
     private void addGeofences() {
         if (!checkPermissions()) {
@@ -223,25 +193,33 @@ public class EndTripServiceActivity extends NavDrawerActivity {
             return;
         }
 
-        mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Geofences added
-                        Log.i("Added Geofence", "Added Geofence");
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
-                        timerIntent.putExtra("groupSize", groupSize);
-                        timerIntent.putExtra("groupUsers", groupUsers);
-                        startService(timerIntent);
-                        Log.i("Did not add Geofence", "Did not add Geofence");
-
-                    }
-                });
+        if(mGeofenceList.get(0) != null) {
+            mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+                    .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Geofences added
+                            Log.i("Added Geofence", "Added Geofence");
+                        }
+                    })
+                    .addOnFailureListener(this, new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+                            timerIntent.putExtra("groupSize", groupSize);
+                            timerIntent.putExtra("groupUsers", groupUsers);
+                            startService(timerIntent);
+                            Log.i("Did not add Geofence", "Did not add Geofence");
+                        }
+                    });
+        }
+        else{
+            Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
+            timerIntent.putExtra("groupSize", groupSize);
+            timerIntent.putExtra("groupUsers", groupUsers);
+            startService(timerIntent);
+            Log.i("Did not add Geofence", "Did not add Geofence");
+        }
     }
 
     @Override
@@ -250,14 +228,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
             //addGeofences();
             return;
-        }
-    }
-
-
-    private void showSnackbar(final String text) {
-        View container = findViewById(android.R.id.content);
-        if (container != null) {
-            Snackbar.make(container, text, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -271,7 +241,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     }
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Log.i("I am here","This is good..");
         switch (requestCode) {
             case ACCESS_FINE_LOCATION_CODE: {
                 // If request is cancelled, the result arrays are empty.
@@ -279,14 +248,8 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    Log.i("IN HERE", "IN HERE");
                     addGeofences();
-                } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    //TODO handle permission not granted
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -310,36 +273,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         }
         super.selectDrawerItem(menuItem);
     }
-    /*
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);//TODO Remove?
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }*/
     //---------------------------------------------------
 
 

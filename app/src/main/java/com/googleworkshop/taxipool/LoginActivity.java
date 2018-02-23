@@ -156,29 +156,30 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("User already exists","I am here now");
                     final User user=dataSnapshot.getValue(User.class);
                     //if (!user.isBlocked())
-                    if(user.getReportedIDs() == null || user.getReportedIDs().size() < 3)
-                    {
-                        gotoPreferences(user);
-                        //goToNextActivity(user);
+                        if (user != null && (user.getReportedIDs() == null || user.getReportedIDs().size() < 3)) {
+                            gotoPreferences(user);
 
-                    }
-                    else
-                    {
-                        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(LoginActivity.this);
-                        alertDialogBuilder2.setTitle("Alert");
-                        alertDialogBuilder2.setMessage("You are blocked for being reported too many times");
-                        alertDialogBuilder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                                finish();
+                        } else {
+                            if(user == null){
+                                Log.d("User doesn't exist","I am here now");
+                                gotoPreferences(ServerUtils.createNewUser(firebaseUser));
+                                return;
                             }
-                        });
-                        AlertDialog alertDialog2 = alertDialogBuilder2.create();
+                            AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(LoginActivity.this);
+                            alertDialogBuilder2.setTitle("Alert");
+                            alertDialogBuilder2.setMessage("You are blocked for being reported too many times");
+                            alertDialogBuilder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    finish();
+                                }
+                            });
+                            AlertDialog alertDialog2 = alertDialogBuilder2.create();
 
-                        // show it
-                        alertDialog2.show();
-                    }
+                            // show it
+                            alertDialog2.show();
+                        }
                 }else{
                     Log.d("User doesn't exist","I am here now");
                     User user=ServerUtils.createNewUser(firebaseUser);
@@ -380,60 +381,13 @@ public class LoginActivity extends AppCompatActivity {
         long duration = lastRequestSharedPref.getLong("lastRequestDuration", 0);
         long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
+        /*
         if(currentTime > timeStamp + duration){//last request has expired
             return -1;
         }
+        */
         return duration - (currentTime - timeStamp);
     }
 
-    private void goToMatchScreenActivity(){
 
-    }
-
-    private void goToSearchingActivity(){
-        Toast.makeText(LoginActivity.this, "going to Searching Activity.",
-                Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void goToPreferences(final User user){
-        ClientUtils.clearRequest(getApplicationContext());//TODO Is this ok?
-        String token = FirebaseInstanceId.getInstance().getToken();
-        ServerUtils.updateToken(token);
-        Intent intent = new Intent(this, PreferencesActivity.class);
-        intent.putExtra("User", user);//TODO this can be replaced by the user ID
-        startActivity(intent);
-        finish();
-    }
-
-    private void goToNextActivity(final User user){
-        Request request = ClientUtils.getRequest(getApplicationContext());
-
-        if(request == null) {//We have no record of previous requests
-            goToPreferences(user);
-        }
-        else if(request.getGroupId() == null){
-            //User is not part of a group
-            if(request.getTimePrefs() <= 0){
-                //User's request has expired
-                //This will probably not happen since the request should be cleared in the searching screen
-                //As soon as time ran out. But, just to be safe.
-                goToPreferences(user);
-            }
-            else{
-                goToSearchingActivity();
-            }
-        }
-        else {
-            if (request.getTimePrefs() >= -3600) {//less than an hour has passed since the request expired
-                //As long as no one pressed GO or the user has not pressed "find a new ride" we will allow
-                //him to go to the match screen
-                goToMatchScreenActivity();
-            } else {
-                //The user is in a group that has been 'stale' for a while
-                //we will redirect him to the preferences screen
-                goToPreferences(user);
-            }
-        }
-    }
 }

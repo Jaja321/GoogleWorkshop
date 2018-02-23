@@ -39,7 +39,13 @@ public class NotificationUtils {
                         new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
                 // Set the Notification Channel for the Notification Manager.
-                mNotificationManager.createNotificationChannel(mChannel);
+                try {
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
+                catch(NullPointerException e){
+                    Log.i("SendNotification Error", "NotificationManager is null");
+                    return;
+                }
             }
         }
 
@@ -90,7 +96,13 @@ public class NotificationUtils {
                         new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
                 // Set the Notification Channel for the Notification Manager.
-                mNotificationManager.createNotificationChannel(mChannel);
+                try {
+                    mNotificationManager.createNotificationChannel(mChannel);
+
+                }catch(NullPointerException e){
+                    Log.i("SendNotification Error", "NotificationManager is null");
+                    return null;
+                }
             }
         }
 

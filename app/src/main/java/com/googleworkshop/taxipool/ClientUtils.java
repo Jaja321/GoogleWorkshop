@@ -16,10 +16,8 @@ import java.util.concurrent.TimeUnit;
  * But it does not have to be limited only to that.
  */
 public class ClientUtils {
-    //protected Context context = null;//This is to allow use of functions like getSharedPreferences
 
     public ClientUtils(){}
-    //public ClientUtils(Context context){this.context = context;}
 
     /**
      * This function flattens the request and saves it in a shared preferences.

@@ -58,7 +58,9 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
         setContentView(R.layout.searching_screen_layout);
         addDrawer();
-        getSupportActionBar().setTitle("Looking for a match");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Looking for a match");
+        }
 
         isInFront = true;
 

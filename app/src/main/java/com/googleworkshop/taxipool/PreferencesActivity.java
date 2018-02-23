@@ -98,7 +98,9 @@ public class PreferencesActivity extends NavDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
         addDrawer();
-        getSupportActionBar().setTitle("Start a new ride");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Start a new ride");
+        }
 
         //XXX JERAFI ADDED ME FOR LOCATION
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -343,7 +345,7 @@ public class PreferencesActivity extends NavDrawerActivity {
 
         stopService(new Intent(this, SearchingService.class));//Do we need this? just in case?
 
-        ClientUtils.saveRequest(userRequest, getApplicationContext());
+        //ClientUtils.saveRequest(userRequest, getApplicationContext());
 
         startActivity(intent);
         finish();

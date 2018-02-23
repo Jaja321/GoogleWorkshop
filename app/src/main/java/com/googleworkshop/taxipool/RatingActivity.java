@@ -34,7 +34,9 @@ public class RatingActivity extends NavDrawerActivity {
         if(groupSize == 4){
             setContentView(R.layout.activity_rating3);
             addDrawer();
-            getSupportActionBar().setTitle("Please rate your group");
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Please rate your group");
+            }
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             final RatingBar ratingBar3 = (RatingBar) findViewById(R.id.ratingBar3);
@@ -64,7 +66,9 @@ public class RatingActivity extends NavDrawerActivity {
         else if(groupSize == 3){
             setContentView(R.layout.activity_rating2);
             addDrawer();
-            getSupportActionBar().setTitle("Please rate your group");
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Please rate your group");
+            }
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             final RatingBar ratingBar2 = (RatingBar) findViewById(R.id.ratingBar2);
             TextView name1 = (TextView)  findViewById(R.id.name1);
@@ -89,7 +93,9 @@ public class RatingActivity extends NavDrawerActivity {
         else if(groupSize == 2){
             setContentView(R.layout.activity_rating1);
             addDrawer();
-            getSupportActionBar().setTitle("Please rate your group");
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Please rate your group");
+            }
             final RatingBar ratingBar1 = (RatingBar) findViewById(R.id.ratingBar1);
             TextView name1 = (TextView)  findViewById(R.id.name1);
             name1.setText(groupUsers.get(0).getName());
@@ -180,39 +186,5 @@ public class RatingActivity extends NavDrawerActivity {
         // show it
         alertDialog.show();
     }
-
-    /*
-    //TODO why do we need this? check
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                //TODO:add sign_out
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }
-    //------
-    */
 
 }

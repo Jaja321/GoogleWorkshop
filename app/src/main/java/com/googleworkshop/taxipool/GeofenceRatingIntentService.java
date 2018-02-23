@@ -40,18 +40,8 @@ public class GeofenceRatingIntentService extends IntentService {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
         groupSize = intent.getIntExtra("groupSize", 0);
-        //groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
         Bundle groupUsersBundle = intent.getBundleExtra("groupUsersBundle");
         groupUsers = groupUsersBundle.getParcelableArrayList("groupUsers");
-        //groupUsers = intent.getParcelableArrayListExtra("groupUsers");
-
-        /*
-        for(int i = 0; i < groupSize - 1; i++){
-            String id = "User" + Integer.toString(i);
-            groupUsers.add(i, (User)intent.getParcelableExtra(id));
-        }
-        */
-
 
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -111,69 +101,6 @@ public class GeofenceRatingIntentService extends IntentService {
         String triggeringGeofencesIdsString = TextUtils.join(", ",  triggeringGeofencesIdsList);
 
         return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
-    }
-
-
-    private void sendNotification(String notificationDetails) {
-        // Get an instance of the Notification manager
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Android O requires a Notification Channel.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.app_name);
-            // Create the channel for the notification
-            NotificationChannel mChannel =
-                    new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
-
-            // Set the Notification Channel for the Notification Manager.
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
-
-        // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), RatingActivity.class);//TODO change to RatingActivity
-
-        notificationIntent.putExtra("groupSize", groupSize);
-        notificationIntent.putExtra("groupUsers", groupUsers);
-
-        // Construct a task stack.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
-        // Add the main Activity to the task stack as the parent.
-        stackBuilder.addParentStack(RatingActivity.class);//TODO change to RatingActivity
-
-        // Push the content Intent onto the stack.
-        stackBuilder.addNextIntent(notificationIntent);
-
-        // Get a PendingIntent containing the entire back stack.
-        int requestID = (int) System.currentTimeMillis();
-        PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        //PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Get a notification builder that's compatible with platform versions >= 4
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-
-        // Define the notification settings.
-        builder.setSmallIcon(R.drawable.ic_launcher_background)
-                // In a real app, you may want to use a library like Volley
-                // to decode the Bitmap.
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.drawable.ic_launcher_background))
-                .setColor(Color.BLACK)
-                .setContentTitle(notificationDetails)
-                .setContentText("Rating helps us find you a better match")
-                .setContentIntent(notificationPendingIntent);
-
-        // Set the Channel ID for Android O.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId(CHANNEL_ID); // Channel ID
-        }
-
-        // Dismiss notification once the user touches it.
-        builder.setAutoCancel(true);
-
-        // Issue the notification
-        mNotificationManager.notify(0, builder.build());
     }
 
     public void sendNotification(){

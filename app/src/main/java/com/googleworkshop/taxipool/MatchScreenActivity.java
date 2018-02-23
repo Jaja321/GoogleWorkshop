@@ -107,7 +107,9 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_screen);
         addDrawer();
-        getSupportActionBar().setTitle("Your group");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Your group");
+        }
         database = FirebaseDatabase.getInstance().getReference();
         sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         currentUserRequestId=sharedPreferences.getString("requestId",null);
@@ -216,7 +218,15 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(!dataSnapshot.exists())
                     return;
-                groupIsClosed=dataSnapshot.getValue(boolean.class);
+                try {
+                    groupIsClosed = dataSnapshot.getValue(boolean.class);
+                }
+                catch (NullPointerException e){
+                    Log.i("Error in MatchScreen", "groupIsClosed = dataSnapshot.getValue(boolean.class); caused a NullPointerException");
+                    Toast.makeText(MatchScreenActivity.this, "We're sorry, an unexpected error occurred",
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                }
                 if(groupIsClosed){
                     goButton.setVisibility(View.INVISIBLE);
                     stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
@@ -257,40 +267,44 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 final Request request=dataSnapshot.getValue(Request.class);
+                if(request == null){
+                    Log.i("Error in MatchScreen", "request added is null");
+                    return;
+                }
                 database.child("users").child(request.getRequesterId()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final User requester=dataSnapshot.getValue(User.class);
-                        String firstName=requester.getName().split(" ")[0];
+                        if(requester != null) {
+                            String firstName = requester.getName().split(" ")[0];
 //                        Not adding the markers because we only display directions to meeting point
-                        mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(firstName + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
-                        destinations.add(request.destLatLng());
-                        destBuilder.include(request.destLatLng());
-                        if (destinations.size()>1&&userSrc!=null){
-                            if (updated){
-                                handleDirections();
+                            mMap.addMarker(new MarkerOptions().position(request.destLatLng()).title(firstName + "'s Destination").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                            destinations.add(request.destLatLng());
+                            destBuilder.include(request.destLatLng());
+                            if (destinations.size() > 1 && userSrc != null) {
+                                if (updated) {
+                                    handleDirections();
+                                } else {
+                                    updated = true;
+                                }
                             }
-                            else{
-                                updated=true;
-                            }
-                        }
 
 //                        builder.include(request.destLatLng());
-                        hue = ((int)hue + 30)%360;
+                            hue = ((int) hue + 30) % 360;
 //                        fixCamera();
-                        if(!user.getUserId().equals(requester.getUserId())){ //don't add curr user to list
-                            groupUsers.add(requester);
-                        }
-                        else{
-                            userDest = request.destLatLng();
-                            userSrc = new com.google.maps.model.LatLng(request.srcLatLng().latitude,request.srcLatLng().longitude);
-                            mMap.addMarker(new MarkerOptions().position(request.srcLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
-                            builder.include(request.srcLatLng());
+                            if (!user.getUserId().equals(requester.getUserId())) { //don't add curr user to list
+                                groupUsers.add(requester);
+                            } else {
+                                userDest = request.destLatLng();
+                                userSrc = new com.google.maps.model.LatLng(request.srcLatLng().latitude, request.srcLatLng().longitude);
+                                mMap.addMarker(new MarkerOptions().position(request.srcLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
+                                builder.include(request.srcLatLng());
 
 //                            fixCamera();
+                            }
+                            buddyCount++;
+                            updateLayout();
                         }
-                        buddyCount++;
-                        updateLayout();
 
                     }
 
@@ -348,6 +362,10 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     finish();
                 } else {
                     final Request request = dataSnapshot.getValue(Request.class);
+                    if(request == null){
+                        Log.i("Error in MatchScreen", "request added is null");
+                        return;
+                    }
                     String requesterId = request.getRequesterId();
                     removeUserFromList(requesterId);
                     updateLayout();
@@ -597,14 +615,19 @@ Delete the current request and go to Preferences screen
             groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    int numOfUsers=dataSnapshot.child("numOfUsers").getValue(int.class);
-                    int numOfPassengers=dataSnapshot.child("numOfPassengers").getValue(int.class);
-                    if(numOfUsers<=2){
-                        //Delete group:
-                        groupRef.removeValue();
-                    }else {
-                        groupRef.child("numOfUsers").setValue(numOfUsers - 1);
-                        groupRef.child("numOfPassengers").setValue(numOfPassengers - currentUserRequest.getNumOfPassengers());
+                   try {
+                        int numOfUsers = dataSnapshot.child("numOfUsers").getValue(int.class);
+                        int numOfPassengers = dataSnapshot.child("numOfPassengers").getValue(int.class);
+                        if (numOfUsers <= 2) {
+                            //Delete group:
+                            groupRef.removeValue();
+                        } else {
+                            groupRef.child("numOfUsers").setValue(numOfUsers - 1);
+                            groupRef.child("numOfPassengers").setValue(numOfPassengers - currentUserRequest.getNumOfPassengers());
+                        }
+                    }
+                    catch(NullPointerException e){
+                       Log.i("Error in MatchScreen", "NullPointerExecption in groupRef");
                     }
                     //editor.putString("requestId",null);
                     //editor.putString("origin",null);

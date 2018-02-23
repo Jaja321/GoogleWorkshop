@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -75,22 +76,31 @@ public class ProfileActivity extends NavDrawerActivity {
                 }
             });
         }
-        database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                currUser = dataSnapshot.getValue(User.class);
-                if (user == null) {
-                    user = currUser;
+        try {
+            database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    currUser = dataSnapshot.getValue(User.class);
+                    if (user == null) {
+                        user = currUser;
+                    }
+                    if (user.getReportedIDs() == null) {
+                        user.setReportedIDs(new ArrayList<String>());
+                    }
+                    initProfile(user);
                 }
-                if(user.getReportedIDs() == null){
-                    user.setReportedIDs(new ArrayList<String>());
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
                 }
-                initProfile(user);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+            });
+        }
+        catch (NullPointerException e){
+            Log.i("Error ProfileActivity", "NullPointerException when trying to get user");
+            Toast.makeText(ProfileActivity.this, "We're sorry, an unexpected error occurred",
+                    Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
     }
     private void initProfile(final User user){
