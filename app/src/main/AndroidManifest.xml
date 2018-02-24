@@ -108,26 +108,18 @@
             android:exported="true" />
         <service android:name=".RatingTimerService" />
         <service android:name=".SearchingService" />
-        <service android:name=".MyFirebaeInstanceIdService">
+        <service
+            android:name=".MyFirebaeInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name=".ChatNotificationService">
+        <service
+            android:name=".ChatNotificationService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".GuideActivity"
-            android:label="@string/title_activity_guide"
-            android:parentActivityName=".SearchingActivity2"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.googleworkshop.taxipool.SearchingActivity2" />
-        </activity>
     </application>
 
 </manifest>

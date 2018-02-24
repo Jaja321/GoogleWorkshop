@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -104,10 +103,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private User user;
     private FirebaseAuth mAuth;
     public final static int CHAT_ACTIVITY_CODE = 12;
-    private int GUIDE_ACTIVITY_CODE = 12938;
-    private TextView findMore1;
-    private TextView findMore2;
-    private TextView findMore3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,14 +129,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         tDist = findViewById(R.id.totalDist);
         srcCameraButton=findViewById(R.id.srcButton);
         destCameraButton=findViewById(R.id.destButton);
-        findMore1=findViewById(R.id.searching1_text);
-        findMore2=findViewById(R.id.searching2_text);
-        findMore3=findViewById(R.id.searching3_text);
 
-        if(sharedPreferences.getBoolean("FIRST_TIME",true)){
-            editor.putBoolean("FIRST_TIME",false);
-            startGuide();
-        }
+
 
     }
     @Override
@@ -419,20 +408,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 startActivity(profileIntent);
             }
         });
-
-        switch(destinations.size()){
-            case 2:
-                findMore1.setVisibility(View.GONE);
-                findMore2.setVisibility(View.VISIBLE);
-                break;
-            case 3:
-                findMore2.setVisibility(View.GONE);
-                findMore3.setVisibility(View.VISIBLE);
-                break;
-            case 4:
-                findMore3.setVisibility(View.GONE);
-                break;
-        }
     }
 
     private void removeUserFromList(String userId){
@@ -464,7 +439,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     public void closeGroup(View view){
         //Show "are you sure?" dialog
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage("Ready to go? Additional users won't be able to join the group."); //TODO word it better..
+        builder1.setMessage("Ready to go? No more users will join the group."); //TODO word it better..
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
@@ -478,9 +453,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);
-                        findMore1.setVisibility(View.GONE);
-                        findMore2.setVisibility(View.GONE);
-                        findMore3.setVisibility(View.GONE);
                     }
                 });
 
@@ -684,9 +656,7 @@ Delete the current request and go to Preferences screen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GUIDE_ACTIVITY_CODE){
-            return;
-        }
+
         if (requestCode == CHAT_ACTIVITY_CODE || requestCode == PROFILE_ACTIVITY_CODE) {
             if(resultCode == Activity.RESULT_OK){
                 boolean newRide=data.getBooleanExtra("newRide", false);
@@ -711,13 +681,6 @@ Delete the current request and go to Preferences screen
             }
         });
 
-    }
-
-    private void startGuide(){
-        startActivityForResult(new Intent(this,GuideActivity.class),GUIDE_ACTIVITY_CODE);
-    }
-    public void openGuide(View view){
-        startGuide();
     }
 
 }
