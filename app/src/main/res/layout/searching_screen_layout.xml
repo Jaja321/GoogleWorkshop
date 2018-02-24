@@ -261,10 +261,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/button_round_rect"
-                        android:text=" Find a new ride "
+                        android:text="  Find a new ride  "
                         android:textAllCaps="false"
                         android:textColor="#191919"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
                     <!-- android:onClick="goToRoute" -->
 
 
