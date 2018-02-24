@@ -178,6 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         final String requestId=sharedPreferences.getString("requestId",null);
         final long timeLeft = getTimeLeftForRequest();
         if(requestId==null || timeLeft <= 0) {
+            //No Active Request, go to preferences:
             String token = FirebaseInstanceId.getInstance().getToken();
             ServerUtils.updateToken(token,user.getUserId());
             intent = new Intent(this, PreferencesActivity.class);
@@ -186,10 +187,11 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         else{
+            //There is an active request:
             currentRequestOrigin = sharedPreferences.getString("origin", null);
             currentRequestDestination = sharedPreferences.getString("destination", null);
 
-            if(currentRequestOrigin != null && currentRequestDestination != null) {//just to be safe
+            if(currentRequestDestination != null) {//just to be safe
 
                 DatabaseReference ref = database.child("requests").child(requestId);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -72,7 +72,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             gotoPreferences();
         }
     });
-    String originName=getIntent().getStringExtra("origin");
+        String originName=getIntent().getStringExtra("origin");
         if(originName!=null)
             origin.setText(originName);
         else
@@ -126,20 +126,13 @@ public class SearchingActivity2 extends NavDrawerActivity {
                         builder1.setCancelable(false);
 
                         builder1.setPositiveButton(
-                                "Yes",
+                                "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         gotoPreferences();
                                     }
                                 });
 
-                        builder1.setNegativeButton(
-                                "No",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        finish();
-                                    }
-                                });
 
                         AlertDialog alert11 = builder1.create();
                         alert11.show();
@@ -152,7 +145,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         nextIntent=new Intent(this,MatchScreenActivity.class);
 
         if(requestId!=null){
-           editor = sharedPref.edit();
+            editor = sharedPref.edit();
             editor.putString("requestId",requestId);
             if(getIntent().getStringExtra("origin") != null){
                 editor.putString("origin", getIntent().getStringExtra("origin"));

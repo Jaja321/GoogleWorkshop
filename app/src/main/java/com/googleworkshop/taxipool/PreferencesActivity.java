@@ -279,6 +279,7 @@ public class PreferencesActivity extends NavDrawerActivity {
 
 
     private void createRequest(){
+        //long nOfSeconds=15;
         long nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         writeNumOfSeconds(nOfSeconds);
         int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());
@@ -297,7 +298,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         String requestId=ServerUtils.addRequest(userRequest);
         Intent intent = new Intent(this, SearchingActivity2.class);
         intent.putExtra("requestId",requestId);
-        intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
+        intent.putExtra("numOfSeconds",nOfSeconds);//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         intent.putExtra("destination", destPlace.getName().toString());
         intent.putExtra("origin", userRequest.origin);
