@@ -464,7 +464,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     public void closeGroup(View view){
         //Show "are you sure?" dialog
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage("Ready to go? Additional users won't be able to join the group."); //TODO word it better..
+        builder1.setMessage("Ready to go? Additional users will not be able to join the group."); //TODO word it better..
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
@@ -719,5 +719,12 @@ Delete the current request and go to Preferences screen
     public void openGuide(View view){
         startGuide();
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+    }
+
 
 }
