@@ -70,6 +70,12 @@ public class ServerUtils {
     }
 
 
+    public static void updateToken(String token, String userId){
+        DatabaseReference userReference=database.child("users").child(userId);
+        userReference.child("messageToken").setValue(token);
+
+    }
+
     public static void updateToken(String token){
         FirebaseUser currentUser=mAuth.getCurrentUser();
         DatabaseReference userReference=database.child("users").child(currentUser.getUid());

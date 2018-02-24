@@ -683,4 +683,11 @@ Delete the current request and go to Preferences screen
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.setIntent(intent);
+    }
+
+
 }

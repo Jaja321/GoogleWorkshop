@@ -81,6 +81,7 @@ public class ChatActivity extends NavDrawerActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ChatNotificationService.isChatOpen=true;
         addDrawer();
         if(getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Chat");
@@ -91,7 +92,7 @@ public class ChatActivity extends NavDrawerActivity{
             mUsername= currentUser.getDisplayName();
         else
             mUsername = ANONYMOUS;
-
+        NotificationUtils.clearLastNotification(getApplicationContext());
         groupId=getIntent().getStringExtra("groupId");
         userId=currentUser.getUid();
 
@@ -215,6 +216,24 @@ public class ChatActivity extends NavDrawerActivity{
                     gotoPreferences();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ChatNotificationService.isChatOpen=true;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        ChatNotificationService.isChatOpen=false;
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ChatNotificationService.isChatOpen=false;
     }
 
 }

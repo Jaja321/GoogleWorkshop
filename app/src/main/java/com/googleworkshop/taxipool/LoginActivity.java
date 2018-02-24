@@ -203,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
         final long timeLeft = getTimeLeftForRequest();
         if(requestId==null || timeLeft <= 0) {
             String token = FirebaseInstanceId.getInstance().getToken();
-            ServerUtils.updateToken(token);
+            ServerUtils.updateToken(token,user.getUserId());
             intent = new Intent(this, PreferencesActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
@@ -233,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                             //TODO can we have currRequest != null && currRequest.getGroupId() == null?
                             if(currRequest == null){
                                 String token = FirebaseInstanceId.getInstance().getToken();
-                                ServerUtils.updateToken(token);
+                                ServerUtils.updateToken(token,user.getUserId());
                                 final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
                                 intent.putExtra("User", user);
                                 startActivity(intent);

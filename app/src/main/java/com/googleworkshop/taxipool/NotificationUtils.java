@@ -150,5 +150,15 @@ public class NotificationUtils {
         }
     }
 
+    public static void clearLastNotification(Context context){
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        try {
+            mNotificationManager.cancel(notificationCount-1);//delete all previously sent notifications
+        }catch (NullPointerException e){
+            Log.i("ERROR NotificationUtils", "NullPointerException in cancelAll()");
+        }
+    }
+
 
 }

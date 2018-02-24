@@ -13,7 +13,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class ChatNotificationService extends FirebaseMessagingService {
     String userId;
-    private static int lastNotification;
+    public static boolean isChatOpen;
 
 
     public ChatNotificationService(){
@@ -23,22 +23,17 @@ public class ChatNotificationService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        if(isChatOpen)
+            return;
         Intent intent=new Intent(this, MatchScreenActivity.class);
        if(!remoteMessage.getData().get("senderId").equals(userId)){
 
-           NotificationManager mNotificationManager =
-                   (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-           try {
-               if(lastNotification!=0)
-                   mNotificationManager.cancel(lastNotification);
-           }catch (NullPointerException e){
-               Log.i("ERROR NotificationUtils", "NullPointerException in cancelAll()");
-           }
+           NotificationUtils.clearLastNotification(getApplicationContext());
            //notificationIntent.setPackage(null); // The golden row !!!
            intent.putExtra("chat", true);
-           lastNotification=NotificationUtils.sendNotification("You have a new message!" ,"Click to view it",
+           intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+           NotificationUtils.sendNotification("You have a new message!" ,"Click to view it",
                    intent, getApplicationContext());
-           Log.d("LastNotification",lastNotification+"");
        }
     }
 }
