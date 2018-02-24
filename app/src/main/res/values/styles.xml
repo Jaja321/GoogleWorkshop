@@ -51,6 +51,7 @@
     <style name="progressBar_style">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
+
     <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -62,6 +63,10 @@
         <item name="android:textSize">20sp</item> <!-- menu item text size-->
         <item name="android:listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

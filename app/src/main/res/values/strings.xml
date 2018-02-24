@@ -98,5 +98,13 @@
     <string name="match_found_text">We found you a match!</string>
     <string name="destination_text">Destination:</string>
     <string name="origin_text">Origin:</string>
+    <string name="title_activity_guide">GuideActivity</string>
+    <string name="guide_head">Introducing the action buttons:</string>
+    <string name="got_it">Got it!</string>
+    <string name="guide_navigation">Start navigation \nto the group\'s \nmeeting point</string>
+    <string name="guide_chat">Use this to chat and \nconnect with other \ngroup members</string>
+    <string name="guide_go">All done!\nStart riding \ntogether!</string>
+    <string name="guide_view">Toggle map view:\n  1.Meeting point\n  2.Driving route</string>
+    <string name="search_buddy">Finding more...</string>
 
 </resources>
