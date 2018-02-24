@@ -18,9 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * Created by Gal Ze'evi on 1/3/2018.
- */
+
 
 public class SearchingService extends Service {
     protected static String groupId = null;
@@ -37,8 +35,6 @@ public class SearchingService extends Service {
     final Runnable r = new Runnable() {
         public void run() {
             stopForeground(true);
-            //finishService();
-            //startActivity(new Intent(SearchingService.this, PreferencesActivity.class));
             stopSelf();
         }
     };
@@ -61,8 +57,6 @@ public class SearchingService extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        //for debugging
-        //Toast.makeText(this, "My Service Stopped", Toast.LENGTH_LONG).show();
         Log.d("SearchingService", "onDestroy");
     }
 
@@ -142,10 +136,9 @@ public class SearchingService extends Service {
                                 return;
                             }
 
-                            //DatabaseReference isActiveRef = groupRef.child("active");
-                            //TODO this happens after the user clicked on "find a new ride" when group is not closed
-                            //TODO the group was removed so the value of "isActive" is null
-                            //TODO Therefore, the unboxing in Boolean.valueOf() throws an exception
+                            //this happens after the user clicked on "find a new ride" when group is not closed
+                            //the group was removed so the value of "isActive" is null
+                            //Therefore, the unboxing in Boolean.valueOf() throws an exception
                             try {
                                 isActive = dataSnapshot.child("active").getValue(boolean.class);
                             }
@@ -168,20 +161,19 @@ public class SearchingService extends Service {
 
 
                                 Intent intent = new Intent(getApplicationContext(), MatchScreenActivity.class);
-                                //intent.putExtra("groupSize", groupSize);
                                 intent.putExtra("destLatLng", request.destLatLng());
                                 intent.putExtra("currentRequest",request);
                                 intent.putExtra("groupId", groupId);
-                                intent.putExtra("serviceIntent", serviceIntent);//TODO I don't think anybody is using that...
+                                intent.putExtra("serviceIntent", serviceIntent);
 
                                 notification = NotificationUtils.getOngoingNotification(title, body, intent, getApplicationContext());
 
                                 startForeground(FOREGROUND_ID, notification);
 
                                 Bundle b = new Bundle();
-                                b.putParcelable("destLatLng", request.destLatLng());//TODO why send this if we're sending the request?
+                                b.putParcelable("destLatLng", request.destLatLng());
                                 b.putParcelable("currentRequest", request);
-                                b.putString("groupId", groupId);//TODO Isn't this already in request?
+                                b.putString("groupId", groupId);
                                 b.putBoolean("isActive", isActive);
 
                                 rec.send(1, b);
@@ -215,8 +207,7 @@ public class SearchingService extends Service {
     }
 
     public void finishService(){
-        //TODO this is called before service stops
-        //NotificationUtils.sendNotification("hello", "hello", new Intent(getApplicationContext(), SearchingServiceActivity.class), getApplicationContext());
+        //this is called before service stops
 
     }
 

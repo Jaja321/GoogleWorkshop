@@ -14,13 +14,8 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 
 
-/**
- * Created by Gal Ze'evi on 11/28/2017.
- */
-
 public class AutocompleteActivity extends AppCompatActivity {
     private static final String TAG = PreferencesActivity.class.getSimpleName();
-    //public static final String EXTRA_MESSAGE = "com.example.galzeevi.google_workshop_preferences.MESSAGE";//I think this can be deleted
     public static Place selectedPlace = null;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +29,8 @@ public class AutocompleteActivity extends AppCompatActivity {
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
                 .build();
         autocompleteFragment.setFilter(typeFilter);
-   
-   //use current location?
-   //country code filter
-        String countryISOCode = "IL";//default, for now
-        /*
-        TelephonyManager teleMgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        if (teleMgr != null){
-            countryISOCode = teleMgr.getSimCountryIso();
-        }
-        */
+
+        String countryISOCode = "IL";//default
 
         AutocompleteFilter countryFilter = new AutocompleteFilter.Builder()
                 .setCountry(countryISOCode)
@@ -54,14 +41,12 @@ public class AutocompleteActivity extends AppCompatActivity {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName());//get place details here
                 selectedPlace = place;
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
@@ -69,9 +54,6 @@ public class AutocompleteActivity extends AppCompatActivity {
 
     public void writeLocation(View view){
         if(selectedPlace != null) {
-//            Intent intent = new Intent(this, PreferencesActivity.class);
-            //intent.putExtra(EXTRA_MESSAGE, selectedPlace.getName().toString());
-//            startActivity(intent);
             finish();
         }
     }

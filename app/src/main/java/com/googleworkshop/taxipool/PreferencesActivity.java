@@ -102,7 +102,6 @@ public class PreferencesActivity extends NavDrawerActivity {
             getSupportActionBar().setTitle("Start a new ride");
         }
 
-        //XXX JERAFI ADDED ME FOR LOCATION
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mGeoDataClient = Places.getGeoDataClient(this, null);
         homeCBox =  findViewById(R.id.HomeCheckBox);
@@ -116,8 +115,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         origin = getResources().getString(R.string.curr_location);
         database= FirebaseDatabase.getInstance().getReference();
 
-
-        // TODO find a better way to get user..
+        //get current user
         if (user == null){
             user = getIntent().getParcelableExtra("User");
         }
@@ -147,8 +145,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         });
         initializeHome();
 
-        //Spinner timeSpinner = (Spinner) findViewById(R.id.time);
-        //timeSpinner = (Spinner) findViewById(R.id.time);
         timeSpinner = findViewById(R.id.time);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> tAdapter = ArrayAdapter.createFromResource(this,
@@ -159,19 +155,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         timeSpinner.setAdapter(tAdapter);
         timeSpinner.setSelection(0);
 
-        //Jerafi commented out the gender spinner
-
-//        //Spinner genderSpinner = (Spinner) findViewById(R.id.gender);
-//        Spinner genderSpinner = findViewById(R.id.gender);
-//        // Create an ArrayAdapter using the string array and a default spinner layout
-//        ArrayAdapter<CharSequence> gAdapter = ArrayAdapter.createFromResource(this,
-//                R.array.gender, R.layout.spinner_item);
-//        // Specify the layout to use when the list of choices appears
-//        gAdapter.setDropDownViewResource(R.layout.spinner_item);
-//        // Apply the adapter to the spinner
-//        genderSpinner.setAdapter(gAdapter);
-//        genderSpinner.setSelection(0);
-//
         passengersSpinner  = findViewById(R.id.num_of_passengers);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> pAdapter = ArrayAdapter.createFromResource(this,
@@ -181,10 +164,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         // Apply the adapter to the spinner
         passengersSpinner.setAdapter(pAdapter);
         passengersSpinner.setSelection(0);
-
-        //passengersEditText = (EditText)findViewById(R.id.number_of_people);
-        //XXX CHANGED TO SPINNER
-//        passengersEditText = findViewById(R.id.number_of_people);
 
         if (destPlace==null){
             homeCBox.setClickable(false);
@@ -209,7 +188,6 @@ public class PreferencesActivity extends NavDrawerActivity {
                 homeCBox.setClickable(true);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
                 Log.i("Hey:", status.getStatusMessage());
 
             } else if (resultCode == RESULT_CANCELED) {
@@ -236,8 +214,6 @@ public class PreferencesActivity extends NavDrawerActivity {
             return;
         }
         if(AutocompleteActivity.selectedPlace != null) {//a place has been selected in autocomplete
-            //Intent intent = getIntent();
-            //String selectedPlaceName = intent.getStringExtra(AutocompleteActivity.EXTRA_MESSAGE);
             String selectedPlaceName = AutocompleteActivity.selectedPlace.getName().toString();
             Button button;
             if(buttonSearch == 1){//the user clicked on destination before going to autocomplete screen
@@ -246,13 +222,11 @@ public class PreferencesActivity extends NavDrawerActivity {
                 dest = selectedPlaceName;//update destination button message
                 homeCBox.setChecked(false);
                 homeCBox.setClickable(true);
-                //originButton.setText(origin);//so that origin will not go back to showing "your current location"
             }
             else{//the user clicked on origin before going to autocomplete screen
                 button = originButton;
                 originPlace = AutocompleteActivity.selectedPlace;
                 origin = selectedPlaceName;
-//                destButton.setText(dest);
             }
             button.setText(selectedPlaceName);
         }
@@ -263,7 +237,7 @@ public class PreferencesActivity extends NavDrawerActivity {
     }
 
     private void initializeHome(){
-        //JERAFI Using default home location if saved
+        //Using default home location if saved
         if ((destPlace == null) && (homeSettings.getBoolean(HOME_SAVED,false))){
             String placeId=homeSettings.getString(HOME_ID,null);
             if(placeId!=null) {
@@ -303,14 +277,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         }
     }
 
-    /*
-    public void goToSearchingScreen(View view){
-        Intent intent = new Intent(this, SearchingActivity.class);
-        //TODO delete because already included in request?
-        intent.putExtra("numOfSeconds",getNumOfSeconds(timeSpinner.getSelectedItemPosition()));
-        startActivity(intent);
-    }
-    */
 
     private void createRequest(){
         long nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
@@ -329,23 +295,16 @@ public class PreferencesActivity extends NavDrawerActivity {
         userRequest.timeStamp = System.currentTimeMillis();
 
         String requestId=ServerUtils.addRequest(userRequest);
-        //Intent intent = new Intent(this, SearchingActivity.class);
         Intent intent = new Intent(this, SearchingActivity2.class);
-        //Intent intent = new Intent(this, SearchingServiceActivity.class);
-        //TODO Can't we just send the request and be done with it?
         intent.putExtra("requestId",requestId);
         intent.putExtra("numOfSeconds",PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition()));//added for searching screen
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         intent.putExtra("destination", destPlace.getName().toString());
         intent.putExtra("origin", userRequest.origin);
         Bundle b = new Bundle();
-        //b.putParcelable("request", userRequest);
         intent.putExtra("bundle", b);
 
-
-        stopService(new Intent(this, SearchingService.class));//Do we need this? just in case?
-
-        //ClientUtils.saveRequest(userRequest, getApplicationContext());
+        stopService(new Intent(this, SearchingService.class));
 
         startActivity(intent);
         finish();
@@ -364,10 +323,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         else{//try and get user current location
             getUserLocation();
             return false;
-            //            if(currLocation == null){
-//                return null;//cannot get origin
-//            }
-//            srcLatLng = currLocation;
         }
         return true;
     }
@@ -395,15 +350,7 @@ public class PreferencesActivity extends NavDrawerActivity {
 
     private void getUserLocation(){
         if (PreferencesUtils.isLocationEnabled(this)){
-            //is this ok?
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 getPermissions();//user has not selected origin in autocomplete and not allowing access to current location
                 return;
             }
@@ -484,7 +431,7 @@ public class PreferencesActivity extends NavDrawerActivity {
         lastRequestPrefEditor.putLong("lastRequestTimeStamp", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
         lastRequestPrefEditor.putLong("lastRequestDuration", nOfSeconds);
 
-        lastRequestPrefEditor.commit();//Should I use apply or commit?
+        lastRequestPrefEditor.commit();
     }
 
 

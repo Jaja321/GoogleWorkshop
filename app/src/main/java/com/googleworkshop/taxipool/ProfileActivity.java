@@ -37,11 +37,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+//This is the profile screen
 public class ProfileActivity extends NavDrawerActivity {
     private FirebaseAuth mAuth;
     private static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    private String userID;
-
     private TextView userName, rating, report;
     private ImageView profileImg;
     private User user;
@@ -65,7 +64,7 @@ public class ProfileActivity extends NavDrawerActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(user != null){
-            //get the updated version of this user
+            //get the updated version of the user whom the profile page belongs to
             database.child("users").child(user.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -76,7 +75,7 @@ public class ProfileActivity extends NavDrawerActivity {
                 }
             });
         }
-        try {
+        try { //get the current user (the one who uses the app)
             database.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -107,7 +106,11 @@ public class ProfileActivity extends NavDrawerActivity {
         userName.setText(user.getName());
         rating.setText(String.format("%.2f", user.getRating())+"/5.0");
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
-        if(!currUser.getUserId().equals(user.getUserId())){
+        handleReport(user);
+    }
+
+    private void handleReport(final User user){
+        if(!currUser.getUserId().equals(user.getUserId())){ //you can not report yourself
             report.setVisibility(View.VISIBLE);
             report.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -184,11 +187,6 @@ public class ProfileActivity extends NavDrawerActivity {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
-                                    /*
-                                    ServerUtils.clearReports(user); //for debugging
-                                    user.setBlocked(false);
-                                    user.setReportedIDs(new ArrayList<String>());
-                                    */
 
                                     dialog.cancel();
                                 }
@@ -204,6 +202,7 @@ public class ProfileActivity extends NavDrawerActivity {
 
 
         }
+
     }
 
     @Override
@@ -213,7 +212,7 @@ public class ProfileActivity extends NavDrawerActivity {
         }
     }
 
-    public void gotoPreferences(){//TODO Clear requests and group and such
+    public void gotoPreferences(){
         Intent returnIntent = new Intent();
         returnIntent.putExtra("newRide",true);
         setResult(Activity.RESULT_OK,returnIntent);

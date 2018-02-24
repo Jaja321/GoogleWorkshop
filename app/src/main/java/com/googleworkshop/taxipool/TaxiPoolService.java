@@ -21,16 +21,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Gal Ze'evi on 1/3/2018.
- */
 
 public class TaxiPoolService extends IntentService {
     protected String groupId = null;
     protected String requestId = null;
     protected int groupSize = 0;
     protected int numOfSeconds = 0;
-    //ResultReceiver rec;
     private DatabaseReference database;
     private int FOREGROUND_ID = 111;//TODO
     private boolean isActive;
@@ -74,13 +70,10 @@ public class TaxiPoolService extends IntentService {
 
         handler.postDelayed(r, numOfSeconds*1000);
 
-        //Bundle bundle = new Bundle();
-        //bundle.putString("groupId", groupId);
     }
 
 
     private void waitForGroup(String requestId){
-        //Log.i("In waitForGroup", "In waitForGroup");
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference groupIdRef=database.child("requests").child(requestId).child("groupId");
         groupIdRef.addValueEventListener(new ValueEventListener() {
@@ -130,22 +123,6 @@ public class TaxiPoolService extends IntentService {
 
                                 startForeground(FOREGROUND_ID, notification);
 
-                                /*
-                                NotificationManager mNotificationManager =
-                                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                try {
-                                    mNotificationManager.cancelAll();//delete all previously sent notifications
-                                }catch (NullPointerException e){
-                                    Log.i("null pointer", "NullPointerException in cancelAll()");
-                                }
-                                nextIntent.putExtra("groupId", groupId);
-                                NotificationUtils.sendNotification("We've found a match!",
-                                        "Click to see your travel buddies", nextIntent, getApplicationContext());
-                                nextIntent.putExtra("destLatLng", request.destLatLng());
-                                nextIntent.putExtra("currentRequest",request);
-                                startActivity(nextIntent);
-                                finish();
-                                */
                             }
                         }
 

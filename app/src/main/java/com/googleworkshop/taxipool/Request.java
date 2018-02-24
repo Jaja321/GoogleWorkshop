@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Request implements Parcelable{
-    //TODO Fields have been added to this class and constructors need to be updated as well.
-    //TODO functions calling these constructors should also be checked.
     private String requesterId;
     private String src;//This is a LatLng representing the source flattened to String
     private String dest;//This is a LatLng representing the destination flattened to String

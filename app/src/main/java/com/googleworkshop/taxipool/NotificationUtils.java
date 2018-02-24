@@ -14,10 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-/**
- * Created by Gal Ze'evi on 1/16/2018.
- */
-
 public class NotificationUtils {
     private static final String CHANNEL_ID = "channel_01";
     private static int notificationCount = 10;

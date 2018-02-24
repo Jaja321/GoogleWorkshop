@@ -7,9 +7,6 @@ import android.os.Handler;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by Gal Ze'evi on 1/3/2018.
- */
 
 public class ServiceTestActivity extends Activity{
     public MyReceiver receiverForTest;
@@ -20,7 +17,6 @@ public class ServiceTestActivity extends Activity{
         setContentView(R.layout.searching_screen_layout);
         setupServiceReceiver();
         onStartService();
-        //launchTestService();
     }
 
     // Starts the IntentService
@@ -42,7 +38,6 @@ public class ServiceTestActivity extends Activity{
                     String resultValue = resultData.getString("resultValue");
                     Toast.makeText(ServiceTestActivity.this, resultValue, Toast.LENGTH_SHORT).show();
                     TextView textView = (TextView)findViewById(R.id.timer);
-                    //SystemClock.sleep(20000);
                     textView.setText("Hello");
                 }
             }

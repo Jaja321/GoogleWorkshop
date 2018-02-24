@@ -31,6 +31,7 @@ public class RatingActivity extends NavDrawerActivity {
 
         groupSize = getIntent().getIntExtra("groupSize", 0);
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
+        //load the xml the corresponds to the group size
         if(groupSize == 4){
             setContentView(R.layout.activity_rating3);
             addDrawer();
@@ -116,11 +117,9 @@ public class RatingActivity extends NavDrawerActivity {
                 }
             });
 
-            //submitButton.setOnClickListener(onClick1);
         }
-        else{
-            //TODO: change, this is for debugging
-            Intent myIntent = new Intent(RatingActivity.this, ThankYouActivity.class);
+        else{ //something went wrong
+            Intent myIntent = new Intent(RatingActivity.this, PreferencesActivity.class);
             startActivity(myIntent);
         }
 
@@ -129,7 +128,7 @@ public class RatingActivity extends NavDrawerActivity {
     }
 
 
-    public  void notRatedDialog(){
+    public  void notRatedDialog(){//show the dialog in case the user did not rate all of the group members yet
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RatingActivity.this);
 
         // set title
@@ -151,30 +150,18 @@ public class RatingActivity extends NavDrawerActivity {
         alertDialog.show();
     }
 
-    public  void submitRatingDialog(){
+    public  void submitRatingDialog(){//show the dialog in case the rating was submitted
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RatingActivity.this);
 
         // set title
         alertDialogBuilder.setTitle("Thank you");
 
         // set dialog message
-        /*
-        alertDialogBuilder
-                .setMessage("Thank you for rating your group!")
-                .setPositiveButton("Find a new ride",new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, int id) {
-                        Intent myIntent = new Intent(RatingActivity.this, PreferencesActivity.class);
-                        startActivity(myIntent);
-                    }
-                });
-                */
 
         alertDialogBuilder
                 .setMessage("Thank you for rating your group!")
                 .setPositiveButton("finish",new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, int id) {
-                        //Intent myIntent = new Intent(RatingActivity.this, PreferencesActivity.class);
-                        //startActivity(myIntent);
                         finish();
                     }
                 });

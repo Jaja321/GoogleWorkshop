@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 public class SearchingActivity extends NavDrawerActivity {
     protected static final String FORMAT = "%02d:%02d";
     protected static final String FORMAT1 = "%2d:%02d:%02d";
-    //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
     protected long numOfSeconds;
     private DatabaseReference database;
     private String requestId, groupId;
@@ -50,7 +49,6 @@ public class SearchingActivity extends NavDrawerActivity {
         addDrawer();
         getSupportActionBar().setTitle("Looking for a match");
 
-        //ProgressBar progressBar = (ProgressBar)findViewById(R.id.searching_animation);
         final TextView timer = (TextView)findViewById(R.id.timer);
         TextView origin = (TextView)findViewById(R.id.real_origin);
         TextView destination = (TextView)findViewById(R.id.real_dest);
@@ -64,7 +62,6 @@ public class SearchingActivity extends NavDrawerActivity {
                                        });
         origin.setText(getIntent().getStringExtra("origin"));
         destination.setText(getIntent().getStringExtra("destination"));
-        //TODO CHANGE DEFAULT
 
         numOfSeconds = getIntent().getLongExtra("numOfSeconds", 999);
         countDownTimer=  new CountDownTimer(numOfSeconds*1000, 1000) {
@@ -89,7 +86,7 @@ public class SearchingActivity extends NavDrawerActivity {
             }
 
             public void onFinish() {
-                timer.setText("done!");//for now
+                timer.setText("done!");
                 if(groupId!=null &&!isActive) {
                     Intent intent = new Intent(SearchingActivity.this, PreferencesActivity.class);
                     database.child("groups").child(groupId).child("closed").setValue(true);
@@ -108,7 +105,6 @@ public class SearchingActivity extends NavDrawerActivity {
         countDownTimer.start();
         SharedPreferences sharedPref = this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
-        //TODO should I check if null?
         requestId=getIntent().getStringExtra("requestId");
         if(requestId!=null){
            editor = sharedPref.edit();
@@ -131,18 +127,6 @@ public class SearchingActivity extends NavDrawerActivity {
                 groupId=request.getGroupId();
                 if(groupId!=null){
                     //Found a group:
-                    /*
-                    nextIntent.putExtra("groupId", groupId);
-                    startActivity(nextIntent);
-                    finish();
-                    */
-
-                    //TODO this sends a notification that we've found a match
-                    //TODO I didn't know where to put it
-                    //nextIntent.putExtra("groupId", groupId);
-                    //NotificationUtils.sendNotification("We've found a match!",
-                    //       "Click to see your travel buddies", nextIntent, getApplicationContext());
-
                     DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
                     isActiveRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -193,41 +177,7 @@ public class SearchingActivity extends NavDrawerActivity {
         editor.commit();
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
-        //intent.putExtra("User", user);
         startActivity(intent);
         finish();
     }
-
-    /*
-     public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                //TODO: add sign_out
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }*/
-
-
 }
