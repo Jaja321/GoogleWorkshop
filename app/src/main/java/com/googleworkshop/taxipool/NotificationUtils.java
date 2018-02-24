@@ -24,7 +24,7 @@ public class NotificationUtils {
     private static int pendingIntentCount = 1;
     private static NotificationChannel mChannel = null;
 
-    public static void sendNotification(String notificationTitle, String notificationBody, Intent notificationIntent, Context context) {
+    public static int sendNotification(String notificationTitle, String notificationBody, Intent notificationIntent, Context context) {
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -44,7 +44,7 @@ public class NotificationUtils {
                 }
                 catch(NullPointerException e){
                     Log.i("SendNotification Error", "NotificationManager is null");
-                    return;
+                    return 0;
                 }
             }
         }
@@ -79,6 +79,7 @@ public class NotificationUtils {
         // Issue the notification
         mNotificationManager.notify(notificationCount, builder.build());
         notificationCount++;
+        return notificationCount-1;
     }
 
     public static Notification getOngoingNotification(String notificationTitle, String notificationBody, Intent notificationIntent, Context context) {
@@ -148,5 +149,6 @@ public class NotificationUtils {
             Log.i("ERROR NotificationUtils", "NullPointerException in cancelAll()");
         }
     }
+
 
 }

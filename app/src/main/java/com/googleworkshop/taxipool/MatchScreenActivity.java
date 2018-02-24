@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,6 +98,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private Request currentUserRequest;
     ChildEventListener requestChangeListener;
     Query requestsInGroup;
+    boolean chat;
 
     private User user;
     private FirebaseAuth mAuth;
@@ -115,20 +117,19 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         currentUserRequestId=sharedPreferences.getString("requestId",null);
         currentUserRequest =ClientUtils.getRequest(getApplicationContext());
         editor=sharedPreferences.edit();
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
-        mapFragment.getMapAsync(this);
         groupId=currentUserRequest.getGroupId();
-        initViews();
         endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);
         //endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
-        boolean chat=getIntent().getBooleanExtra("chat", false);
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
+        mapFragment.getMapAsync(this);
+        initViews();
         tTime = findViewById(R.id.totalTime);
         tDist = findViewById(R.id.totalDist);
         srcCameraButton=findViewById(R.id.srcButton);
         destCameraButton=findViewById(R.id.destButton);
-        if(chat)
-            goToChat(null);
+
 
 
     }
@@ -141,6 +142,11 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         handleRequests(); //Get the group's requests and deal with them
         endTripIntent.putExtra("groupSize", buddyCount);
         endTripIntent.putExtra("groupUsers", groupUsers);
+        chat=getIntent().getBooleanExtra("chat", false);
+        if(chat) {
+            getIntent().putExtra("chat", false);
+            goToChat(null);
+        }
 
 
     }
@@ -658,6 +664,23 @@ Delete the current request and go to Preferences screen
                     gotoPreferences();
             }
         }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        FrameLayout frame=findViewById(R.id.frame_layout);
+        frame.post( new Runnable() {
+            @Override
+            public void run() {
+                chat = getIntent().getBooleanExtra("chat", false);
+                if (chat) {
+                    getIntent().putExtra("chat", false);
+                    goToChat(null);
+                }
+            }
+        });
+
     }
 
 }
