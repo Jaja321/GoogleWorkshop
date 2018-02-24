@@ -88,32 +88,10 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Login");
-        /*
-        LoginButton fbloginButton = findViewById(R.id.fb_login_button);
-        fbloginButton.setReadPermissions("email", "public_profile");
 
-        // Callback registration
-        fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-            }
-        });
-*/
         if (currentUser != null)
             loggedIn(currentUser);
     }
@@ -148,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Welcome, " + firebaseUser.getDisplayName(), Toast.LENGTH_SHORT).show();
         final DatabaseReference userReference=database.child("users").child(firebaseUser.getUid());
 
-        //userReference.addValueEventListener(new ValueEventListener() {
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -159,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (user != null && (user.getReportedIDs() == null || user.getReportedIDs().size() < 3)) {
                             gotoPreferences(user);
 
-                        } else {
+                        } else { //user is  blocked from using this app due to too many reports
                             if(user == null){
                                 Log.d("User doesn't exist","I am here now");
                                 gotoPreferences(ServerUtils.createNewUser(firebaseUser));
@@ -184,7 +161,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("User doesn't exist","I am here now");
                     User user=ServerUtils.createNewUser(firebaseUser);
                     gotoPreferences(user);
-                    //goToNextActivity(user);
                 }
             }
 
@@ -210,7 +186,6 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         else{
-            //TODO can we know here if he is still part of a group
             currentRequestOrigin = sharedPreferences.getString("origin", null);
             currentRequestDestination = sharedPreferences.getString("destination", null);
 
@@ -229,8 +204,6 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                         }
                         else{
-                            //TODO When will we be here? can we have currRequest == null?
-                            //TODO can we have currRequest != null && currRequest.getGroupId() == null?
                             if(currRequest == null){
                                 String token = FirebaseInstanceId.getInstance().getToken();
                                 ServerUtils.updateToken(token,user.getUserId());
@@ -296,9 +269,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (ApiException e) {
             Log.d("Exception: handleSignIn",e.getLocalizedMessage());
 
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            //updateUI(null);
         }
     }
 
@@ -321,10 +291,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("handleSignInResult","Authentication failed");
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
 
-                        // ...
                     }
                 });
     }
@@ -345,10 +313,8 @@ public class LoginActivity extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
 
-                        // ...
                     }
                 });
     }
@@ -381,11 +347,6 @@ public class LoginActivity extends AppCompatActivity {
         long duration = lastRequestSharedPref.getLong("lastRequestDuration", 0);
         long currentTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
-        /*
-        if(currentTime > timeStamp + duration){//last request has expired
-            return -1;
-        }
-        */
         return duration - (currentTime - timeStamp);
     }
 

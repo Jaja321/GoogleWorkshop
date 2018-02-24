@@ -42,7 +42,6 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
         final TextView timer = (TextView)findViewById(R.id.timer);
 
-        //TODO CHANGE DEFAULT
         numOfSeconds = getIntent().getIntExtra("numOfSeconds", 999);
 
         //added for navigation drawer
@@ -90,29 +89,24 @@ public class SearchingServiceActivity extends AppCompatActivity {
     public void onStartService() {
         i = new Intent(this, SearchingService.class);
         i.putExtra("requestId", requestId);
-        //i.putExtra("receiver", receiver);
         i.putExtra("numOfSeconds", numOfSeconds);
         startService(i);
-        //finish();
     }
 
     // Setup the callback for when data is received from the service
     public void setupServiceReceiver() {
-        //Log.i("In setupServiceReceiver", "In setupServiceReceiver");
         receiver = new MyReceiver(new Handler());
         // onReceiveResult is called when data is received from the service
         receiver.setReceiver(new MyReceiver.Receiver() {
             @Override
             public void onReceiveResult(int resultCode, Bundle resultData) {
-                //Log.i("In onReceiveResult", "In onReceiveResult");
                 if (resultCode == 1) {//group found
-                    //Log.i("Group Found", "Group Found");
                     String groupId = resultData.getString("groupId");
                     nextIntent.putExtra("groupId",groupId);
                     startActivity(nextIntent);
                     finish();
                 }
-                else{//does that necessarily means time ran out? I think so
+                else{
                     finish();
                 }
             }
@@ -121,8 +115,6 @@ public class SearchingServiceActivity extends AppCompatActivity {
 
     //added for navigation drawer
     private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 

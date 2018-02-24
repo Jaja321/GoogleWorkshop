@@ -27,24 +27,22 @@ public class SearchingActivity2 extends NavDrawerActivity {
     protected static MyReceiver receiver;
     protected static final String FORMAT = "%02d:%02d";
     protected static final String FORMAT1 = "%2d:%02d:%02d";
-    //protected static int pos = PreferencesActivity.timeSpinner.getSelectedItemPosition();
     protected long numOfSeconds;
     private DatabaseReference database;
     private String requestId, groupId;
-    Intent nextIntent;//TODO why is this declared here?
+    Intent nextIntent;
     private boolean isActive;
     private SharedPreferences.Editor editor;
     private CountDownTimer countDownTimer;
     protected Intent i;
     private boolean isInFront;
     protected SharedPreferences lastRequestSharedPref;
-    //protected SharedPreferences.Editor lastRequestPrefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean startedFromNotificationAfterDestroy = false;//TODO Change name
+        boolean startedFromNotificationAfterDestroy = false;
         requestId=getIntent().getStringExtra("requestId");
         if(requestId == null){//activity was started from notification after being destroyed
             startedFromNotificationAfterDestroy = true;
@@ -105,10 +103,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             }
 
             public void onFinish() {
-                //if(groupId !=null &&!isActive) {//This did not work, do we even need to check anything here?
                 if(groupId==null ||!isActive) {
-                    //TODO I don't understand why we need isActive
-                    //timer.setText("Sorry, We could not find a match");
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     if(groupId !=null) {
                         database.child("groups").child(groupId).child("closed").setValue(true);//Why are we doing this?
@@ -127,7 +122,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
                     }
                     else{
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(SearchingActivity2.this);
-                        builder1.setMessage("Sorry, we could not find you a match. Would you like to try again?"); //TODO word it better..
+                        builder1.setMessage("Sorry, we could not find you a match. Would you like to try again?");
                         builder1.setCancelable(false);
 
                         builder1.setPositiveButton(
@@ -148,9 +143,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
                         AlertDialog alert11 = builder1.create();
                         alert11.show();
-
-                        //startActivity(intent);
-                        //finish();
                     }
                 }
             }
@@ -158,7 +150,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
         countDownTimer.start();
         SharedPreferences sharedPref = this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         nextIntent=new Intent(this,MatchScreenActivity.class);
-        //TODO should I check if null?
 
         if(requestId!=null){
            editor = sharedPref.edit();
@@ -179,11 +170,6 @@ public class SearchingActivity2 extends NavDrawerActivity {
 
     @Override
     public void gotoPreferences(){
-        /*
-        long serviceStartTime = getIntent().getLongExtra("serviceStartTime", 0);
-        if(serviceStartTime == 0) {
-            countDownTimer.cancel();
-        }*/
         countDownTimer.cancel();
         String groupId=SearchingService.groupId;
         if(groupId !=null &&!isActive) {
@@ -240,13 +226,11 @@ public class SearchingActivity2 extends NavDrawerActivity {
     @Override
     public void onResume() {
         super.onResume();
-        //Toast.makeText(this, "Searching activity resumed", Toast.LENGTH_LONG).show();
         isInFront = true;
     }
 
     public void onDestroy() {
         super.onDestroy();
-        //Toast.makeText(this, "Searching activity destroyed", Toast.LENGTH_LONG).show();
 
     }
 
@@ -256,7 +240,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         isInFront = false;
     }
 
-    protected long getTimeLeftForRequest(){//TODO Duplicate of method in LoginActivity. find a way to use the same one twice
+    protected long getTimeLeftForRequest(){
         lastRequestSharedPref = getSharedPreferences("lastRequest", 0);
 
         if(!lastRequestSharedPref.contains("lastRequestTimeStamp") || !lastRequestSharedPref.contains("lastRequestDuration")){

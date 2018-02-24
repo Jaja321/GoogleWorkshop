@@ -14,6 +14,11 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
+/**
+ * This class is an adapter for displaying messages used by the chat feature. Given a ChatMessage object it can define a corresponding View object
+ * that can be displayed on-screen.
+ */
+
 public class MessageAdapter extends ArrayAdapter<ChatMessage> {
     private Context context;
     private String userId;
@@ -21,44 +26,18 @@ public class MessageAdapter extends ArrayAdapter<ChatMessage> {
     public MessageAdapter(Context context, int resource, List<ChatMessage> objects, String userId) {
         super(context, resource, objects);
         this.context=context;
-        this.userId = userId;//Current(!) user ID
+        this.userId = userId;//Current user ID
     }
 
-    /*
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message, parent, false);
-        }
-
-        TextView messageTextView = (TextView) convertView.findViewById(R.id.messageTextView);
-        TextView authorTextView = (TextView) convertView.findViewById(R.id.nameTextView);
-        ImageView profileImage = (ImageView) convertView.findViewById(R.id.profileImage);
-
-        ChatMessage message = getItem(position);
-        messageTextView.setVisibility(View.VISIBLE);
-        messageTextView.setText(message.getText());
-        authorTextView.setText(message.getName());
-        RequestOptions options = new RequestOptions();
-        options.circleCrop();
-        Glide.with(context).load(message.getPhotoUrl()).apply(options).into(profileImage);
-        return convertView;
-    }
-    */
-
-    //TODO Should I use convertView differently?
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        //if (convertView == null) {
-            //convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message_sent, parent, false);
-        //}
         ChatMessage message = getItem(position);
         assert message != null;
-        if(message.getAuthorId().equals(userId)){
+        if(message.getAuthorId().equals(userId)){//This is an incoming message
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message_sent1, parent, false);
         }
-        else {
+        else {//This is an outgoing message
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_message_received1, parent, false);
         }
 

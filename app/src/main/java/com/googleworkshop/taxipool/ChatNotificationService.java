@@ -11,6 +11,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * This service runs in the background and alerts the user if he has received a new message using a notification
+ */
+
 public class ChatNotificationService extends FirebaseMessagingService {
     String userId;
     public static boolean isChatOpen;

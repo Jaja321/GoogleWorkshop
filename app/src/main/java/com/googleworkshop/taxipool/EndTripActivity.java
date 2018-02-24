@@ -49,6 +49,7 @@ public class EndTripActivity extends NavDrawerActivity {
         groupUsers = (ArrayList<User>) getIntent().getSerializableExtra("groupUsers");
         groupId=getIntent().getStringExtra("groupId");
 
+        //get group size
         database.child("groups").child(groupId).child("numOfUsers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -66,10 +67,10 @@ public class EndTripActivity extends NavDrawerActivity {
             @Override
             public void onClick(View v) {
                 Intent launchGettIntent = getPackageManager().getLaunchIntentForPackage("com.gettaxi.android");
-                if( launchGettIntent != null){
+                if( launchGettIntent != null){ //the app is installed on this device, open it
                     startActivity(launchGettIntent);
                 }
-                else{
+                else{ //the app is not installed on this device, open its' page on the play store
                     Uri playStoreGettPage = Uri.parse("http://play.google.com/store/apps/details?id=com.gettaxi.android");
                     Intent playStoreGettIntent = new Intent(Intent.ACTION_VIEW, playStoreGettPage);
                     startActivity(playStoreGettIntent);
@@ -82,10 +83,10 @@ public class EndTripActivity extends NavDrawerActivity {
             @Override
             public void onClick(View v) {
                 Intent launchPepperIntent = getPackageManager().getLaunchIntentForPackage("com.pepper.pay");
-                if( launchPepperIntent != null){
+                if( launchPepperIntent != null){ //the app is installed on this device, open it
                     startActivity(launchPepperIntent);
                 }
-                else{
+                else{ //the app is not installed on this device, open its' page on the play store
                     Uri playStorePepperPage = Uri.parse("http://play.google.com/store/apps/details?id=com.pepper.pay");
                     Intent playStorePepperIntent = new Intent(Intent.ACTION_VIEW, playStorePepperPage);
                     startActivity(playStorePepperIntent);
@@ -94,50 +95,6 @@ public class EndTripActivity extends NavDrawerActivity {
             }
         });
 
-        /*
-        final Button ratingButton = (Button) findViewById(R.id.ratingButton);
-        ratingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent( EndTripActivity.this, RatingActivity.class);
-                myIntent.putExtra("groupSize", groupSize);
-                myIntent.putExtra("groupUsers", groupUsers);
-                startActivity(myIntent);
-            }
-        });*/
     }
 
-    /*
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        //Fragment fragment = null;
-        Intent intent;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_my_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_sign_out:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
-            case R.id.nav_preferences:
-                intent = new Intent(this, PreferencesActivity.class);
-                User user = null;//TODO
-                intent.putExtra("User", user);
-                startActivity(intent);
-                break;
-            default:
-                //?
-        }
-
-        // Highlight the selected item has been done by NavigationView
-        //menuItem.setChecked(true);
-        // Set action bar title
-        //setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        mDrawer.closeDrawers();
-    }
-    */
 }

@@ -23,9 +23,12 @@ import java.util.concurrent.TimeUnit;
  * Created by Gal Ze'evi on 1/15/2018.
  */
 
+/**
+ * This service is launched if we could not add a Geofence in EndTripActivity.
+ * It sends a notification asking the user to rate his group after a set amount of time
+ */
+
 public class RatingTimerService extends IntentService {
-    private static final String CHANNEL_ID = "channel_02";//TODO change ID?
-    private final String TAG = "taxipool.geofence";
     private ArrayList<User> groupUsers;
     private int groupSize;
     final Handler handler = new Handler();
@@ -33,7 +36,7 @@ public class RatingTimerService extends IntentService {
         public void run() {
             sendNotification();
         }
-    };
+    };//This will run when the set time has passed
 
     public RatingTimerService() {
         super("taxipool.ratingTimerService");
@@ -41,10 +44,14 @@ public class RatingTimerService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        groupSize = intent.getIntExtra("groupSize", 0);
-        groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
-        handler.postDelayed(r, 3600000);//one hour
-        //handler.postDelayed(r, 10000);//one hour
+        try {
+            groupSize = intent.getIntExtra("groupSize", 0);
+            groupUsers = (ArrayList<User>) intent.getSerializableExtra("groupUsers");
+            handler.postDelayed(r, 3600000);//one hour
+        }catch (NullPointerException e){
+            Log.i("TimerService Error","groupSize = intent.getIntExtra(\"groupSize\", 0) caused a NullPointerException");
+            stopSelf();
+        }
     }
 
     public void sendNotification(){

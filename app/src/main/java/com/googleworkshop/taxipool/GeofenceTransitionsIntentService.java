@@ -20,9 +20,6 @@ import com.google.android.gms.location.GeofencingEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Gal Ze'evi on 1/10/2018.
- */
 
 public class GeofenceTransitionsIntentService extends IntentService {
     private static final String CHANNEL_ID = "channel_01";
@@ -110,13 +107,13 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
 
         // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);//TODO change to RatingActivity
+        Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
         // Add the main Activity to the task stack as the parent.
-        stackBuilder.addParentStack(LoginActivity.class);//TODO change to RatingActivity
+        stackBuilder.addParentStack(LoginActivity.class);
 
         // Push the content Intent onto the stack.
         stackBuilder.addNextIntent(notificationIntent);

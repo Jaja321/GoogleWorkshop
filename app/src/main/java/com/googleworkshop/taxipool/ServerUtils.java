@@ -14,9 +14,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Benjamin on 25/12/2017.
- */
 
 public class ServerUtils {
     private static DatabaseReference database= FirebaseDatabase.getInstance().getReference();
@@ -85,7 +82,7 @@ public class ServerUtils {
 
 
     public static void removeRequest(String requestId){
-        //TODO Gal: I think it would be a good idea to implement this
+
     }
 
 }
