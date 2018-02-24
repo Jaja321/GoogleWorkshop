@@ -11,6 +11,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * This service runs in the background and alerts the user if he has received a new message using a notification
+ */
+
 public class ChatNotificationService extends FirebaseMessagingService {
     String userId;
     private static int lastNotification;
@@ -32,7 +36,7 @@ public class ChatNotificationService extends FirebaseMessagingService {
                if(lastNotification!=0)
                    mNotificationManager.cancel(lastNotification);
            }catch (NullPointerException e){
-               Log.i("ERROR NotificationUtils", "NullPointerException in cancelAll()");
+               Log.i("ERROR NotificationUtils", "NullPointerException in cancel()");
            }
            //notificationIntent.setPackage(null); // The golden row !!!
            intent.putExtra("chat", true);

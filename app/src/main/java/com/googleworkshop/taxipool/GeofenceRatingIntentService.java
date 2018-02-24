@@ -26,8 +26,12 @@ import java.util.List;
  * Created by Gal Ze'evi on 1/10/2018.
  */
 
+/**
+ * This service is triggered when a user has entered the Geofence set by EndTripServiceActivity.
+ * It sends the user a notification that will redirect him to a screen asking him to rate his group
+ */
+
 public class GeofenceRatingIntentService extends IntentService {
-    private static final String CHANNEL_ID = "channel_01";
     private final String TAG = "taxipool.geofence";
     private ArrayList<User> groupUsers;
     private int groupSize;
@@ -36,6 +40,7 @@ public class GeofenceRatingIntentService extends IntentService {
         super("GeofenceRatingIntentService");
     }
 
+    //This is called when the service is launched
     protected void onHandleIntent(Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
@@ -65,8 +70,6 @@ public class GeofenceRatingIntentService extends IntentService {
             String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition, triggeringGeofences);
 
             // Send notification and log the transition details.
-            //sendNotification(geofenceTransitionDetails);
-            //sendNotification("Please rate your travel buddies");
             sendNotification();
             Log.i(TAG, geofenceTransitionDetails);
         } else {
@@ -103,6 +106,7 @@ public class GeofenceRatingIntentService extends IntentService {
         return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
     }
 
+    //Send a notification asking the user to rate his group
     public void sendNotification(){
         String title = "Please rate your travel buddies";
         String body = "Rating helps us find you a better match";

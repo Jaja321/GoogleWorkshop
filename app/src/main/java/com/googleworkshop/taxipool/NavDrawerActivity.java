@@ -21,6 +21,11 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Gal Ze'evi on 1/17/2018.
  */
 
+/**
+ * This class defines an Activity with a navigation drawer.
+ * This allows other activities to extend this one and easily add a navigation drawer.
+ */
+
 public abstract class NavDrawerActivity extends AppCompatActivity{
 
     protected DrawerLayout mDrawer;
@@ -99,7 +104,7 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
                 gotoPreferences();
                 break;
             default:
-                //?
+
         }
 
         // Close the navigation drawer
@@ -120,12 +125,9 @@ public abstract class NavDrawerActivity extends AppCompatActivity{
     public void gotoPreferences(){
         Intent intent;
         intent = new Intent(this, PreferencesActivity.class);
-        //intent.putExtra("User", user);
         stopService(new Intent(this, SearchingService.class));
         startActivity(intent);
         finish();
     }
-    //------
-
 
 }

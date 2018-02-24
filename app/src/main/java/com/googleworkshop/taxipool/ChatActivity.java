@@ -50,9 +50,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends NavDrawerActivity{
+/**
+ *  This activity displays a chat screen that users in the same group can use to communicate.
+ */
 
-    private static final String TAG = "ChatActivity";
+public class ChatActivity extends NavDrawerActivity{
 
     public static final String ANONYMOUS = "anonymous";
     public static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
@@ -60,7 +62,6 @@ public class ChatActivity extends NavDrawerActivity{
     private ListView mMessageListView;
     private MessageAdapter mMessageAdapter;
     private ProgressBar mProgressBar;
-    private ImageButton mPhotoPickerButton;
     private EditText mMessageEditText;
     private Button mSendButton;
     private FirebaseDatabase mFirebaseDatabase;
@@ -108,7 +109,6 @@ public class ChatActivity extends NavDrawerActivity{
         // Initialize message ListView and its adapter
         List<ChatMessage> chatMessages = new ArrayList<>();
         mMessageAdapter = new MessageAdapter(this, R.layout.item_message_sent, chatMessages, userId);
-        //mMessageAdapter = new MessageAdapter(this, R.layout.item_message, chatMessages);
         mMessageListView.setAdapter(mMessageAdapter);
 
         // Initialize progress bar
@@ -139,7 +139,6 @@ public class ChatActivity extends NavDrawerActivity{
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Send messages on click
                 ChatMessage chatMessage = new ChatMessage(mMessageEditText.getText().toString(), mUsername, userId, currentUser.getPhotoUrl().toString());
                 mMessagesDatabaseReference.push().setValue(chatMessage);
                 // Clear input box
@@ -148,21 +147,12 @@ public class ChatActivity extends NavDrawerActivity{
         });
 
 
-
+        //Add listener that will handle a new incoming message
         mChildEventListener=new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ChatMessage chatMessage = dataSnapshot.getValue(ChatMessage.class);
                 mMessageAdapter.add(chatMessage);
-
-                /* this sends a push notification that you have a new message
-                clicking on it will resume this activity or start it if it was closed
-                Intent notificationIntent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(getApplicationContext().getPackageName());
-                notificationIntent.setPackage(null); // The golden row !!!
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                NotificationUtils.sendNotification("You have a new message!" ,"Click to view it",
-                            notificationIntent, getApplicationContext());
-                */
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
@@ -178,19 +168,10 @@ public class ChatActivity extends NavDrawerActivity{
 
     }
 
-
-    private void signOut(){
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
-    }
-
     @Override
     public void selectDrawerItem(MenuItem menuItem){
         switch(menuItem.getItemId()) {
             case R.id.nav_match_screen:
-                //Intent intent = new Intent(this, MatchScreenActivity.class);
-                //intent.putExtra("groupId", groupId);
                 finish();
                 break;
         }

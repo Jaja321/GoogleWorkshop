@@ -11,9 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * The purpose of this class is to have functions that are used by multiple activities.
- * Right now it contains functions for handling the user's request as it moves from one activity to the next.
- * But it does not have to be limited only to that.
+ * This class has functions for saving and reading a request from a shared preferences saved on the user's device
  */
 public class ClientUtils {
 
@@ -47,7 +45,9 @@ public class ClientUtils {
         editor.commit();//This writes immediately
     }
 
-
+    /**
+     * This function deletes the request saved in the shared preferences
+     */
     public static void clearRequest(Context context){
         if(context == null){
             Log.i("ERROR in ClientUtils","You may not use this function with context == null");
@@ -99,8 +99,8 @@ public class ClientUtils {
     }
 
     /**
-     * This function returns: timePrefs - (time passed since timeStamp) in seconds
-     * and updates request.timeStamp the request
+     * This function updates request.timeStamp to be the current time and moves request.timePrefs backwards
+     * by how much time has passed.
      * Note: this function does not check if the result is negative and will not return -1 if it is.
      * Instead, we leave the negative number to give an estimate of how much time has passed.
      */
@@ -116,6 +116,9 @@ public class ClientUtils {
         request.setTimePrefs(timePrefs - timePassed);
     }
 
+    /**
+     * This function reads the request from the shared preferences, updates it, saves the updated request and returns it
+     */
     public static Request getRequest(Context context){
         Request request = unpackRequest(context);
         updateRequest(request);

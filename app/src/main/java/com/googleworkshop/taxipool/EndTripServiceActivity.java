@@ -50,12 +50,20 @@ import java.util.ArrayList;
  * Created by Gal Ze'evi on 1/10/2018.
  */
 
+/**
+ * This is the screen the user is directed to from the match screen after pressing GO.
+ * It displays buttons leading to "Gett" or to "PepperPay" or the google play store if these are not installed.
+ * It runs a service that adds a Geofence around the user's destination that will be triggered when the user is close to the destination
+ * and send him a notification asking to rate his travel group. If the user location is not available the same notification will be sent
+ * after a set amount of time
+ */
+
 public class EndTripServiceActivity extends NavDrawerActivity {
     private GeofencingClient mGeofencingClient;
     private PendingIntent mGeofencePendingIntent;
     private Geofence mGeofence = null;
     private ArrayList<Geofence> mGeofenceList = new ArrayList<>();
-    private final int ACCESS_FINE_LOCATION_CODE = 17;//TODO I used the same code as PreferencesActivity, is that OK?
+    private final int ACCESS_FINE_LOCATION_CODE = 17;
     private final int LOCATION_SETTINGS_CODE = 123;
     private ArrayList<User> groupUsers;
     private int groupSize;
@@ -76,7 +84,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         final ImageButton gettButton = (ImageButton) findViewById(R.id.order_taxi);
         gettButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//Listener that will redirect user to gett
                 Intent launchGettIntent = getPackageManager().getLaunchIntentForPackage("com.gettaxi.android");
                 if( launchGettIntent != null){
                     startActivity(launchGettIntent);
@@ -92,7 +100,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         final ImageButton pepperButton = (ImageButton) findViewById(R.id.pepper);
         pepperButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//Listener that will redirect user to pepperpay
                 Intent launchPepperIntent = getPackageManager().getLaunchIntentForPackage("com.pepper.pay");
                 if( launchPepperIntent != null){
                     startActivity(launchPepperIntent);
@@ -108,12 +116,11 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         //---------------------------------------------------
 
         //------------------Geofencing-----------------------
-        destLatLng = getIntent().getParcelableExtra("destLatLng");
+        destLatLng = getIntent().getParcelableExtra("destLatLng");//A LatLng specifying the user's destination
 
         if(destLatLng != null) {
             mGeofence = new Geofence.Builder()
-                    // Set the request ID of the geofence. This is a string to identify this
-                    // geofence.
+                    // Set the request ID of the geofence. This is a string to identify this geofence.
                     .setRequestId("myGeofence")
 
                     .setCircularRegion(
@@ -149,6 +156,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                                 Toast.LENGTH_SHORT).show();
                         finish();
                     }
+                    //Add the Geofence
                     addGeofences();
                 }
 
@@ -167,6 +175,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
         }
         Intent intent = new Intent(this, GeofenceRatingIntentService.class);
         intent.putExtra("groupSize", groupSize);
+        //Google's Geofencing service has a problem if the intent has a parcelable extra so we use a bundle
         Bundle groupUsersBundle = new Bundle();
         groupUsersBundle.putParcelableArrayList("groupUsers", groupUsers);
         intent.putExtra("groupUsersBundle", groupUsersBundle);
@@ -187,9 +196,8 @@ public class EndTripServiceActivity extends NavDrawerActivity {
 
     @SuppressWarnings("MissingPermission")
     private void addGeofences() {
-        if (!checkPermissions()) {
-            getPermissions();
-            Log.i("hello hello", "hello hello");
+        if (!checkPermissions()) {//We need location permissions to add a Geofence
+            getPermissions();//try and get permissions
             return;
         }
 
@@ -205,6 +213,7 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                     .addOnFailureListener(this, new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            //Geofence could not be added, launch a service that will send the notification after a set amount of time
                             Intent timerIntent = new Intent(EndTripServiceActivity.this, RatingTimerService.class);
                             timerIntent.putExtra("groupSize", groupSize);
                             timerIntent.putExtra("groupUsers", groupUsers);
@@ -226,7 +235,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_SETTINGS_CODE || resultCode == LOCATION_SETTINGS_CODE){
-            //addGeofences();
             return;
         }
     }
@@ -246,14 +254,10 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    addGeofences();
+                    // permission was granted, yay!
+                    addGeofences();//try again now that we have permissions
                 }
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
     //---------------------------------------------------
@@ -268,7 +272,6 @@ public class EndTripServiceActivity extends NavDrawerActivity {
                 intent.putExtra("groupId", groupId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                //finish();
                 break;
         }
         super.selectDrawerItem(menuItem);

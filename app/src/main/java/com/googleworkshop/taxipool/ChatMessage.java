@@ -15,12 +15,16 @@
  */
 package com.googleworkshop.taxipool;
 
+/**
+ * This class defines a message object that is used by the chat feature
+ */
+
 public class ChatMessage {
 
-    private String text;
-    private String name;
-    private String authorId;
-    private String photoUrl;
+    private String text;//message body
+    private String name;//sender's name
+    private String authorId;//sender's Id
+    private String photoUrl;//sender's profile picture
 
     public ChatMessage() {
     }
