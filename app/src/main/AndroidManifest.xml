@@ -61,33 +61,8 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".SearchingActivity">
-            <intent-filter>
-                <action android:name="foundGroup" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".MockServerCommunicationActivity" />
         <activity android:name=".RatingActivity" />
-        <activity
-            android:name=".EndTripActivity"
-            android:parentActivityName=".MatchScreenActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ServiceTestActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".SearchingServiceActivity" />
-        <activity android:name=".GeofenceTestActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".EndTripServiceActivity"
             android:parentActivityName=".MatchScreenActivity">
@@ -97,11 +72,6 @@
         </activity>
         <activity android:name=".SearchingActivity2" />
 
-        <service
-            android:name=".MyTestService"
-            android:exported="false" />
-        <service android:name=".TaxiPoolService" />
-        <service android:name=".GeofenceTransitionsIntentService" />
         <service
             android:name=".GeofenceRatingIntentService"
             android:exported="true" />

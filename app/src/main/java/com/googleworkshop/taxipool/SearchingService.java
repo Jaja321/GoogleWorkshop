@@ -86,24 +86,6 @@ public class SearchingService extends Service {
         return START_STICKY;
     }
 
-
-    private void waitForGroup(String requestId){
-        //Log.i("In waitForGroup", "In waitForGroup");
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference groupIdRef=database.child("requests").child(requestId).child("groupId");
-        groupIdRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                groupId=dataSnapshot.getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
     private void waitForGroup(){
         database = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference groupIdRef=database.child("requests").child(requestId);
@@ -151,6 +133,7 @@ public class SearchingService extends Service {
                                 String title;
                                 try {
                                     int numOfPassengers = dataSnapshot.child("numOfPassengers").getValue(int.class);
+                                    numOfPassengers -= request.getNumOfPassengers();
                                     title = String.format("We've found a match of %d people!", numOfPassengers);
                                 }
                                 catch (NullPointerException e){

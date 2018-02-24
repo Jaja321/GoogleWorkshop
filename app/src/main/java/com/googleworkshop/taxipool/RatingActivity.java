@@ -15,13 +15,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+/**
+ * This activity is the screen where the user is asked to rate his travel buddies.
+ * Rating is used to find better matches in the future.
+ */
 
 public class RatingActivity extends NavDrawerActivity {
     private ArrayList<User> groupUsers;
     private int groupSize;
-
-    private String groupId;
-    private DatabaseReference database;
 
 
     @Override
@@ -122,9 +123,6 @@ public class RatingActivity extends NavDrawerActivity {
             Intent myIntent = new Intent(RatingActivity.this, PreferencesActivity.class);
             startActivity(myIntent);
         }
-
-        database = FirebaseDatabase.getInstance().getReference();
-        groupId=getIntent().getStringExtra("groupId");
     }
 
 

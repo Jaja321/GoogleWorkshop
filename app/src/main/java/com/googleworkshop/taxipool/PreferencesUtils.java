@@ -9,6 +9,10 @@ import android.text.TextUtils;
  * Created by Jerafi on 1/2/2018.
  */
 
+/**
+ * This class implements some general methods used in the preferences screen.
+ */
+
 public class PreferencesUtils {
     protected static boolean isLocationEnabled(Context context) {
         int locationMode = 0;

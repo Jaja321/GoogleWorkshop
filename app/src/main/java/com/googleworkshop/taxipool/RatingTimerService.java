@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * This service is launched if we could not add a Geofence in EndTripActivity.
+ * This service is launched if we could not add a Geofence in End Trip Activity.
  * It sends a notification asking the user to rate his group after a set amount of time
  */
 

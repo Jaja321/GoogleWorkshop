@@ -177,8 +177,9 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         final String requestId=sharedPreferences.getString("requestId",null);
         final long timeLeft = getTimeLeftForRequest();
-        if(requestId==null || timeLeft <= 0) {
-            //No Active Request, go to preferences:
+        if(requestId==null || timeLeft <= -3600) {
+            //If user is in a group that is not closed but more than an hour has passed
+            //he will be redirected to preferences
             String token = FirebaseInstanceId.getInstance().getToken();
             ServerUtils.updateToken(token,user.getUserId());
             intent = new Intent(this, PreferencesActivity.class);
@@ -187,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         else{
-            //There is an active request:
+            //There is an active request
             currentRequestOrigin = sharedPreferences.getString("origin", null);
             currentRequestDestination = sharedPreferences.getString("destination", null);
 
@@ -199,11 +200,47 @@ public class LoginActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final Request currRequest = dataSnapshot.getValue(Request.class);
                         if (currRequest != null && currRequest.getGroupId() != null) {
-                            //User is in a group
-                            final Intent intent = new Intent(LoginActivity.this, MatchScreenActivity.class);
-                            ClientUtils.saveRequest(currRequest, getApplicationContext());
-                            startActivity(intent);
-                            finish();
+
+                            database.child("groups").child(currRequest.getGroupId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        return;
+                                    }
+                                    int numOfUsers = 1;
+                                    try {
+                                        numOfUsers = dataSnapshot.child("numOfUsers").getValue(int.class);
+                                    }
+                                    catch(NullPointerException e){
+                                        final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
+                                        intent.putExtra("User", user);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+                                    if(numOfUsers > 1){//User is in a group
+                                        final Intent intent = new Intent(LoginActivity.this, MatchScreenActivity.class);
+                                        ClientUtils.saveRequest(currRequest, getApplicationContext());
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else{
+                                        final Intent intent = new Intent(LoginActivity.this, SearchingActivity2.class);
+                                        intent.putExtra("origin", currentRequestOrigin);
+                                        intent.putExtra("destination", currentRequestDestination);
+                                        intent.putExtra("requestId", requestId);
+                                        intent.putExtra("numOfSeconds", timeLeft);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                         }
                         else{
                             if(currRequest == null){

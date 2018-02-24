@@ -12,7 +12,9 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
-
+/**
+ * This class implements the autocomplete feature in the Preferences screen
+ */
 
 public class AutocompleteActivity extends AppCompatActivity {
     private static final String TAG = PreferencesActivity.class.getSimpleName();
@@ -22,9 +24,11 @@ public class AutocompleteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.autocomplete_layout);
 
+        //Set up autocomplete fragment
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
+        //Add filters to limit results
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
                 .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
                 .build();

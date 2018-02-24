@@ -54,6 +54,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This activity implements the preferences screen, where the user is asked to enter details such as: origin, destination, when would he like to leave etc.
+ */
 public class PreferencesActivity extends NavDrawerActivity {
     public static int buttonSearch = 0;
     private String dest;
@@ -61,14 +64,12 @@ public class PreferencesActivity extends NavDrawerActivity {
     private String origin;
     private Place originPlace = null;
     protected FusedLocationProviderClient mFusedLocationClient;
-    private LatLng currLocation;
     protected SharedPreferences homeSettings;
     protected SharedPreferences.Editor homePrefEditor;
     protected CheckBox homeCBox;
     protected GeoDataClient mGeoDataClient;
     protected Button destButton;
     protected Button originButton;
-    protected EditText passengersEditText;
     public final String HOME_ID = "HOME_ID";
     public final String HOME_SAVED = "HOME_SAVED";
     public final String homePrefs = "UserHomePreferences";

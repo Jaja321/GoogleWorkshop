@@ -108,8 +108,7 @@ public class Request implements Parcelable{
     }
 
     public void setTimePrefs(long timePrefs){this.timePrefs = timePrefs;}
-
-    //TODO These should be updated
+    
     @Override
     public int describeContents() {
         return 0;
