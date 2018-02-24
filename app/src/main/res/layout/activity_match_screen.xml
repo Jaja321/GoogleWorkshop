@@ -129,6 +129,40 @@
                 app:layout_constraintEnd_toEndOf="@+id/buddy3"
                 app:layout_constraintStart_toStartOf="@+id/buddy3" />
 
+            <TextView
+                android:id="@+id/searching1_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_buddy"
+                android:textAlignment="center"
+                android:textSize="10sp"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buddy1_text"
+                app:layout_constraintStart_toEndOf="@+id/buddy1_text" />
+
+            <TextView
+                android:id="@+id/searching2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_buddy"
+                android:textAlignment="center"
+                android:visibility="invisible"
+                android:textSize="10sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buddy2_text"
+                app:layout_constraintStart_toEndOf="@+id/buddy2_text" />
+
+            <TextView
+                android:id="@+id/searching3_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_buddy"
+                android:textAlignment="center"
+                android:visibility="invisible"
+                android:textSize="10sp"
+                app:layout_constraintBaseline_toBaselineOf="@+id/buddy2_text"
+                app:layout_constraintStart_toEndOf="@+id/buddy3_text" />
+
+
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="0dp"
@@ -264,6 +298,19 @@
                 android:text=""
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/totalTime" />
+
+            <Button
+                android:id="@+id/guideButton"
+                android:layout_width="21dp"
+                android:layout_height="19dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_round_rect"
+                android:onClick="goToGuide"
+                android:text="\?"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toStartOf="@+id/buddy1"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         </android.support.constraint.ConstraintLayout>
 
