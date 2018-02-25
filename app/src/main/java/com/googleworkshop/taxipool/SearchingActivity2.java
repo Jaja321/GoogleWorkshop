@@ -107,6 +107,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
             }
 
             public void onFinish() {
+                timer.setText("00:00");
                 if(groupId==null ||!isActive) {
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     if(groupId !=null) {

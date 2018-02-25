@@ -177,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences=this.getSharedPreferences("requestId", Context.MODE_PRIVATE);
         final String requestId=sharedPreferences.getString("requestId",null);
         final long timeLeft = getTimeLeftForRequest();
-        if(requestId==null || timeLeft <= -3600) {
+        if(requestId==null) {
             //If user is in a group that is not closed but more than an hour has passed
             //he will be redirected to preferences
             String token = FirebaseInstanceId.getInstance().getToken();
@@ -224,12 +224,20 @@ public class LoginActivity extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                     }
-                                    else{
+                                    else if(getTimeLeftForRequest() > 0){
                                         final Intent intent = new Intent(LoginActivity.this, SearchingActivity2.class);
                                         intent.putExtra("origin", currentRequestOrigin);
                                         intent.putExtra("destination", currentRequestDestination);
                                         intent.putExtra("requestId", requestId);
                                         intent.putExtra("numOfSeconds", timeLeft);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else{
+                                        String token = FirebaseInstanceId.getInstance().getToken();
+                                        ServerUtils.updateToken(token,user.getUserId());
+                                        Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
+                                        intent.putExtra("User", user);
                                         startActivity(intent);
                                         finish();
                                     }
@@ -243,7 +251,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                         else{
-                            if(currRequest == null){
+                            if(currRequest == null || getTimeLeftForRequest() <= 0){
                                 String token = FirebaseInstanceId.getInstance().getToken();
                                 ServerUtils.updateToken(token,user.getUserId());
                                 final Intent intent = new Intent(LoginActivity.this, PreferencesActivity.class);
@@ -266,6 +274,14 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
+            }
+            else if(getTimeLeftForRequest() <= 0){
+                String token = FirebaseInstanceId.getInstance().getToken();
+                ServerUtils.updateToken(token,user.getUserId());
+                intent = new Intent(LoginActivity.this, PreferencesActivity.class);
+                intent.putExtra("User", user);
+                startActivity(intent);
+                finish();
             }
             else {
                 intent = new Intent(this, SearchingActivity2.class);
