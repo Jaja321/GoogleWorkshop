@@ -244,6 +244,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 if(groupIsClosed){
                     goButton.setVisibility(View.INVISIBLE);
                     findMore.setVisibility(View.GONE);
+                    destCameraButton.setVisibility(View.GONE);
                     stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                 }
             }
@@ -464,6 +465,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);
                         findMore.setVisibility(View.GONE);
+                        destCameraButton.setVisibility(View.GONE);
                     }
                 });
 
