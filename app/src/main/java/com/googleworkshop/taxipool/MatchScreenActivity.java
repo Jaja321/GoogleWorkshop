@@ -458,7 +458,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         database.child("groups").child(groupId).child("closed").setValue(true);
-                        endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
+                        endTripIntent.putExtra("destLatLng", currentUserRequest.destLatLng());
                         stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);

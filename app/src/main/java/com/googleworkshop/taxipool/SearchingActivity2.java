@@ -188,7 +188,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
         bundle.putLong("numOfSeconds", numOfSeconds);
         bundle.putString("requestId", requestId);
         bundle.putParcelable("receiver", receiver);
-        bundle.putLong("serviceStartTime", System.currentTimeMillis());//Am I using this?
+        bundle.putLong("serviceStartTime", System.currentTimeMillis());
         bundle.putString("destination", getIntent().getStringExtra("destination"));
         bundle.putString("origin", getIntent().getStringExtra("origin"));
         i.putExtra("bundle", bundle);
