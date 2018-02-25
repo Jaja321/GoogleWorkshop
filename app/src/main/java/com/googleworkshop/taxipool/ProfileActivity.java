@@ -104,7 +104,13 @@ public class ProfileActivity extends NavDrawerActivity {
     }
     private void initProfile(final User user){
         userName.setText(user.getName());
-        rating.setText(String.format("%.2f", user.getRating())+"/5.0");
+        double userRating=user.getRating();
+        if (userRating==0){
+            rating.setText("User has not been rated yet");
+        }else{
+            rating.setText(String.format("%.2f",userRating) +"/5.00");
+        }
+
         Glide.with(getApplicationContext()).load(user.getProfilePicture()).into(profileImg);
         handleReport(user);
     }
