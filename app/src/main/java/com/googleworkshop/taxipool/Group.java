@@ -8,6 +8,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
+/**
+ * This class defines a group object used to describe a match
+ */
+
 public class Group implements Parcelable {
     private List<Request> requests;
     private List<LatLng> destinations;

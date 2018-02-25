@@ -4,6 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * This activity contains explanations to the user about the match-screen.
+ */
+
 public class GuideActivity extends AppCompatActivity {
 
     @Override

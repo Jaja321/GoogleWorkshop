@@ -23,6 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class implements the screen the user is directed to when the app is looking for a match
+ */
+
 public class SearchingActivity2 extends NavDrawerActivity {
     protected static MyReceiver receiver;
     protected static final String FORMAT = "%02d:%02d";
