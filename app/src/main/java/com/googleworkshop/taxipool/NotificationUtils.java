@@ -55,10 +55,6 @@ public class NotificationUtils {
 
         // Define the notification settings.
         builder.setSmallIcon(R.drawable.ic_taxi_notification)
-                // In a real app, you may want to use a library like Volley
-                // to decode the Bitmap.
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_taxi_notification))
                 .setColor(Color.BLACK)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody)
@@ -113,10 +109,6 @@ public class NotificationUtils {
 
         // Define the notification settings.
         builder.setSmallIcon(R.drawable.ic_taxi_notification)
-                // In a real app, you may want to use a library like Volley
-                // to decode the Bitmap.
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
-                        R.drawable.ic_taxi_notification))
                 .setColor(Color.BLACK)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody)
