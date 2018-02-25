@@ -137,15 +137,15 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         findMore1=findViewById(R.id.searching1_text);
         findMore2=findViewById(R.id.searching2_text);
         findMore3=findViewById(R.id.searching3_text);
-        if(sharedPreferences.getBoolean("FIRST_TIME",true)){
-            editor.putBoolean("FIRST_TIME",false);
-            startGuide();
-        }
-
 
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if(sharedPreferences.getBoolean("FIRST_TIME",true)){
+            editor.putBoolean("FIRST_TIME",false);
+            editor.commit();
+            startGuide();
+        }
         builder = new LatLngBounds.Builder();
         destBuilder = new LatLngBounds.Builder();
         mMap = googleMap;
