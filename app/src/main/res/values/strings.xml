@@ -105,6 +105,6 @@
     <string name="guide_chat">Use this to chat and \nconnect with other \ngroup members</string>
     <string name="guide_go">All done!\nStart riding \ntogether!</string>
     <string name="guide_view">Toggle map view:\n  1.Meeting point\n  2.Driving route</string>
-    <string name="search_buddy">Finding more...</string>
+    <string name="search_buddy">We will let you know if anyone else joins</string>
 
 </resources>

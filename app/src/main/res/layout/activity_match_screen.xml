@@ -137,7 +137,7 @@
                 android:textAlignment="center"
                 android:textSize="10sp"
                 android:visibility="visible"
-                app:layout_constraintBaseline_toBaselineOf="@+id/buddy1_text"
+                app:layout_constraintBaseline_toBaselineOf="@+id/guideButton"
                 app:layout_constraintStart_toEndOf="@+id/buddy1_text" />
 
             <TextView
@@ -167,7 +167,7 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="38dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -303,14 +303,14 @@
                 android:id="@+id/guideButton"
                 android:layout_width="21dp"
                 android:layout_height="19dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/button_round_rect"
                 android:onClick="goToGuide"
                 android:text="\?"
                 android:textColor="@android:color/white"
-                app:layout_constraintEnd_toStartOf="@+id/buddy1"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buddy1_text" />
 
         </android.support.constraint.ConstraintLayout>
 

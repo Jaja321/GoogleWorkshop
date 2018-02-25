@@ -104,9 +104,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     private FirebaseAuth mAuth;
     public final static int CHAT_ACTIVITY_CODE = 12;
     private int GUIDE_ACTIVITY_CODE = 12938;
-    private TextView findMore1;
-    private TextView findMore2;
-    private TextView findMore3;
+    private TextView findMore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,9 +133,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         srcCameraButton=findViewById(R.id.srcButton);
         destCameraButton=findViewById(R.id.destButton);
 
-        findMore1=findViewById(R.id.searching1_text);
-        findMore2=findViewById(R.id.searching2_text);
-        findMore3=findViewById(R.id.searching3_text);
+        findMore=findViewById(R.id.searching1_text);
 
     }
     @Override
@@ -246,9 +243,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 }
                 if(groupIsClosed){
                     goButton.setVisibility(View.INVISIBLE);
-                    findMore1.setVisibility(View.GONE);
-                    findMore2.setVisibility(View.GONE);
-                    findMore3.setVisibility(View.GONE);
+                    findMore.setVisibility(View.GONE);
                     stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                 }
             }
@@ -423,19 +418,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
             }
         });
 
-        switch(destinations.size()){
-            case 2:
-                findMore1.setVisibility(View.GONE);
-                findMore2.setVisibility(View.VISIBLE);
-                break;
-            case 3:
-                findMore2.setVisibility(View.GONE);
-                findMore3.setVisibility(View.VISIBLE);
-                break;
-            case 4:
-                findMore3.setVisibility(View.GONE);
-                break;
-        }
     }
 
     private void removeUserFromList(String userId){
@@ -481,9 +463,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);
-                        findMore1.setVisibility(View.GONE);
-                        findMore2.setVisibility(View.GONE);
-                        findMore3.setVisibility(View.GONE);
+                        findMore.setVisibility(View.GONE);
                     }
                 });
 
