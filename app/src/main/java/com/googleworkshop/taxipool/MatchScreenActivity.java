@@ -58,6 +58,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This activity implements the screen showing the map and the match to the user.
+ */
 
 public class MatchScreenActivity extends NavDrawerActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -122,7 +125,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         editor=sharedPreferences.edit();
         groupId=currentUserRequest.getGroupId();
         endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);
-        //endTripIntent = new Intent(MatchScreenActivity.this, EndTripServiceActivity.class);//TODO check
         endTripIntent.putExtra("groupId", groupId);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map2);
@@ -136,6 +138,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
         findMore=findViewById(R.id.searching1_text);
 
     }
+
+    //Callback for using Google Maps to display map on-screen
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if(sharedPreferences.getBoolean("FIRST_TIME",true)){
@@ -197,7 +201,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     }
 
 
-
+    //Function for choosing meeting point
     private void handleMeetingPoint(){
         DatabaseReference groupRef=database.child("groups").child(groupId);
         DatabaseReference meetingPointRef = groupRef.child("meetingPoint");
@@ -218,7 +222,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     updated=true;
                 }
                 builder.include(meetingPoint);
-//                fixCamera();
             }
 
             @Override
@@ -257,8 +260,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
     }
 
-
-
+    //Define listeners for handling the requests of users in the group
     private void handleRequests(){
         DatabaseReference requestRef=database.child("requests");
         user = endTripIntent.getParcelableExtra("User");
@@ -305,9 +307,8 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                                 }
                             }
 
-//                        builder.include(request.destLatLng());
                             hue = ((int) hue + 30) % 360;
-//                        fixCamera();
+
                             if (!user.getUserId().equals(requester.getUserId())) { //don't add curr user to list
                                 groupUsers.add(requester);
                             } else {
@@ -315,8 +316,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                                 userSrc = new com.google.maps.model.LatLng(request.srcLatLng().latitude, request.srcLatLng().longitude);
                                 mMap.addMarker(new MarkerOptions().position(request.srcLatLng()).title("Your location").icon(BitmapDescriptorFactory.defaultMarker(hue)));
                                 builder.include(request.srcLatLng());
-
-//                            fixCamera();
                             }
                             buddyCount++;
                             updateLayout();
@@ -354,13 +353,15 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                         finish();
                     }
 
+                    //Update request timeStamp and time left
                     long timeStamp = currentUserRequest.getTimeStamp();
                     long timePrefs = currentUserRequest.getTimePrefs();
                     long currentTime = System.currentTimeMillis();
                     currentUserRequest.setTimeStamp(currentTime);
                     long timePassed = TimeUnit.MILLISECONDS.toSeconds(currentTime - timeStamp);
                     currentUserRequest.setTimePrefs(timePrefs - timePassed);
-                    
+
+                    //Prepare intent
                     Intent searchingIntent=new Intent(MatchScreenActivity.this,SearchingActivity2.class);
                     String requestId=ServerUtils.addRequest(currentUserRequest);
                     searchingIntent.putExtra("requestId",requestId);
@@ -369,9 +370,10 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                     searchingIntent.putExtra("numOfSeconds", currentUserRequest.getTimePrefs());
                     editor.putString("requestId",requestId);
                     editor.putString("origin", currentUserRequest.origin);
-                    editor.putString("destination", currentUserRequest.destination);//do we need both?
+                    editor.putString("destination", currentUserRequest.destination);
                     editor.commit();
-                    //searchingIntent.putExtra("request",currentUserRequest);
+
+                    //Show message
                     Toast.makeText(MatchScreenActivity.this, "You were left Alone in the group. Searching again...",
                             Toast.LENGTH_SHORT).show();
                     startActivity(searchingIntent);
@@ -431,7 +433,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     }
 
     private void updateLayout(){
-        //setUserLayout(user, 0);
         for(int i=0;i<buddyCount-1;i++)
             setUserLayout(groupUsers.get(i), i);
         for(int i=buddyCount;i<4;i++) {
@@ -443,14 +444,13 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
     public void goToChat(View view){
         Intent chatIntent=new Intent(this,ChatActivity.class);
         chatIntent.putExtra("groupId",groupId);
-        //startActivity(chatIntent);
         startActivityForResult(chatIntent, CHAT_ACTIVITY_CODE);
     }
 
     public void closeGroup(View view){
         //Show "are you sure?" dialog
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setMessage("Ready to go? Additional users will not be able join the group."); //TODO word it better..
+        builder1.setMessage("Ready to go? Additional users will not be able join the group.");
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
@@ -458,9 +458,7 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         database.child("groups").child(groupId).child("closed").setValue(true);
-                        //chatIntent.putExtra("groupId",groupId);
                         endTripIntent.putExtra("destLatLng", getIntent().getParcelableExtra("destLatLng"));
-                        //startActivityForResult(endTripIntent, 13);
                         stopService(new Intent(MatchScreenActivity.this, SearchingService.class));
                         startActivity(endTripIntent);
                         goButton.setVisibility(View.GONE);
@@ -547,8 +545,6 @@ public class MatchScreenActivity extends NavDrawerActivity implements OnMapReady
 
         tDist.setText("Distance: "+directionsResult.routes[0].legs[0].distance.humanReadable);
         tTime.setText("Duration: "+directionsResult.routes[0].legs[0].duration.humanReadable);
-//        tDist.setText("Total distance: "+String.format("%.1d",routeDist/(long)1000)+ " km");
-//        tTime.setText("Estimated time: "+String.format("%d",TimeUnit.SECONDS.toMinutes(routeTime))+ " mins");
         if (drivePolyline != null){
             drivePolyline.remove();
         }
@@ -624,7 +620,6 @@ Delete the current request and go to Preferences screen
         requestsInGroup.removeEventListener(requestChangeListener);
         final Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
         preferencesIntent.putExtra("User",user);
-        //TODO I moved this here b/c if someone already pressed GO and the user clicks "find a new ride" this should still happen
         editor.putString("requestId",null);
         editor.putString("origin",null);
         editor.putString("destination",null);
@@ -648,10 +643,7 @@ Delete the current request and go to Preferences screen
                     catch(NullPointerException e){
                        Log.i("Error in MatchScreen", "NullPointerExecption in groupRef");
                     }
-                    //editor.putString("requestId",null);
-                    //editor.putString("origin",null);
-                    //editor.putString("destination",null);
-                    //editor.commit();
+
                     database.child("requests").child(currentUserRequestId).setValue(null);
 
                 }
@@ -707,10 +699,9 @@ Delete the current request and go to Preferences screen
     private void startGuide(){
         startActivityForResult(new Intent(this,GuideActivity.class),GUIDE_ACTIVITY_CODE);
     }
+
+    //This is called when "?" is clicked on, we have two b/c we need a special format to use onClick
     public void goToGuide(View view){
         startGuide();
     }
-
-
-
 }
