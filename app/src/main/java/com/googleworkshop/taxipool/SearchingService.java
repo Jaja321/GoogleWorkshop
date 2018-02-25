@@ -23,17 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 public class SearchingService extends Service {
     protected static String groupId = null;
     protected String requestId = null;
-    protected int groupSize = 0;
     protected long numOfSeconds = 0;
     protected ResultReceiver rec;
     protected String origin = null;
     protected String destination = null;
     private DatabaseReference database;
-    private int FOREGROUND_ID = 111;//TODO
+    private int FOREGROUND_ID = 111;
     private boolean isActive;
     final Handler handler = new Handler();
     final Runnable r = new Runnable() {
         public void run() {
+            database.child("groups").child(groupId).child("closed").setValue(true);
             stopForeground(true);
             stopSelf();
         }
@@ -107,7 +107,6 @@ public class SearchingService extends Service {
                 if(groupId!=null){
                     //Found a group
 
-                    //DatabaseReference isActiveRef=database.child("groups").child(groupId).child("active");
                     final DatabaseReference groupRef=database.child("groups").child(groupId);//Changes to isActive will also trigger this
                     //According to FireBase documentation
                     groupRef.addValueEventListener(new ValueEventListener() {

@@ -280,7 +280,6 @@ public class PreferencesActivity extends NavDrawerActivity {
 
 
     private void createRequest(){
-        //long nOfSeconds=15;
         long nOfSeconds = PreferencesUtils.getNumOfSeconds(timeSpinner.getSelectedItemPosition());
         writeNumOfSeconds(nOfSeconds);
         int nOfPassengers = Integer.parseInt(passengersSpinner.getItemAtPosition(passengersSpinner.getSelectedItemPosition()).toString());

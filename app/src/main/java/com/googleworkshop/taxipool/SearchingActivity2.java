@@ -111,7 +111,7 @@ public class SearchingActivity2 extends NavDrawerActivity {
                 if(groupId==null ||!isActive) {
                     Intent intent = new Intent(SearchingActivity2.this, PreferencesActivity.class);
                     if(groupId !=null) {
-                        database.child("groups").child(groupId).child("closed").setValue(true);//Why are we doing this?
+                        database.child("groups").child(groupId).child("closed").setValue(true);
                     }
                     NotificationManager mNotificationManager =
                             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
