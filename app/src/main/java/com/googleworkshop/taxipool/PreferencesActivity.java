@@ -303,8 +303,6 @@ public class PreferencesActivity extends NavDrawerActivity {
         intent.putExtra("destLatLng", destLatLng);//Added for Geofencing
         intent.putExtra("destination", destPlace.getName().toString());
         intent.putExtra("origin", userRequest.origin);
-        Bundle b = new Bundle();
-        intent.putExtra("bundle", b);
 
         stopService(new Intent(this, SearchingService.class));
 
